@@ -1,0 +1,24 @@
+# Configuración del proyecto Supabase de Aplika (CLI local).
+# Regla #0: proyecto NUEVO y exclusivo. No vincular a ningún otro proyecto.
+project_id = "aplika"
+
+[db]
+port = 54322
+major_version = 15
+
+[api]
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "app"]
+
+[studio]
+port = 54323
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/dc/Panel Cliente.dc.html"]
+jwt_expiry = 3600
+enable_signup = true
+
+[storage]
+enabled = true

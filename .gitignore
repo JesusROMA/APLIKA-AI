@@ -1,0 +1,43 @@
+# Dependencias
+node_modules/
+.pnp/
+.pnp.js
+
+# Next.js
+/.next/
+/out/
+/build
+next-env.d.ts
+
+# Producción
+/dist
+
+# Variables de entorno — NUNCA versionar secretos (Regla #0: .env propio de Aplika)
+.env
+.env*.local
+.env.production
+.env.development
+!.env.example
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+**/supabase/.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Tests
+coverage/
+
+# Docker
+*.env.docker
