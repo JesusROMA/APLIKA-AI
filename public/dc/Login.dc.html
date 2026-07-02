@@ -22,9 +22,12 @@ input,button{font-family:inherit;}
 </helmet>
 <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;display:flex;background:#FFFFFF;">
 
+  <!-- Volver al inicio (arriba a la izquierda; color adaptado a escritorio/móvil) -->
+  <a href="Aplika.ai.dc.html" style="position:fixed;top:18px;left:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;font-size:13.5px;font-weight:600;text-decoration:none;background:{{ backBg }};border:1px solid {{ backBorder }};color:{{ backColor }};transition:opacity .2s,transform .2s;" style-hover="opacity:0.82;transform:translateX(-2px);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>Volver al inicio</a>
+
   <!-- Panel de marca (escritorio) -->
   <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-    <div style="flex:1 1 46%;position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.06) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:48px;">
+    <div style="flex:1 1 46%;position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.06) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:88px 48px 48px;">
       <div style="position:absolute;top:-90px;right:-70px;width:300px;height:300px;border-radius:60px;background:rgba(55,138,221,0.22);transform:rotate(18deg);"></div>
       <a href="Aplika.ai.dc.html" style="position:relative;display:flex;align-items:center;gap:10px;text-decoration:none;">
         <span style="display:grid;grid-template-columns:1fr 1fr;gap:3px;width:28px;height:28px;"><span style="background:#FFFFFF;border-radius:4px;"></span><span style="background:#B5D4F4;border-radius:4px;"></span><span style="background:#4FA0E8;border-radius:4px;"></span><span style="background:#FFFFFF;border-radius:4px;"></span></span>
@@ -116,6 +119,9 @@ class Component extends DCLogic {
     return {
       isDesktop: this.state.width >= 860,
       isMobile: this.state.width < 860,
+      backColor: this.state.width >= 860 ? 'rgba(255,255,255,0.9)' : 'rgba(4,44,83,0.72)',
+      backBg: this.state.width >= 860 ? 'rgba(255,255,255,0.1)' : '#F5F8FC',
+      backBorder: this.state.width >= 860 ? 'rgba(255,255,255,0.18)' : '#E6F1FB',
       perks: this.perks,
       email: this.state.email, password: this.state.password,
       onEmail: (e) => this.setState({ email: e.target.value, error: '' }),
