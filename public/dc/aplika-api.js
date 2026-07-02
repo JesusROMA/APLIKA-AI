@@ -29,6 +29,7 @@
     // Auth
     login: (email, password) => post('/api/auth/login', { email, password }),
     logout: () => post('/api/auth/logout'),
+    me: () => get('/api/auth/me'),
 
     // Dashboard
     kpis: (period) => get('/api/dashboard/kpis?period=' + (period || '30d')),
