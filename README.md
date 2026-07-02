@@ -83,6 +83,29 @@ Para que los commits fluyan solos entre el equipo (sin pedir pull/push manual):
    `npm run sync` (Windows) o `./scripts/auto-sync.sh` (macOS/Linux) — baja los
    commits del equipo cada 60 s mientras trabajas, preservando tus cambios.
 
+## Protocolo de trabajo (por desarrollador)
+
+1. **Al empezar la sesión:** `git pull` (o deja corriendo `npm run sync` y
+   olvídate; o usa el Sync de VS Code cuando marque la flecha ↓).
+2. **Al terminar un cambio con sentido:**
+   ```bash
+   git add -A
+   git commit -m "Módulo: qué cambiaste y por qué"
+   ```
+   **Y ya** — el hook lo sube solo (`[auto-push] listo.`). No hay `git push`.
+3. **Si hay conflicto** (ambos tocaron la misma línea): resuelve los archivos
+   marcados y luego `git add -A` + `git rebase --continue` — el push sale solo.
+
+**Reglas del equipo:**
+
+| ✅ Hacer | ❌ Evitar |
+|---|---|
+| Commits pequeños y frecuentes | Acumular todo el día sin commitear |
+| Mensajes claros: `"Login: arregla traslape del logo"` | `"cambios"`, `"fix"` |
+| Commitear solo código que corre (main llega directo al compañero) | Commitear a medias algo que rompe la app |
+| Avisar si vas a tocar un archivo grande (ej. `Panel Cliente.dc.html`) | Editarlo los dos a la vez |
+| Secretos por canal seguro (formato en `.env.example`) | Commitear `.env` o hacer `git push --force` a `main` |
+
 ## Contrato de API (implementado)
 
 Auth: `POST /api/auth/login`, `/logout`.
