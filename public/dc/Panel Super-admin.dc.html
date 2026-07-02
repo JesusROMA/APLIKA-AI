@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./aplika-api.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;}
+button,input,select{font-family:inherit;}
+::selection{background:#B5D4F4;color:#042C53;}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-thumb{background:rgba(120,150,180,0.3);border-radius:8px;}
+@keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:0.4;}}
+</style>
+</helmet>
+<div ref="{{ setRoot }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside style="position:fixed;top:0;left:0;bottom:0;width:248px;z-index:40;background:var(--sidebar,#08203B);display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.4,0,.2,1);transform:{{ sidebarTransform }};">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 16px;">
+      <span style="display:grid;grid-template-columns:1fr 1fr;gap:2.5px;width:26px;height:26px;"><span style="background:#FFFFFF;border-radius:4px;"></span><span style="background:#B5D4F4;border-radius:4px;"></span><span style="background:#4FA0E8;border-radius:4px;"></span><span style="background:#FFFFFF;border-radius:4px;"></span></span>
+      <div><span style="font-size:18px;font-weight:700;color:#FFFFFF;display:block;line-height:1;">aplika<span style="color:#6FB3EC;">.ai</span></span><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#6FB3EC;">Super-admin</span></div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:2px;">
+      <p style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--sidebar-muted,rgba(255,255,255,0.45));margin:8px 10px 6px;">Plataforma</p>
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="4">
+        <button onClick="{{ item.onClick }}" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;cursor:pointer;font-size:14.5px;font-weight:{{ item.weight }};padding:11px 12px;border-radius:10px;transition:background .15s;background:{{ item.bg }};color:{{ item.color }};">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg>{{ item.label }}
+        </button>
+      </sc-for>
+    </div>
+    <div style="padding:14px 16px;border-top:1px solid var(--sidebar-border,rgba(255,255,255,0.08));">
+      <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:rgba(255,255,255,0.14);border-radius:11px;color:#FFFFFF;font-size:13px;font-weight:700;">AA</span><div style="min-width:0;"><p style="font-size:13.5px;font-weight:600;color:#FFFFFF;margin:0;">Aplika.ai</p><p style="font-size:12px;color:var(--sidebar-muted,rgba(255,255,255,0.5));margin:1px 0 0;">Proveedor</p></div></div>
+    </div>
+  </aside>
+
+  <sc-if value="{{ showOverlay }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSidebar }}" style="position:fixed;inset:0;z-index:35;background:rgba(4,28,53,0.5);"></div>
+  </sc-if>
+
+  <!-- ===== MAIN ===== -->
+  <div style="margin-left:{{ mainMargin }};transition:margin .3s cubic-bezier(.4,0,.2,1);min-height:100vh;display:flex;flex-direction:column;">
+    <header style="position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--surface,#FFFFFF);border-bottom:1px solid var(--border,#E6F1FB);padding:13px clamp(16px,2.5vw,30px);">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0;">
+        <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ openSidebar }}" aria-label="Menú" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:10px;cursor:pointer;color:var(--text,#042C53);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </sc-if>
+        <h1 style="font-size:18px;font-weight:600;margin:0;color:var(--text,#042C53);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ viewTitle }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;flex:none;">
+        <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:8px 13px;width:230px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--faint,rgba(4,44,83,0.4))" stroke-width="2" stroke-linecap="round"><path d="M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16"></path></svg><input placeholder="Buscar tenant…" style="border:none;background:transparent;outline:none;font-size:13.5px;color:var(--text,#042C53);width:100%;"></input></div>
+        </sc-if>
+        <button onClick="{{ toggleDark }}" aria-label="Tema" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:10px;cursor:pointer;color:var(--text,#042C53);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ themeIcon }}"></path></svg></button>
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#0C447C;border-radius:10px;color:#FFFFFF;font-size:13px;font-weight:700;">AA</span>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:clamp(20px,3vw,32px);">
+      <!-- ===== DASHBOARD GLOBAL ===== -->
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-bottom:22px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Torre de control</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Vista global de todos los tenants</p></div>
+        <!-- TODO backend: GET /api/admin/metrics -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:18px;">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
+            <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));">{{ k.label }}</span><span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:{{ k.iconBg }};color:{{ k.iconFg }};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ k.d }}"></path></svg></span></div>
+              <p style="font-size:25px;font-weight:700;margin:0;color:var(--text,#042C53);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;">{{ k.value }}</p>
+              <p style="font-size:12.5px;margin:7px 0 0;font-weight:600;color:{{ k.deltaColor }};">{{ k.delta }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;">
+          <div style="grid-column:span 2;min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><div><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Crecimiento de MRR</p><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:3px 0 0;">Últimos 6 meses</p></div><span style="font-size:12.5px;font-weight:600;color:var(--success,#1FA85A);background:var(--success-weak,#E4F6EC);padding:5px 11px;border-radius:999px;">▲ 32% YTD</span></div>
+            <svg viewBox="0 0 600 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0,140 100,124 200,110 300,82 400,66 500,40 600,18" fill="none" stroke="var(--accent,#378ADD)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="0,140 100,124 200,110 300,82 400,66 500,40 600,18 600,160 0,160" fill="var(--accent-weak,#E6F1FB)" stroke="none" opacity="0.6"></polyline></svg>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;"><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">Ene</span><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">Mar</span><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">May</span><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">Jun</span></div>
+          </div>
+          <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+            <p style="font-size:15px;font-weight:600;margin:0 0 18px;color:var(--text,#042C53);">Tenants por plan</p>
+            <div style="display:flex;align-items:center;gap:18px;">
+              <div style="width:104px;height:104px;border-radius:50%;background:conic-gradient(var(--accent,#378ADD) 0 41%,var(--detail,#B5D4F4) 41% 86%,#0C447C 86% 100%);display:flex;align-items:center;justify-content:center;flex:none;"><div style="width:62px;height:62px;border-radius:50%;background:var(--surface,#FFFFFF);display:flex;align-items:center;justify-content:center;"><span style="font-size:18px;font-weight:700;color:var(--text,#042C53);">142</span></div></div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--accent,#378ADD);"></span>Pro · 58</span>
+                <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--detail,#B5D4F4);"></span>Básico · 64</span>
+                <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:#0C447C;"></span>Enterprise · 20</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== TENANTS ===== -->
+      <sc-if value="{{ isTenants }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;">
+          <div><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Tenants</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">{{ tenantCount }}</p></div>
+          <button style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nuevo tenant</button>
+        </div>
+        <!-- TODO backend: GET /api/admin/tenants?status={tenantFilter} -->
+        <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;">
+          <sc-for list="{{ tenantTabs }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="flex:none;display:inline-flex;align-items:center;gap:7px;border:1px solid {{ t.border }};cursor:pointer;font-size:13px;font-weight:600;padding:8px 13px;border-radius:999px;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}<span style="font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:{{ t.countBg }};color:{{ t.countColor }};">{{ t.count }}</span></button>
+          </sc-for>
+        </div>
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
+          <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:820px;">
+            <thead><tr style="background:var(--surface-2,#F5F8FC);"><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Empresa</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Plan</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Alta</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;width:160px;">Uso</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Estado</th><th style="text-align:right;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Acciones</th></tr></thead>
+            <tbody><sc-for list="{{ tenantRows }}" as="t" hint-placeholder-count="8">
+              <tr style="border-top:1px solid var(--border,#E6F1FB);" style-hover="background:var(--surface-2,#F5F8FC);">
+                <td style="padding:13px 20px;"><div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border-radius:10px;font-size:12.5px;font-weight:700;">{{ t.ini }}</span><span style="font-size:13.5px;font-weight:600;color:var(--text,#042C53);">{{ t.name }}</span></div></td>
+                <td style="padding:13px 20px;"><span style="font-size:12px;font-weight:600;color:var(--text,#042C53);background:var(--surface-2,#F5F8FC);padding:4px 11px;border-radius:999px;">{{ t.plan }}</span></td>
+                <td style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));padding:13px 20px;">{{ t.alta }}</td>
+                <td style="padding:13px 20px;"><div style="display:flex;align-items:center;gap:9px;"><div style="flex:1;height:6px;background:var(--surface-2,#F5F8FC);border-radius:5px;overflow:hidden;"><div style="height:100%;width:{{ t.uso }};background:{{ t.usoColor }};border-radius:5px;"></div></div><span style="font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));font-variant-numeric:tabular-nums;flex:none;">{{ t.uso }}</span></div></td>
+                <td style="padding:13px 20px;"><span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ t.fg }};"></span>{{ t.status }}</span></td>
+                <td style="padding:13px 20px;text-align:right;"><button onClick="{{ t.onImpersonate }}" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border:none;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>Impersonar</button></td>
+              </tr>
+            </sc-for></tbody>
+          </table></div>
+        </div>
+      </sc-if>
+
+      <!-- ===== PLANES ===== -->
+      <sc-if value="{{ isPlanes }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-bottom:20px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Planes y suscripciones</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Límites por plan y facturación de la plataforma</p></div>
+        <!-- TODO backend: GET /api/admin/plans -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+          <sc-for list="{{ planes }}" as="p" hint-placeholder-count="3">
+            <div style="background:{{ p.cardBg }};border:1.5px solid {{ p.cardBorder }};border-radius:18px;padding:26px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:18px;font-weight:700;margin:0;color:{{ p.titleColor }};">{{ p.name }}</p><sc-if value="{{ p.highlight }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:#FFFFFF;background:rgba(255,255,255,0.22);padding:3px 10px;border-radius:999px;">Popular</span></sc-if></div>
+              <p style="margin:0 0 4px;"><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em;color:{{ p.titleColor }};">{{ p.price }}</span><span style="font-size:14px;color:{{ p.subColor }};">{{ p.period }}</span></p>
+              <p style="font-size:13px;color:{{ p.subColor }};margin:0 0 20px;">{{ p.tenants }} tenants activos</p>
+              <div style="display:flex;flex-direction:column;gap:11px;">
+                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.productos }} productos</span></div>
+                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.pedidos }}</span></div>
+                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.usuarios }} usuarios</span></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== MONITOREO ===== -->
+      <sc-if value="{{ isMonitoreo }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-bottom:20px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Monitoreo</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Salud del sistema e integraciones</p></div>
+        <!-- TODO backend: GET /api/admin/health -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px;">
+          <sc-for list="{{ health }}" as="h" hint-placeholder-count="4">
+            <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><span style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));">{{ h.label }}</span><span style="width:9px;height:9px;border-radius:50%;background:{{ h.dot }};animation:pulseDot 2s ease-in-out infinite;"></span></div><p style="font-size:22px;font-weight:700;margin:0;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ h.value }}</p><p style="font-size:12px;color:{{ h.color }};margin:6px 0 0;font-weight:600;">{{ h.note }}</p></div>
+          </sc-for>
+        </div>
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border,#E6F1FB);"><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Eventos recientes</p></div>
+          <!-- TODO backend: GET /api/admin/incidents -->
+          <sc-for list="{{ incidents }}" as="i" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid var(--border,#E6F1FB);">
+              <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:11px;background:{{ i.iconBg }};color:{{ i.iconFg }};"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ i.d }}"></path></svg></span>
+              <div style="flex:1;min-width:0;"><p style="font-size:14px;font-weight:600;color:var(--text,#042C53);margin:0;">{{ i.title }}</p><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:2px 0 0;">{{ i.detail }}</p></div>
+              <span style="flex:none;font-size:12px;color:var(--faint,rgba(4,44,83,0.45));">{{ i.time }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+
+  <!-- Modal impersonar -->
+  <sc-if value="{{ impersonateOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeImpersonate }}" style="position:fixed;inset:0;z-index:60;background:rgba(4,28,53,0.5);display:flex;align-items:center;justify-content:center;padding:20px;">
+      <div onClick="{{ stop }}" style="background:var(--surface,#FFFFFF);border-radius:18px;padding:28px;max-width:380px;width:100%;box-shadow:0 30px 70px -30px rgba(2,18,38,0.5);">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border-radius:14px;margin-bottom:16px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg></span>
+        <h3 style="font-size:19px;font-weight:700;margin:0 0 8px;color:var(--text,#042C53);">Entrar como {{ impersonateName }}</h3>
+        <p style="font-size:14px;line-height:1.55;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 22px;">Verás el panel de este tenant en modo soporte. La sesión queda registrada en la bitácora.</p>
+        <div style="display:flex;gap:10px;"><button onClick="{{ closeImpersonate }}" style="flex:1;background:var(--surface,#FFFFFF);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button><button onClick="{{ closeImpersonate }}" style="flex:1;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Entrar al panel</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const LIGHT = {
+  '--bg': '#F5F8FC', '--surface': '#FFFFFF', '--surface-2': '#F5F8FC',
+  '--border': '#E6F1FB', '--text': '#042C53', '--muted': 'rgba(4,44,83,0.6)', '--faint': 'rgba(4,44,83,0.42)',
+  '--accent': '#378ADD', '--accent-weak': '#E6F1FB', '--detail': '#B5D4F4',
+  '--success': '#1FA85A', '--success-weak': '#E4F6EC', '--warn': '#B9682B', '--warn-weak': '#FBEEDD',
+  '--error': '#D24545', '--error-weak': '#FBE7E7', '--info': '#378ADD', '--info-weak': '#E6F1FB',
+  '--sidebar': '#08203B', '--sidebar-border': 'rgba(255,255,255,0.08)', '--sidebar-muted': 'rgba(255,255,255,0.5)'
+};
+const DARK = {
+  '--bg': '#081B31', '--surface': '#0E2742', '--surface-2': '#0A2138',
+  '--border': 'rgba(255,255,255,0.09)', '--text': '#E8F0FA', '--muted': 'rgba(232,240,250,0.62)', '--faint': 'rgba(232,240,250,0.4)',
+  '--accent': '#4FA0E8', '--accent-weak': 'rgba(79,160,232,0.16)', '--detail': '#3C6CA0',
+  '--success': '#34C77B', '--success-weak': 'rgba(52,199,123,0.16)', '--warn': '#E0A24B', '--warn-weak': 'rgba(224,162,75,0.16)',
+  '--error': '#E8736B', '--error-weak': 'rgba(232,115,107,0.16)', '--info': '#4FA0E8', '--info-weak': 'rgba(79,160,232,0.16)',
+  '--sidebar': '#050F1E', '--sidebar-border': 'rgba(255,255,255,0.07)', '--sidebar-muted': 'rgba(255,255,255,0.45)'
+};
+
+class Component extends DCLogic {
+  state = { dark: false, view: 'dashboard', width: (typeof window !== 'undefined' ? window.innerWidth : 1200), sidebarOpen: false, tenantFilter: 'todos', impersonate: null };
+
+  applyTheme() {
+    const el = this._root; if (!el) return;
+    const t = this.state.dark ? DARK : LIGHT;
+    for (const k in t) el.style.setProperty(k, t[k]);
+    el.style.setProperty('background-color', t['--bg'], 'important');
+    el.style.setProperty('color', t['--text'], 'important');
+  }
+  componentDidMount() {
+    this.applyTheme();
+    this._r = () => this.setState({ width: window.innerWidth, sidebarOpen: window.innerWidth >= 900 ? false : this.state.sidebarOpen });
+    window.addEventListener('resize', this._r);
+    this.loadFromApi();
+  }
+  componentDidUpdate() { this.applyTheme(); }
+  componentWillUnmount() { window.removeEventListener('resize', this._r); }
+
+  // Carga métricas globales desde /api/admin/*. Modo demo => datos embebidos.
+  async loadFromApi() {
+    const A = window.AplikaAPI;
+    if (!A) return;
+    let cfg;
+    try { cfg = await A.config(); } catch (e) { return; }
+    if (cfg.demo) { console.info('[aplika] modo demo: usando datos embebidos del super-admin'); return; }
+    const set = async (fn, assign) => { try { assign(await fn()); } catch (e) { console.warn('[aplika] carga parcial:', e.message); } };
+    await Promise.all([
+      set(() => A.adminMetrics(), (r) => { this.kpis = r.kpis; }),
+      set(() => A.adminTenants('todos'), (r) => { this.tenants = r.tenants; }),
+      set(() => A.adminPlans(), (r) => { this.planes = r.planes; }),
+      set(() => A.adminHealth(), (r) => { this.health = r.health; }),
+      set(() => A.adminIncidents(), (r) => { this.incidents = r.incidents; }),
+    ]);
+    this.forceUpdate();
+  }
+
+  nav = [
+    { key: 'dashboard', label: 'Dashboard global', d: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
+    { key: 'tenants', label: 'Tenants', d: 'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M5 21h16M9 7h2M9 11h2M9 15h2M15 21V11h2a2 2 0 0 1 2 2v8' },
+    { key: 'planes', label: 'Planes y suscripciones', d: 'M3 7h18v12H3zM3 11h18M7 15h4' },
+    { key: 'monitoreo', label: 'Monitoreo', d: 'M3 12h4l2 6 4-15 2 9h6' }
+  ];
+  titles = { dashboard: 'Dashboard global', tenants: 'Tenants', planes: 'Planes y suscripciones', monitoreo: 'Monitoreo' };
+
+  kpis = [
+    { label: 'Tenants activos', value: '142', delta: '▲ 8 este mes', tone: 'up', d: 'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M5 21h14M9 7h2M9 11h2M15 21V11h4v10' },
+    { label: 'MRR', value: '$284,500', delta: '▲ 6.2% vs mes anterior', tone: 'up', d: 'M4 19V5M4 19h16M8 15l3-4 3 2 4-6' },
+    { label: 'Suscripciones nuevas', value: '18', delta: 'este mes', tone: 'neutral', d: 'M12 5v14M5 12h14' },
+    { label: 'Uso agregado', value: '68%', delta: 'de límites de plan', tone: 'neutral', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM12 12l4-2' },
+    { label: 'Salud del sistema', value: '99.9%', delta: 'uptime 30 días', tone: 'up', d: 'M5 12.5 10 17.5 19 6.5' },
+    { label: 'Soporte abierto', value: '7', delta: 'tickets', tone: 'warn', d: 'M8 10h8M8 14h5M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z' }
+  ];
+
+  tStatusMeta = { activo: { label: 'Activo', kind: 'success' }, prueba: { label: 'Prueba', kind: 'info' }, suspendido: { label: 'Suspendido', kind: 'error' } };
+  tenants = [
+    { name: 'Refaccionaria del Norte', plan: 'Pro', status: 'activo', alta: '12 ene 2026', uso: 82, ini: 'RN' },
+    { name: 'Autopartes Salinas', plan: 'Pro', status: 'activo', alta: '21 nov 2025', uso: 91, ini: 'AS' },
+    { name: 'Distribuidora Centro', plan: 'Enterprise', status: 'activo', alta: '8 sep 2025', uso: 67, ini: 'DC' },
+    { name: 'Ferretería La Herradura', plan: 'Básico', status: 'activo', alta: '3 feb 2026', uso: 45, ini: 'FH' },
+    { name: 'Balatas y Frenos GT', plan: 'Básico', status: 'prueba', alta: '19 jun 2026', uso: 12, ini: 'BG' },
+    { name: 'Mayoreo Hidalgo', plan: 'Pro', status: 'suspendido', alta: '4 mar 2026', uso: 0, ini: 'MH' },
+    { name: 'Refacciones Express', plan: 'Básico', status: 'activo', alta: '27 abr 2026', uso: 33, ini: 'RE' },
+    { name: 'Distribuidora Norte', plan: 'Enterprise', status: 'activo', alta: '14 dic 2025', uso: 74, ini: 'DN' }
+  ];
+
+  planes = [
+    { name: 'Básico', price: '$990', period: '/mes', productos: '500', pedidos: '1,000 pedidos/mes', usuarios: '3', tenants: '64', highlight: false },
+    { name: 'Pro', price: '$2,490', period: '/mes', productos: '5,000', pedidos: '10,000 pedidos/mes', usuarios: '10', tenants: '58', highlight: true },
+    { name: 'Enterprise', price: 'A medida', period: '', productos: 'Ilimitados', pedidos: 'Pedidos ilimitados', usuarios: 'Ilimitados', tenants: '20', highlight: false }
+  ];
+
+  health = [
+    { label: 'API uptime', value: '99.98%', note: 'Operativo', ok: true },
+    { label: 'Webhooks Stripe', value: '2 fallidos', note: 'Reintentando', ok: false },
+    { label: 'Timbrado PAC', value: '99.2%', note: '1 rechazo', ok: false },
+    { label: 'Agentes IA', value: '141/142', note: '1 reconectando', ok: false }
+  ];
+  incidents = [
+    { title: 'Webhook de Stripe falló', detail: 'tenant: Mayoreo Hidalgo · reintentando (3/5)', time: 'hace 8 min', sev: 'error', d: 'M12 8v5M12 16v.01M10.3 4.3 3 18a2 2 0 0 0 1.7 3h14.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z' },
+    { title: 'Timbrado CFDI rechazado', detail: 'PAC · certificado del tenant Balatas y Frenos GT', time: 'hace 32 min', sev: 'warn', d: 'M7 3h8l3 3v15l-2-1-2 1-2-1-2 1-2-1-2 1V3z' },
+    { title: 'Pico de uso de API', detail: 'Autopartes Salinas · 91% del límite de plan', time: 'hace 1 h', sev: 'warn', d: 'M3 12h4l2 6 4-15 2 9h6' },
+    { title: 'Agente de IA reconectado', detail: 'WhatsApp · Distribuidora Centro', time: 'hace 2 h', sev: 'ok', d: 'M5 12.5 10 17.5 19 6.5' }
+  ];
+
+  badge(kind) {
+    const m = { success: { bg: 'var(--success-weak,#E4F6EC)', fg: 'var(--success,#1FA85A)' }, warn: { bg: 'var(--warn-weak,#FBEEDD)', fg: 'var(--warn,#B9682B)' }, error: { bg: 'var(--error-weak,#FBE7E7)', fg: 'var(--error,#D24545)' }, info: { bg: 'var(--info-weak,#E6F1FB)', fg: 'var(--info,#378ADD)' }, neutral: { bg: 'var(--surface-2,#F5F8FC)', fg: 'var(--muted,rgba(4,44,83,0.6))' } };
+    return m[kind] || m.neutral;
+  }
+  iconTone(tone) {
+    const m = { up: { iconBg: 'var(--success-weak,#E4F6EC)', iconFg: 'var(--success,#1FA85A)', deltaColor: 'var(--success,#1FA85A)' }, warn: { iconBg: 'var(--warn-weak,#FBEEDD)', iconFg: 'var(--warn,#B9682B)', deltaColor: 'var(--warn,#B9682B)' }, neutral: { iconBg: 'var(--accent-weak,#E6F1FB)', iconFg: 'var(--accent,#378ADD)', deltaColor: 'var(--muted,rgba(4,44,83,0.6))' } };
+    return m[tone] || m.neutral;
+  }
+  usoColor(u) { return u >= 85 ? 'var(--warn,#B9682B)' : (u === 0 ? 'var(--faint,rgba(4,44,83,0.3))' : 'var(--accent,#378ADD)'); }
+
+  renderVals() {
+    const desktop = this.state.width >= 900;
+    const v = this.state.view;
+    const tf = this.state.tenantFilter;
+    const tCount = (k) => k === 'todos' ? this.tenants.length : this.tenants.filter(t => t.status === k).length;
+    const tenantTabs = ['todos', 'activo', 'prueba', 'suspendido'].map(k => ({
+      key: k, label: k === 'todos' ? 'Todos' : this.tStatusMeta[k].label, count: tCount(k),
+      onClick: () => this.setState({ tenantFilter: k }),
+      bg: tf === k ? 'var(--accent,#378ADD)' : 'var(--surface,#FFFFFF)', color: tf === k ? '#FFFFFF' : 'var(--muted,rgba(4,44,83,0.6))',
+      border: tf === k ? 'var(--accent,#378ADD)' : 'var(--border,#E6F1FB)',
+      countBg: tf === k ? 'rgba(255,255,255,0.22)' : 'var(--surface-2,#F5F8FC)', countColor: tf === k ? '#FFFFFF' : 'var(--faint,rgba(4,44,83,0.5))'
+    }));
+    const tList = tf === 'todos' ? this.tenants : this.tenants.filter(t => t.status === tf);
+    const tenantRows = tList.map(t => ({
+      name: t.name, plan: t.plan, alta: t.alta, ini: t.ini, uso: t.uso + '%', usoColor: this.usoColor(t.uso),
+      status: this.tStatusMeta[t.status].label, ...this.badge(this.tStatusMeta[t.status].kind),
+      onImpersonate: () => this.setState({ impersonate: t.name })
+    }));
+    const planes = this.planes.map(p => ({
+      name: p.name, price: p.price, period: p.period, productos: p.productos, pedidos: p.pedidos, usuarios: p.usuarios, tenants: p.tenants, highlight: p.highlight,
+      cardBg: p.highlight ? 'var(--accent,#378ADD)' : 'var(--surface,#FFFFFF)',
+      cardBorder: p.highlight ? 'var(--accent,#378ADD)' : 'var(--border,#E6F1FB)',
+      titleColor: p.highlight ? '#FFFFFF' : 'var(--text,#042C53)',
+      subColor: p.highlight ? 'rgba(255,255,255,0.8)' : 'var(--muted,rgba(4,44,83,0.6))',
+      textColor: p.highlight ? '#FFFFFF' : 'var(--text,#042C53)',
+      checkColor: p.highlight ? '#FFFFFF' : 'var(--accent,#378ADD)'
+    }));
+    const sevMap = { error: { bg: 'var(--error-weak,#FBE7E7)', fg: 'var(--error,#D24545)' }, warn: { bg: 'var(--warn-weak,#FBEEDD)', fg: 'var(--warn,#B9682B)' }, ok: { bg: 'var(--success-weak,#E4F6EC)', fg: 'var(--success,#1FA85A)' } };
+    const incidents = this.incidents.map(i => ({ title: i.title, detail: i.detail, time: i.time, d: i.d, iconBg: sevMap[i.sev].bg, iconFg: sevMap[i.sev].fg }));
+    const health = this.health.map(h => ({ label: h.label, value: h.value, note: h.note, dot: h.ok ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)', color: h.ok ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)' }));
+
+    return {
+      setRoot: (el) => { this._root = el; if (el) this.applyTheme(); },
+      toggleDark: () => this.setState(s => ({ dark: !s.dark })),
+      themeIcon: this.state.dark ? 'M12 3v2M12 19v2M5 12H3M21 12h-2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z' : 'M21 12.8A8 8 0 1 1 11.2 3 6.2 6.2 0 0 0 21 12.8Z',
+      isDesktop: desktop, isMobile: !desktop,
+      sidebarTransform: (desktop || this.state.sidebarOpen) ? 'translateX(0)' : 'translateX(-100%)',
+      mainMargin: desktop ? '248px' : '0px', showOverlay: !desktop && this.state.sidebarOpen,
+      openSidebar: () => this.setState({ sidebarOpen: true }), closeSidebar: () => this.setState({ sidebarOpen: false }),
+      nav: this.nav.map(n => ({ label: n.label, d: n.d, onClick: () => this.setState({ view: n.key, sidebarOpen: false }), bg: v === n.key ? 'var(--sidebar-2,rgba(255,255,255,0.14))' : 'transparent', color: v === n.key ? '#FFFFFF' : 'var(--sidebar-text,rgba(255,255,255,0.82))', weight: v === n.key ? 600 : 500 })),
+      viewTitle: this.titles[v],
+      isDashboard: v === 'dashboard', isTenants: v === 'tenants', isPlanes: v === 'planes', isMonitoreo: v === 'monitoreo',
+      kpis: this.kpis.map(k => ({ label: k.label, value: k.value, delta: k.delta, d: k.d, ...this.iconTone(k.tone) })),
+      tenantTabs, tenantRows, tenantCount: tList.length + ' de ' + this.tenants.length + ' tenants',
+      planes, incidents, health,
+      impersonateOpen: !!this.state.impersonate, impersonateName: this.state.impersonate || '',
+      closeImpersonate: () => this.setState({ impersonate: null }),
+      stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

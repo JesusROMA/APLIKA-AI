@@ -11,7 +11,7 @@ public/dc/
   Precios.dc.html
   Como-funciona.dc.html
   Industrias.dc.html
-  Contacto.dc.html
+  Sobre-nosotros.dc.html
   Agenda-demo.dc.html
   Login.dc.html
   Header.dc.html

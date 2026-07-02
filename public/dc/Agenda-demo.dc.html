@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./aplika-api.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:#0C447C;}
+input,button,textarea,select{font-family:inherit;}
+::selection{background:#B5D4F4;color:#042C53;}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* ===== Scroll reveal ===== */
+.a-reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform;}
+.a-reveal.a-in{opacity:1;transform:none;}
+.a-reveal .a-stag>*{opacity:0;transform:translateY(18px);}
+.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+.a-reveal.a-in .a-stag>*:nth-child(1){transition-delay:.04s}.a-reveal.a-in .a-stag>*:nth-child(2){transition-delay:.1s}
+.a-reveal.a-in .a-stag>*:nth-child(3){transition-delay:.16s}.a-reveal.a-in .a-stag>*:nth-child(4){transition-delay:.22s}
+.a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
+.a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
+@media (prefers-reduced-motion:reduce){.a-reveal,.a-reveal .a-stag>*{opacity:1!important;transform:none!important;transition:none!important;}}
+</style>
+</helmet>
+<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+
+<dc-import name="Header" active="" hint-size="100%,72px"></dc-import>
+
+<section style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
+  <div style="position:absolute;top:-90px;left:-60px;width:260px;height:260px;border-radius:54px;background:rgba(181,212,244,0.1);transform:rotate(14deg);"></div>
+  <div style="position:absolute;bottom:-80px;right:-50px;width:240px;height:240px;border-radius:54px;background:rgba(55,138,221,0.18);transform:rotate(20deg);"></div>
+  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(128px,15vw,158px) 24px clamp(56px,8vw,96px);display:flex;flex-wrap:wrap;gap:clamp(36px,5vw,60px);align-items:flex-start;">
+
+    <!-- Qué esperar -->
+    <div style="flex:1 1 360px;min-width:300px;">
+      <p style="font-size:14px;font-weight:600;color:#6FB3EC;letter-spacing:0.04em;margin:0 0 16px;">Agenda una demo</p>
+      <h1 style="font-size:clamp(32px,4.6vw,52px);font-weight:700;line-height:1.06;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 20px;max-width:480px;text-wrap:balance;">Mira tu negocio funcionando con aplika.ai</h1>
+      <p style="font-size:clamp(16px,1.8vw,19px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 34px;max-width:440px;">Una demo de 30 minutos, sin compromiso. Te mostramos cómo se vería tu negocio digitalizado.</p>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:34px;">
+        <sc-for list="{{ expect }}" as="e" hint-placeholder-count="4">
+          <div style="display:flex;gap:13px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:rgba(255,255,255,0.12);border-radius:9px;color:#9CC6F0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:16px;color:rgba(255,255,255,0.9);">{{ e }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;max-width:420px;">
+        <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:#E6F1FB;color:#0C447C;border-radius:50%;font-size:15px;font-weight:700;">LM</span>
+        <p style="font-size:14.5px;line-height:1.5;color:rgba(255,255,255,0.82);margin:0;">“En la demo entendí en minutos cómo iba a vender más.” <span style="color:rgba(255,255,255,0.55);">— Laura, Monterrey</span></p>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div style="flex:1 1 400px;min-width:300px;">
+      <div style="background:#FFFFFF;border-radius:22px;padding:clamp(26px,3vw,38px);box-shadow:0 40px 80px -40px rgba(2,18,38,0.6);">
+        <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:28px 0;">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:62px;height:62px;background:#E6F1FB;color:#0C447C;border-radius:50%;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span>
+            <h3 style="font-size:22px;font-weight:600;color:#042C53;margin:0;">¡Demo solicitada!</h3>
+            <p style="font-size:15px;line-height:1.55;color:rgba(4,44,83,0.66);margin:0;max-width:320px;">Te contactamos por WhatsApp para confirmar el día y la hora. Gracias por tu interés.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ true }}">
+          <h2 style="font-size:21px;font-weight:600;color:#042C53;margin:0 0 4px;">Solicita tu demo gratis</h2>
+          <p style="font-size:14.5px;color:rgba(4,44,83,0.6);margin:0 0 22px;">Responde en 1 minuto y te contactamos.</p>
+          <!-- INTEGRACIÓN: onSubmit es un stub. // TODO: conectar API (envía todos los campos del formulario) -->
+          <form onSubmit="{{ onSubmit }}" novalidate="true" style="display:flex;flex-direction:column;gap:15px;">
+            <div>
+              <label for="d-name" style="display:block;font-size:14px;font-weight:600;color:#042C53;margin-bottom:7px;">Nombre</label>
+              <input id="d-name" type="text" value="{{ name }}" onInput="{{ onName }}" placeholder="Tu nombre" style="width:100%;padding:13px 15px;border:1px solid #D8E6F5;border-radius:11px;font-size:16px;color:#042C53;background:#FFFFFF;outline:none;" style-focus="border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.18);"></input>
+              <sc-if value="{{ errName }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#D24545;margin:6px 0 0;">{{ errName }}</p></sc-if>
+            </div>
+            <div>
+              <label for="d-biz" style="display:block;font-size:14px;font-weight:600;color:#042C53;margin-bottom:7px;">Negocio</label>
+              <input id="d-biz" type="text" value="{{ business }}" onInput="{{ onBusiness }}" placeholder="Nombre de tu negocio" style="width:100%;padding:13px 15px;border:1px solid #D8E6F5;border-radius:11px;font-size:16px;color:#042C53;background:#FFFFFF;outline:none;" style-focus="border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.18);"></input>
+              <sc-if value="{{ errBusiness }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#D24545;margin:6px 0 0;">{{ errBusiness }}</p></sc-if>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <div style="flex:1 1 150px;">
+                <label for="d-ind" style="display:block;font-size:14px;font-weight:600;color:#042C53;margin-bottom:7px;">Industria</label>
+                <select id="d-ind" value="{{ industry }}" onChange="{{ onIndustry }}" style="width:100%;padding:13px 15px;border:1px solid #D8E6F5;border-radius:11px;font-size:15.5px;color:#042C53;background:#FFFFFF;outline:none;" style-focus="border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.18);">
+                  <option value="Refaccionaria">Refaccionaria</option>
+                  <option value="Ferretería">Ferretería</option>
+                  <option value="Autopartes y balatas">Autopartes y balatas</option>
+                  <option value="Mayorista">Mayorista</option>
+                  <option value="Otra">Otra</option>
+                </select>
+              </div>
+              <div style="flex:1 1 150px;">
+                <label for="d-size" style="display:block;font-size:14px;font-weight:600;color:#042C53;margin-bottom:7px;">Productos</label>
+                <select id="d-size" value="{{ size }}" onChange="{{ onSize }}" style="width:100%;padding:13px 15px;border:1px solid #D8E6F5;border-radius:11px;font-size:15.5px;color:#042C53;background:#FFFFFF;outline:none;" style-focus="border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.18);">
+                  <option value="Menos de 100">Menos de 100</option>
+                  <option value="100 a 1,000">100 a 1,000</option>
+                  <option value="1,000 a 10,000">1,000 a 10,000</option>
+                  <option value="Más de 10,000">Más de 10,000</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label for="d-contact" style="display:block;font-size:14px;font-weight:600;color:#042C53;margin-bottom:7px;">WhatsApp o correo</label>
+              <input id="d-contact" type="text" value="{{ contact }}" onInput="{{ onContact }}" placeholder="Ej. 55 1234 5678 o tu@correo.com" style="width:100%;padding:13px 15px;border:1px solid #D8E6F5;border-radius:11px;font-size:16px;color:#042C53;background:#FFFFFF;outline:none;" style-focus="border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.18);"></input>
+              <sc-if value="{{ errContact }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#D24545;margin:6px 0 0;">{{ errContact }}</p></sc-if>
+            </div>
+            <button type="submit" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;background:#378ADD;color:#FFFFFF;font-size:16px;font-weight:600;padding:15px 22px;border-radius:12px;border:none;cursor:pointer;line-height:1;margin-top:4px;" style-hover="background:#2C6FB5;">
+              <sc-if value="{{ submitting }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:17px;height:17px;border:2px solid rgba(255,255,255,0.45);border-top-color:#FFFFFF;border-radius:50%;animation:spin 0.7s linear infinite;"></span></sc-if>
+              <span>{{ submitLabel }}</span>
+            </button>
+            <p style="font-size:12px;line-height:1.5;color:rgba(4,44,83,0.5);margin:2px 0 0;text-align:center;">Sin compromiso · Respondemos en menos de 24 h</p>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,360px"></dc-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { name: '', business: '', contact: '', industry: 'Refaccionaria', size: '100 a 1,000', formState: 'idle', errors: {} };
+
+  componentDidMount() { this._io = null; }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); }
+  setupReveal(el) {
+    if (!el || this._revealInit) return;
+    this._revealInit = true;
+    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION');
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
+    secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
+  }
+
+  expect = [
+    '30 minutos, sin compromiso',
+    'Vemos tu negocio y tus productos',
+    'Te mostramos Aplika funcionando con tu caso',
+    'Elegimos juntos el plan ideal para ti'
+  ];
+
+  set(field, v) { this.setState({ [field]: v, errors: { ...this.state.errors, [field]: undefined } }); }
+
+  submit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const errs = {};
+    if (!this.state.name.trim()) errs.name = 'Escribe tu nombre';
+    if (!this.state.business.trim()) errs.business = 'Escribe el nombre de tu negocio';
+    if (!this.state.contact.trim()) errs.contact = 'Déjanos un WhatsApp o correo';
+    if (Object.keys(errs).length) { this.setState({ errors: errs, formState: 'error' }); return; }
+    this.setState({ formState: 'sending' });
+    // Conectado a POST /api/leads (source agenda_demo)
+    window.AplikaAPI.lead({
+      name: this.state.name, business: this.state.business, contact: this.state.contact,
+      industry: this.state.industry, size: this.state.size, source: 'agenda_demo', website: ''
+    }).then(
+      () => this.setState({ formState: 'success' }),
+      () => this.setState({ formState: 'error', errors: { contact: 'No se pudo enviar, inténtalo de nuevo.' } })
+    );
+  }
+
+  renderVals() {
+    const fs = this.state.formState;
+    return {
+      setReveal: (el) => this.setupReveal(el),
+      expect: this.expect,
+      name: this.state.name, business: this.state.business, contact: this.state.contact,
+      industry: this.state.industry, size: this.state.size,
+      onName: (e) => this.set('name', e.target.value),
+      onBusiness: (e) => this.set('business', e.target.value),
+      onContact: (e) => this.set('contact', e.target.value),
+      onIndustry: (e) => this.set('industry', e.target.value),
+      onSize: (e) => this.set('size', e.target.value),
+      errName: this.state.errors.name, errBusiness: this.state.errors.business, errContact: this.state.errors.contact,
+      onSubmit: (e) => this.submit(e),
+      submitting: fs === 'sending',
+      submitted: fs === 'success',
+      formOpen: fs !== 'success',
+      submitLabel: fs === 'sending' ? 'Enviando…' : 'Solicitar demo'
+    };
+  }
+}
+</script>
+</body>
+</html>

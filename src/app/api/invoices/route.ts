@@ -14,7 +14,7 @@ export const GET = handle(async (req) => {
 
   let query = supabase
     .from('invoices')
-    .select('id, serie, folio, uuid, regimen, uso_cfdi, subtotal, tax, total, status, created_at, orders ( folio )')
+    .select('id, serie, folio, uuid, regimen, uso_cfdi, subtotal, tax, total, status, created_at, orders ( folio ), customers ( name, rfc )')
     .order('created_at', { ascending: false });
   if (status && status !== 'todas') query = query.eq('status', status);
 
@@ -25,6 +25,8 @@ export const GET = handle(async (req) => {
     id: f.id,
     serie: f.serie,
     folio: f.folio,
+    client: f.customers?.name ?? '—',
+    rfc: f.customers?.rfc ?? '',
     uuid: f.uuid,
     regimen: f.regimen,
     uso: f.uso_cfdi,

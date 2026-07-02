@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ApiError, handle, ok } from '@/lib/api';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { isDemo } from '@/lib/demo';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,15 +9,33 @@ const Body = z.object({
   password: z.string().min(1, 'Escribe tu contraseña'),
 });
 
+const clientRedirect = '/dc/Panel Cliente.dc.html';
+const adminRedirect = '/dc/Panel Super-admin.dc.html';
+
 /**
  * POST /api/auth/login  { email, password }
- * Valida con Supabase Auth (fija cookies de sesión) y devuelve la ruta del
- * panel destino según el rol.
+ * - Modo demo (sin Supabase): valida credenciales demo y redirige por rol.
+ * - Modo real: autentica con Supabase Auth (fija cookies de sesión).
  */
 export const POST = handle(async (req) => {
   const { email, password } = Body.parse(await req.json());
-  const supabase = createSupabaseServerClient();
 
+  // --- Modo demo: pruebas locales sin Supabase ---
+  if (isDemo()) {
+    const isAdmin = email.toLowerCase() === 'admin@aplika.ai';
+    // En demo aceptamos cualquier contraseña no vacía (Zod ya valida min 1)
+    // para facilitar la exploración del frontend.
+    return ok({
+      ok: true,
+      demo: true,
+      role: isAdmin ? 'super_admin' : 'tenant_admin',
+      redirect: isAdmin ? adminRedirect : clientRedirect,
+    });
+  }
+
+  // --- Modo real: Supabase ---
+  const { createSupabaseServerClient } = await import('@/lib/supabase/server');
+  const supabase = createSupabaseServerClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.user) throw new ApiError(401, 'Correo o contraseña incorrectos');
 
@@ -27,10 +45,9 @@ export const POST = handle(async (req) => {
     .eq('id', data.user.id)
     .single();
 
-  const redirect =
-    profile?.role === 'super_admin'
-      ? '/dc/Panel Super-admin.dc.html'
-      : '/dc/Panel Cliente.dc.html';
-
-  return ok({ ok: true, role: profile?.role ?? 'tenant_user', redirect });
+  return ok({
+    ok: true,
+    role: profile?.role ?? 'tenant_user',
+    redirect: profile?.role === 'super_admin' ? adminRedirect : clientRedirect,
+  });
 });

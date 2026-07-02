@@ -32,6 +32,19 @@ values
    '{"provider":"email","providers":["email"]}', '{"full_name":"Carla Ruiz","role":"tenant_user"}')
 on conflict (id) do nothing;
 
+-- GoTrue requiere que estas columnas de token sean cadena vacía (no NULL) para
+-- poder iniciar sesión con usuarios insertados directamente en auth.users.
+update auth.users set
+  confirmation_token         = coalesce(confirmation_token, ''),
+  recovery_token             = coalesce(recovery_token, ''),
+  email_change               = coalesce(email_change, ''),
+  email_change_token_new     = coalesce(email_change_token_new, ''),
+  email_change_token_current = coalesce(email_change_token_current, ''),
+  phone_change               = coalesce(phone_change, ''),
+  phone_change_token         = coalesce(phone_change_token, ''),
+  reauthentication_token     = coalesce(reauthentication_token, '')
+where id in ('d0000000-0000-0000-0000-0000000000aa','d0000000-0000-0000-0000-0000000000b1','d0000000-0000-0000-0000-0000000000b2');
+
 -- ---------------------------------------------------------------------------
 -- ORGANIZATIONS (varias para la vista super-admin)
 -- ---------------------------------------------------------------------------
@@ -148,7 +161,7 @@ begin
       subtotal, tax, total, items_count, stock_applied, created_at)
     values (org, rec.folio, cust, wh, rec.status::order_status, rec.channel,
       sub, rec.total - sub, rec.total, rec.items,
-      rec.status in ('pagado','surtido','facturado','enviado'), rec.fecha)
+      rec.status in ('pagado','surtido','facturado','enviado'), rec.fecha::timestamptz)
     returning id into oid;
 
     -- líneas demo (3 conceptos representativos)

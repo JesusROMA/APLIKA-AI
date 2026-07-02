@@ -3,6 +3,7 @@ import { handle, ok, ApiError } from '@/lib/api';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimit, clientIp } from '@/lib/rate-limit';
 import { env } from '@/lib/env';
+import { isDemo } from '@/lib/demo';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,12 @@ export const POST = handle(async (req) => {
   // Honeypot: si viene relleno, fingimos éxito y descartamos.
   if (body.website && body.website.trim() !== '') {
     return ok({ ok: true });
+  }
+
+  // Modo demo (sin Supabase): acepta el lead sin persistir.
+  if (isDemo()) {
+    console.info('[aplika] lead demo recibido:', body.name, body.contact);
+    return ok({ ok: true, demo: true }, { status: 201 });
   }
 
   const admin = createSupabaseAdminClient();

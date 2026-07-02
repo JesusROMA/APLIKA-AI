@@ -1,7 +1,7 @@
 import { handle, ok } from '@/lib/api';
 import { requireTenant } from '@/lib/auth';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { money, dateShort } from '@/lib/format';
+import { dateShort } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +21,7 @@ export const GET = handle(async () => {
     pedido: p.orders?.folio ?? '—',
     metodo: p.method ?? '',
     date: dateShort(p.created_at),
-    amount: money(Number(p.amount)),
+    amount: Number(p.amount), // número; la UI aplica su propio money()
     status: p.status, // la UI deriva label/badge
   }));
 

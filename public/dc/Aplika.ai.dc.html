@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:#FFFFFF;}
+input,button,textarea{font-family:inherit;}
+::selection{background:#B5D4F4;color:#042C53;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+@keyframes bounceY{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+
+/* ===== Intro de carga: 4 cuadros + aplika.ai + lead ===== */
+.a-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.06) 1.4px,transparent 1.4px);background-size:26px 26px;animation:aIntroOut .7s ease 2s forwards;}
+.a-intro-inner{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;}
+.a-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:86px;height:86px;}
+.a-grid .s{border-radius:12px;opacity:0;transform:scale(.2) rotate(-25deg);animation:aIntroPop .62s cubic-bezier(.34,1.56,.64,1) forwards;}
+.a-grid .s1{background:#FFFFFF;animation-delay:.05s;}
+.a-grid .s2{background:#B5D4F4;animation-delay:.18s;}
+.a-grid .s3{background:#4FA0E8;animation-delay:.31s;}
+.a-grid .s4{background:#FFFFFF;animation-delay:.44s;}
+.a-word{font-size:32px;font-weight:700;letter-spacing:-0.01em;color:#FFFFFF;margin:4px 0 0;opacity:0;animation:aIntroUp .6s ease .72s forwards;}
+.a-word span{color:#6FB3EC;}
+.a-lead{font-size:15px;line-height:1.5;color:rgba(255,255,255,0.72);margin:0;max-width:300px;opacity:0;animation:aIntroUp .6s ease .95s forwards;}
+@keyframes aIntroPop{0%{opacity:0;transform:scale(.2) rotate(-25deg);}60%{opacity:1;transform:scale(1.12) rotate(5deg);}100%{opacity:1;transform:scale(1) rotate(0);}}
+@keyframes aIntroUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes aIntroOut{to{opacity:0;visibility:hidden;}}
+
+/* ===== Scroll reveal de secciones ===== */
+.a-reveal{opacity:0;transform:translateY(48px) scale(.965);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);will-change:opacity,transform;}
+.a-reveal.a-in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){.a-intro{display:none;animation:none;}.a-reveal{opacity:1;transform:none;transition:none;}}
+
+/* ===== Hero: construcción del dashboard al cargar ===== */
+.hbars .hb{transform-origin:bottom;animation:hbGrow .7s cubic-bezier(.22,.61,.36,1) both;}
+.hbars .hb:nth-child(1){animation-delay:2.05s}.hbars .hb:nth-child(2){animation-delay:2.13s}
+.hbars .hb:nth-child(3){animation-delay:2.21s}.hbars .hb:nth-child(4){animation-delay:2.29s}
+.hbars .hb:nth-child(5){animation-delay:2.37s}.hbars .hb:nth-child(6){animation-delay:2.45s}
+.hbars .hb:nth-child(7){animation-delay:2.53s}
+@keyframes hbGrow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+.hkpi{opacity:0;transform:translateY(10px);animation:aIntroUp .6s ease both;}
+.hkpi:nth-child(1){animation-delay:2s}.hkpi:nth-child(2){animation-delay:2.12s}.hkpi:nth-child(3){animation-delay:2.24s}
+
+/* ===== Demo en vivo (inventario) ===== */
+@keyframes livePulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes liveGlow{0%,100%{box-shadow:0 0 0 0 rgba(185,104,43,0);}50%{box-shadow:0 0 0 4px rgba(185,104,43,0.16);}}
+.live-dot{animation:livePulse 1.4s ease-in-out infinite;}
+.live-row{animation:liveGlow 2.2s ease-in-out infinite;border-radius:10px;}
+.live-bar{transition:width .6s cubic-bezier(.22,.61,.36,1);}
+.tab-pop{animation:chatIn .4s ease both;}
+
+/* ===== Chat del agente IA (conversación en vivo) ===== */
+@keyframes chatIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:none;}}
+.chat-msg{animation:chatIn .35s ease both;}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-4px);opacity:1;}}
+.t-dot{width:6px;height:6px;border-radius:50%;background:#9CC6F0;display:inline-block;animation:typingDot 1s infinite;}
+.t-dot:nth-child(2){animation-delay:.15s}.t-dot:nth-child(3){animation-delay:.3s}
+
+/* ===== Stagger genérico de tarjetas al revelar ===== */
+.a-reveal .a-stag>*{opacity:0;transform:translateY(28px);}
+.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+.a-reveal.a-in .a-stag>*:nth-child(1){transition-delay:.04s}.a-reveal.a-in .a-stag>*:nth-child(2){transition-delay:.1s}
+.a-reveal.a-in .a-stag>*:nth-child(3){transition-delay:.16s}.a-reveal.a-in .a-stag>*:nth-child(4){transition-delay:.22s}
+.a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
+.a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
+
+/* ===== Cómo funciona: flujo ===== */
+.cf-flow{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;}
+.cf-node{position:relative;flex:1 1 220px;max-width:258px;background:#FFFFFF;border-radius:18px;padding:28px 22px;text-align:center;}
+.cf-ic{position:relative;width:62px;height:62px;margin:0 auto 16px;border-radius:17px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;color:#0C447C;}
+.cf-num{position:absolute;top:-8px;right:-8px;width:25px;height:25px;border-radius:50%;background:#0C447C;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #E6F1FB;}
+.cf-arrow{position:absolute;right:-25px;top:46px;color:#9CC6F0;opacity:0;}
+@media(max-width:900px){.cf-arrow{display:none;}}
+.a-reveal .cf-node{opacity:0;transform:translateY(22px) scale(.96);}
+.a-reveal.a-in .cf-node{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.56,.64,1);}
+.a-reveal.a-in .cf-node:nth-child(1){transition-delay:.05s}.a-reveal.a-in .cf-node:nth-child(2){transition-delay:.2s}
+.a-reveal.a-in .cf-node:nth-child(3){transition-delay:.35s}.a-reveal.a-in .cf-node:nth-child(4){transition-delay:.5s}
+.a-reveal.a-in .cf-arrow{opacity:1;transition:opacity .5s ease .55s;}
+
+/* ===== Hero: cuadros redondeados flotando (azules de marca) ===== */
+.hero-sq{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.hsq-wrap{position:absolute;pointer-events:auto;cursor:pointer;animation:floatSq 4.5s cubic-bezier(.45,0,.55,1) infinite;will-change:transform;}
+.hsq-in{display:block;width:100%;height:100%;border-radius:24px;transform:rotate(var(--rot,0deg));transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease,filter .35s ease;will-change:transform;}
+.hsq-wrap:hover{animation-play-state:paused;z-index:3;}
+.hsq-wrap:hover .hsq-in{transform:rotate(var(--rot,0deg)) scale(1.55);filter:brightness(1.8);box-shadow:0 0 0 1.5px rgba(255,255,255,0.3),0 16px 40px -8px rgba(79,160,232,0.55);}
+@keyframes floatSq{0%,100%{transform:translateY(0);}50%{transform:translateY(-26px);}}
+
+/* ===== Marquee (fila de negocios) ===== */
+.mq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);}
+.mq-track{display:flex;align-items:center;gap:26px;width:max-content;animation:marquee 30s linear infinite;}
+.mq:hover .mq-track{animation-play-state:paused;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ===== FAQ: acordeón suave + chevron ===== */
+.faq-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.22,1,.36,1);}
+.faq-body.open{grid-template-rows:1fr;}
+.faq-body>div{overflow:hidden;}
+.faq-chev{transition:transform .3s cubic-bezier(.22,1,.36,1);}
+
+/* ===== Micro-hover: elevación sutil ===== */
+.cf-node{transition:box-shadow .2s cubic-bezier(.22,1,.36,1);}
+.cf-node:hover{box-shadow:0 22px 44px -24px rgba(12,68,124,0.32);}
+
+@media (prefers-reduced-motion:reduce){
+  .hbars .hb,.hkpi,.chat-msg,.tab-pop{animation:none;opacity:1;transform:none;}
+  .a-reveal .a-stag>*,.a-reveal .cf-node{opacity:1;transform:none;}
+  .cf-arrow{opacity:1;}
+  .hsq-wrap{animation:none;}
+  .hsq-in{transition:none;}
+  .mq{-webkit-mask-image:none;mask-image:none;overflow:visible;}
+  .mq-track{animation:none;flex-wrap:wrap;justify-content:center;width:auto;}
+  .mq-dup{display:none;}
+  .faq-body,.faq-chev{transition:none;}
+}
+</style>
+</helmet>
+<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+
+<!-- ===== Intro de carga (se reproduce al recargar) ===== -->
+<div class="a-intro" aria-hidden="true">
+  <div class="a-intro-inner">
+    <span class="a-grid"><span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span></span>
+    <p class="a-word">aplika<span>.ai</span></p>
+    <p class="a-lead">Tu negocio, digitalizado</p>
+  </div>
+</div>
+
+<dc-import name="Header" active="inicio" hint-size="100%,72px"></dc-import>
+
+<!-- ================= HERO (oscuro) ================= -->
+<section data-screen-label="Hero" style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
+  <div style="position:absolute;top:-90px;right:-70px;width:300px;height:300px;border-radius:60px;background:rgba(55,138,221,0.22);transform:rotate(18deg);"></div>
+  <div style="position:absolute;bottom:-70px;left:-60px;width:220px;height:220px;border-radius:48px;background:rgba(181,212,244,0.1);transform:rotate(12deg);"></div>
+  <!-- Cuadros redondeados flotando (6-8, baja opacidad, float desfasado) -->
+  <div class="hero-sq" aria-hidden="true">
+    <span class="hsq-wrap" style="top:12%;left:5%;width:62px;height:62px;animation-duration:4s;animation-delay:0s;"><span class="hsq-in" style="--rot:-12deg;background:rgba(181,212,244,0.15);"></span></span>
+    <span class="hsq-wrap" style="top:64%;left:11%;width:40px;height:40px;animation-duration:4.8s;animation-delay:.8s;"><span class="hsq-in" style="--rot:14deg;background:rgba(79,160,232,0.16);"></span></span>
+    <span class="hsq-wrap" style="top:30%;left:23%;width:30px;height:30px;animation-duration:3.4s;animation-delay:.4s;"><span class="hsq-in" style="--rot:-6deg;background:rgba(255,255,255,0.09);"></span></span>
+    <span class="hsq-wrap" style="top:78%;left:32%;width:54px;height:54px;animation-duration:5s;animation-delay:1.4s;"><span class="hsq-in" style="--rot:8deg;background:rgba(55,138,221,0.13);"></span></span>
+    <span class="hsq-wrap" style="top:8%;left:54%;width:46px;height:46px;animation-duration:4.4s;animation-delay:.2s;"><span class="hsq-in" style="--rot:18deg;background:rgba(181,212,244,0.12);"></span></span>
+    <span class="hsq-wrap" style="top:70%;left:64%;width:34px;height:34px;animation-duration:3.8s;animation-delay:1s;"><span class="hsq-in" style="--rot:-16deg;background:rgba(79,160,232,0.13);"></span></span>
+    <span class="hsq-wrap" style="top:18%;left:88%;width:72px;height:72px;animation-duration:5.4s;animation-delay:.6s;"><span class="hsq-in" style="--rot:-10deg;background:rgba(55,138,221,0.11);"></span></span>
+    <span class="hsq-wrap" style="top:82%;left:92%;width:42px;height:42px;animation-duration:4.6s;animation-delay:2s;"><span class="hsq-in" style="--rot:12deg;background:rgba(255,255,255,0.08);"></span></span>
+  </div>
+  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(116px,14vw,150px) 24px clamp(20px,3vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,56px);">
+    <div style="flex:1 1 420px;min-width:300px;">
+      <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 15px;font-size:13.5px;font-weight:600;color:#9CC6F0;margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:50%;background:#4FA0E8;"></span>Ventas · Inventario · CRM · Agentes de IA</span>
+      <h1 style="font-size:clamp(38px,6vw,68px);font-weight:700;line-height:1.02;letter-spacing:-0.025em;color:#FFFFFF;margin:0 0 22px;text-wrap:balance;">Tu negocio, digitalizado:<br><span style="color:#4FA0E8;">ventas, inventario y CRM con IA</span></h1>
+      <p style="font-size:clamp(17px,1.9vw,21px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 34px;max-width:520px;">Aplika es el producto que reúne ventas, inventario, CRM, agentes de IA y automatizaciones en una sola plataforma. Hecho para pymes con procesos manuales e inventario grande.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:13px;margin-bottom:24px;">
+        <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 30px;border-radius:13px;text-decoration:none;line-height:1;transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s cubic-bezier(.22,1,.36,1),box-shadow .2s;" style-hover="background:#4F9AE6;transform:translateY(-2px);box-shadow:0 14px 28px -12px rgba(55,138,221,0.7);">Agenda una demo<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        <a href="Servicios.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,0.08);color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 30px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);text-decoration:none;line-height:1;" style-hover="background:rgba(255,255,255,0.16);">Ver servicios</a>
+      </div>
+      <p style="font-size:14px;color:rgba(255,255,255,0.55);margin:0;">Sin instalaciones · Listo en días · Soporte en México</p>
+    </div>
+
+    <div style="flex:1 1 420px;min-width:300px;position:relative;">
+      <div style="background:#FFFFFF;border-radius:20px;box-shadow:0 40px 80px -36px rgba(2,18,38,0.7);overflow:hidden;">
+        <div style="height:42px;background:#F5F8FC;border-bottom:1px solid #E6F1FB;display:flex;align-items:center;gap:7px;padding:0 16px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span><span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span><span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span>
+          <span style="margin-left:10px;font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);">aplika · panel</span>
+        </div>
+        <div style="padding:20px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div class="hkpi" style="background:#E6F1FB;border-radius:12px;padding:13px;"><p style="font-size:11px;color:#0C447C;margin:0 0 6px;font-weight:600;">Ventas hoy</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">{{ heroVentas }}</p></div>
+            <div class="hkpi" style="background:#F5F8FC;border-radius:12px;padding:13px;"><p style="font-size:11px;color:rgba(4,44,83,0.55);margin:0 0 6px;font-weight:600;">Pedidos</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">{{ heroPedidos }}</p></div>
+            <div class="hkpi" style="background:#F5F8FC;border-radius:12px;padding:13px;"><p style="font-size:11px;color:rgba(4,44,83,0.55);margin:0 0 6px;font-weight:600;">Inventario</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">{{ heroInv }}</p></div>
+          </div>
+          <div style="background:#F5F8FC;border-radius:12px;padding:16px;">
+            <p style="font-size:12px;font-weight:600;color:rgba(4,44,83,0.6);margin:0 0 14px;">Ventas de la semana</p>
+            <div class="hbars" style="display:flex;align-items:flex-end;gap:9px;height:74px;">
+              <span class="hb" style="flex:1;height:44%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:62%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:50%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:80%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:68%;background:#378ADD;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:100%;background:#378ADD;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:86%;background:#378ADD;border-radius:5px 5px 0 0;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ showFloats }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;top:-22px;right:-14px;display:flex;align-items:center;gap:10px;background:#FFFFFF;border-radius:14px;padding:12px 15px;box-shadow:0 20px 40px -18px rgba(2,18,38,0.5);animation:floatY 4s ease-in-out infinite;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#E6F1FB;border-radius:10px;color:#0C447C;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 11H6zM9 8V6a3 3 0 0 1 6 0v2"></path></svg></span>
+          <div><p style="font-size:13px;font-weight:700;color:#042C53;margin:0;">Nuevo pedido</p><p style="font-size:12px;color:rgba(4,44,83,0.55);margin:1px 0 0;">$1,240 · WhatsApp</p></div>
+        </div>
+        <div style="position:absolute;bottom:-20px;left:-16px;display:flex;align-items:center;gap:10px;background:#0C447C;border-radius:14px;padding:12px 15px;box-shadow:0 20px 40px -18px rgba(2,18,38,0.5);animation:bounceY 4.6s ease-in-out infinite;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:10px;color:#9CC6F0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5z"></path></svg></span>
+          <div><p style="font-size:13px;font-weight:700;color:#FFFFFF;margin:0;">IA respondió</p><p style="font-size:12px;color:rgba(255,255,255,0.6);margin:1px 0 0;">en 4 segundos</p></div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  <div style="position:relative;display:flex;justify-content:center;padding-bottom:14px;margin-top:-6px;">
+    <span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.18em;color:rgba(255,255,255,0.5);">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:bounceY 1.8s ease-in-out infinite;"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
+  </div>
+</section>
+
+<!-- ================= LOGOS / confianza ================= -->
+<section style="background:#FFFFFF;border-bottom:1px solid #EEF3F9;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:36px 24px;">
+    <p style="text-align:center;font-size:13.5px;font-weight:600;color:rgba(4,44,83,0.45);margin:0 0 22px;">Negocios de toda la república ya digitalizan con aplika.ai</p>
+    <div class="mq">
+      <div class="mq-track">
+        <sc-for list="{{ logos }}" as="logo" hint-placeholder-count="5">
+          <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:#F5F8FC;border:1px dashed #C9DCF0;border-radius:10px;color:rgba(4,44,83,0.4);font-size:14px;font-weight:600;">{{ logo }}</span>
+        </sc-for>
+        <span class="mq-dup" style="display:contents;">
+          <sc-for list="{{ logos }}" as="logo" hint-placeholder-count="5">
+            <span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:#F5F8FC;border:1px dashed #C9DCF0;border-radius:10px;color:rgba(4,44,83,0.4);font-size:14px;font-weight:600;">{{ logo }}</span>
+          </sc-for>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURE TABS (interactivo) ================= -->
+<section id="servicios" data-screen-label="Plataforma" style="background:#FFFFFF;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(60px,9vw,110px) 24px;">
+    <div style="text-align:center;max-width:680px;margin:0 auto clamp(36px,5vw,52px);">
+      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Un solo producto</p>
+      <h2 style="font-size:clamp(28px,3.6vw,44px);font-weight:600;line-height:1.13;letter-spacing:-0.02em;color:#042C53;margin:0;text-wrap:balance;">Todo lo que tu pyme necesita, en un producto</h2>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:clamp(28px,4vw,42px);">
+      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+        <button onClick="{{ tab.onClick }}" style="flex:none;border:1px solid {{ tab.border }};cursor:pointer;font-size:15px;font-weight:600;padding:11px 20px;border-radius:999px;white-space:nowrap;transition:all .2s;background:{{ tab.bg }};color:{{ tab.color }};">{{ tab.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,4vw,56px);background:#F5F8FC;border:1px solid #EAF1FA;border-radius:24px;padding:clamp(28px,4vw,48px);">
+      <div style="flex:1 1 320px;min-width:280px;">
+        <h3 style="font-size:clamp(22px,2.6vw,30px);font-weight:600;line-height:1.18;color:#042C53;margin:0 0 16px;text-wrap:balance;">{{ tabTitle }}</h3>
+        <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0 0 24px;">{{ tabDesc }}</p>
+        <div style="display:flex;flex-direction:column;gap:13px;">
+          <sc-for list="{{ tabBullets }}" as="b" hint-placeholder-count="3">
+            <div style="display:flex;gap:11px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#E6F1FB;border-radius:7px;color:#378ADD;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:15.5px;color:#042C53;">{{ b }}</span></div>
+          </sc-for>
+        </div>
+        <a href="Servicios.dc.html" style="display:inline-flex;align-items:center;gap:7px;margin-top:26px;font-size:15.5px;font-weight:600;color:#378ADD;text-decoration:none;" style-hover="gap:11px;">Conoce la plataforma<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div style="flex:1 1 360px;min-width:280px;">
+        <sc-if value="{{ isTabVenta }}" hint-placeholder-val="{{ true }}">
+          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
+            <p style="font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);margin:0 0 14px;">Tienda en línea</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:1;background:#E6F1FB;"></div><div style="padding:8px;"><span style="display:block;height:7px;width:80%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:46%;background:#378ADD;border-radius:4px;"></span></div></div>
+              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:1;background:#E6F1FB;"></div><div style="padding:8px;"><span style="display:block;height:7px;width:70%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:50%;background:#378ADD;border-radius:4px;"></span></div></div>
+              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:1;background:#E6F1FB;"></div><div style="padding:8px;"><span style="display:block;height:7px;width:78%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:42%;background:#378ADD;border-radius:4px;"></span></div></div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isTabInventario }}" hint-placeholder-val="{{ false }}">
+          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);margin:0;">Inventario en tiempo real</p><span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#1FA85A;background:#E4F6EC;padding:4px 9px;border-radius:20px;"><span class="live-dot" style="width:6px;height:6px;border-radius:50%;background:#1FA85A;"></span>En vivo</span></div>
+            <!-- Fila destacada que cambia con cada "venta" -->
+            <div class="live-row" style="display:flex;align-items:center;gap:11px;padding:8px;margin:-4px -8px 4px;">
+              <span style="flex:none;width:32px;height:32px;background:#E6F1FB;border-radius:8px;"></span>
+              <div style="flex:1;min-width:0;">
+                <span style="display:block;font-size:12px;font-weight:600;color:#042C53;margin-bottom:5px;">Balata cerámica D-1184</span>
+                <span style="display:block;height:7px;background:#EEF3F9;border-radius:4px;overflow:hidden;"><span class="live-bar" style="display:block;height:100%;width:{{ invPct }};background:{{ invBarColor }};border-radius:4px;"></span></span>
+              </div>
+              <span style="flex:none;min-width:34px;text-align:center;font-size:12px;font-weight:700;color:{{ invBadgeFg }};background:{{ invBadgeBg }};padding:4px 9px;border-radius:20px;font-variant-numeric:tabular-nums;">{{ invStock }}</span>
+            </div>
+            <p style="font-size:11px;font-weight:600;color:{{ invMsgColor }};margin:0 0 13px;">{{ invMsg }}</p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;width:32px;height:32px;background:#E6F1FB;border-radius:8px;"></span><div style="flex:1;"><span style="display:block;height:8px;width:52%;background:#E6F1FB;border-radius:4px;"></span></div><span style="font-size:12px;font-weight:600;color:#B9682B;background:#FBEEDD;padding:4px 9px;border-radius:20px;">8</span></div>
+              <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;width:32px;height:32px;background:#E6F1FB;border-radius:8px;"></span><div style="flex:1;"><span style="display:block;height:8px;width:68%;background:#E6F1FB;border-radius:4px;"></span></div><span style="font-size:12px;font-weight:600;color:#1FA85A;background:#E4F6EC;padding:4px 9px;border-radius:20px;">76</span></div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isTabDashboard }}" hint-placeholder-val="{{ false }}">
+          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+              <div style="background:#E6F1FB;border-radius:11px;padding:13px;"><p style="font-size:11px;color:#0C447C;margin:0 0 5px;font-weight:600;">Ingresos</p><p style="font-size:18px;font-weight:700;color:#042C53;margin:0;">$94,500</p></div>
+              <div style="background:#F5F8FC;border-radius:11px;padding:13px;"><p style="font-size:11px;color:rgba(4,44,83,0.55);margin:0 0 5px;font-weight:600;">Ticket prom.</p><p style="font-size:18px;font-weight:700;color:#042C53;margin:0;">$640</p></div>
+            </div>
+            <div style="background:#F5F8FC;border-radius:11px;padding:14px;"><div style="display:flex;align-items:flex-end;gap:7px;height:64px;"><span style="flex:1;height:40%;background:#B5D4F4;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:66%;background:#B5D4F4;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:54%;background:#B5D4F4;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:88%;background:#378ADD;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:72%;background:#378ADD;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:100%;background:#378ADD;border-radius:4px 4px 0 0;"></span></div></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isTabBusqueda }}" hint-placeholder-val="{{ false }}">
+          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
+            <div style="display:flex;align-items:center;gap:8px;background:#F5F8FC;border:1px solid #E6F1FB;border-radius:999px;padding:9px 14px;margin-bottom:14px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(4,44,83,0.45)" stroke-width="2" stroke-linecap="round"><path d="M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16"></path></svg><span style="font-size:13px;color:rgba(4,44,83,0.5);">balata cerámica Versa 2019</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:4/3;background:#E6F1FB;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9CC6F0" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span style="display:block;height:7px;width:70%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:40%;background:#378ADD;border-radius:4px;"></span></div></div>
+              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:4/3;background:#E6F1FB;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9CC6F0" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span style="display:block;height:7px;width:62%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:46%;background:#378ADD;border-radius:4px;"></span></div></div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS band ================= -->
+<section data-anim="stats" style="background:#0C447C;">
+  <div class="a-stag" style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(48px,7vw,80px) 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px 24px;">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+      <div style="text-align:center;">
+        <p style="font-size:clamp(34px,4.4vw,52px);font-weight:800;line-height:1;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 10px;">{{ s.value }}</p>
+        <p style="font-size:15px;line-height:1.45;color:rgba(255,255,255,0.66);margin:0;">{{ s.label }}</p>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- ================= FEATURE ROW 1 ================= -->
+<section style="background:#FFFFFF;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,64px);">
+    <div style="flex:1 1 360px;min-width:300px;">
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;background:#E6F1FB;border-radius:14px;color:#0C447C;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2"></path></svg></span>
+      <h2 style="font-size:clamp(26px,3.2vw,38px);font-weight:600;line-height:1.15;letter-spacing:-0.01em;color:#042C53;margin:0 0 16px;text-wrap:balance;">Sabe qué tienes y qué se agota, en tiempo real</h2>
+      <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0 0 24px;max-width:480px;">Olvídate de contar a mano. Tu inventario se actualiza con cada venta y te avisa antes de quedarte sin producto, para que nunca pierdas una venta.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:24px;">
+        <div><p style="font-size:24px;font-weight:700;color:#378ADD;margin:0;">−12 hrs</p><p style="font-size:14px;color:rgba(4,44,83,0.55);margin:3px 0 0;">por semana en conteos</p></div>
+        <div><p style="font-size:24px;font-weight:700;color:#378ADD;margin:0;">0</p><p style="font-size:14px;color:rgba(4,44,83,0.55);margin:3px 0 0;">ventas perdidas por faltantes</p></div>
+      </div>
+    </div>
+    <div style="flex:1 1 380px;min-width:300px;">
+      <div style="background:#F5F8FC;border:1px solid #EAF1FA;border-radius:20px;padding:22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><p style="font-size:13px;font-weight:600;color:#042C53;margin:0;">Productos</p><span style="font-size:12px;font-weight:600;color:#B9682B;background:#FBEEDD;padding:5px 11px;border-radius:20px;">Reordenar 3</span></div>
+        <div style="display:flex;flex-direction:column;gap:11px;">
+          <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #EEF3F9;border-radius:12px;padding:13px;"><span style="flex:none;width:38px;height:38px;background:#E6F1FB;border-radius:9px;"></span><div style="flex:1;"><span style="display:block;height:9px;width:55%;background:#E6F1FB;border-radius:5px;margin-bottom:6px;"></span><span style="display:block;height:8px;width:32%;background:#F0F5FB;border-radius:5px;"></span></div><span style="font-size:13px;font-weight:700;color:#1FA85A;">142</span></div>
+          <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #FBEEDD;border-radius:12px;padding:13px;"><span style="flex:none;width:38px;height:38px;background:#FBEEDD;border-radius:9px;"></span><div style="flex:1;"><span style="display:block;height:9px;width:48%;background:#E6F1FB;border-radius:5px;margin-bottom:6px;"></span><span style="display:block;height:8px;width:40%;background:#F0F5FB;border-radius:5px;"></span></div><span style="font-size:13px;font-weight:700;color:#B9682B;">6</span></div>
+          <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #EEF3F9;border-radius:12px;padding:13px;"><span style="flex:none;width:38px;height:38px;background:#E6F1FB;border-radius:9px;"></span><div style="flex:1;"><span style="display:block;height:9px;width:62%;background:#E6F1FB;border-radius:5px;margin-bottom:6px;"></span><span style="display:block;height:8px;width:30%;background:#F0F5FB;border-radius:5px;"></span></div><span style="font-size:13px;font-weight:700;color:#1FA85A;">88</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AGENTES DE IA ================= -->
+<section data-screen-label="Agentes de IA" style="background:#F5F8FC;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+    <div style="background:#0C447C;border-radius:28px;padding:clamp(32px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,5vw,56px);overflow:hidden;position:relative;">
+      <div style="position:absolute;top:-60px;right:-40px;width:200px;height:200px;border-radius:48px;background:rgba(55,138,221,0.2);transform:rotate(20deg);"></div>
+      <div style="flex:1 1 360px;min-width:280px;position:relative;">
+        <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:#9CC6F0;margin-bottom:20px;">Agentes de IA</span>
+        <h2 style="font-size:clamp(27px,3.4vw,42px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#FFFFFF;margin:0 0 16px;text-wrap:balance;">Agentes de IA que atienden y automatizan por ti</h2>
+        <p style="font-size:17px;line-height:1.6;color:rgba(255,255,255,0.76);margin:0 0 28px;max-width:460px;">Incluidos en Aplika: responden mensajes, agendan citas, capturan pedidos y automatizan tareas a cualquier hora, para que no se te escape ninguna venta.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:30px;">
+          <sc-for list="{{ aiItems }}" as="item" hint-placeholder-count="3">
+            <div style="display:flex;gap:14px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:12px;color:#9CC6F0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span><div><p style="font-size:16px;font-weight:600;color:#FFFFFF;margin:0 0 2px;">{{ item.title }}</p><p style="font-size:14px;line-height:1.45;color:rgba(255,255,255,0.66);margin:0;">{{ item.desc }}</p></div></div>
+          </sc-for>
+        </div>
+        <a href="Servicios.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;text-decoration:none;" style-hover="background:#4F9AE6;">Conoce los agentes de IA<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div style="flex:1 1 320px;min-width:280px;position:relative;">
+        <div style="background:#FFFFFF;border-radius:20px;padding:20px;box-shadow:0 30px 60px -30px rgba(0,0,0,0.55);max-width:360px;margin:0 auto;">
+          <div style="display:flex;align-items:center;gap:11px;padding-bottom:16px;border-bottom:1px solid #EAF1FA;margin-bottom:16px;">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#0C447C;border-radius:11px;"><span style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:16px;height:16px;"><span style="background:#FFFFFF;border-radius:2px;"></span><span style="background:#B5D4F4;border-radius:2px;"></span><span style="background:#4FA0E8;border-radius:2px;"></span><span style="background:#FFFFFF;border-radius:2px;"></span></span></span>
+            <div><p style="font-size:14px;font-weight:600;color:#042C53;margin:0;">Asistente aplika</p><p style="font-size:12px;color:#1FA85A;margin:1px 0 0;display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;background:#1FA85A;border-radius:50%;"></span>En línea</p></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:11px;min-height:196px;">
+            <sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="4">
+              <div class="chat-msg" style="align-self:{{ m.align }};max-width:82%;background:{{ m.bg }};color:{{ m.color }};font-size:14px;line-height:1.45;padding:11px 14px;border-radius:{{ m.radius }};">{{ m.text }}</div>
+            </sc-for>
+            <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
+              <div class="chat-msg" style="align-self:flex-end;display:inline-flex;align-items:center;gap:4px;background:#378ADD;padding:14px 16px;border-radius:14px 14px 4px 14px;"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INDUSTRIAS preview ================= -->
+<section id="industrias" data-screen-label="Industrias" style="background:#FFFFFF;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
+      <div style="max-width:560px;">
+        <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Industrias</p>
+        <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;text-wrap:balance;">Pensado para negocios con inventario grande</h2>
+      </div>
+      <a href="Industrias.dc.html" style="display:inline-flex;align-items:center;gap:7px;font-size:15.5px;font-weight:600;color:#378ADD;text-decoration:none;" style-hover="gap:11px;">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+    </div>
+    <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+      <sc-for list="{{ industries }}" as="item" hint-placeholder-count="4">
+        <a href="Industrias.dc.html" style="display:block;text-decoration:none;background:#F5F8FC;border:1px solid #EAF1FA;border-radius:18px;padding:28px;transition:all .2s;" style-hover="background:#E6F1FB;border-color:#B5D4F4;transform:translateY(-3px);">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:#FFFFFF;border:1px solid #E6F1FB;border-radius:13px;color:#378ADD;margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
+          <h3 style="font-size:18px;font-weight:600;color:#042C53;margin:0 0 8px;">{{ item.title }}</h3>
+          <p style="font-size:15px;line-height:1.55;color:rgba(4,44,83,0.62);margin:0;">{{ item.desc }}</p>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CÓMO FUNCIONA preview ================= -->
+<section id="como-funciona" data-screen-label="Cómo funciona" style="background:#E6F1FB;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+    <div style="text-align:center;max-width:620px;margin:0 auto clamp(34px,4vw,50px);">
+      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Cómo funciona</p>
+      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;text-wrap:balance;">De la idea a vender en línea, en cuatro pasos</h2>
+    </div>
+    <div class="cf-flow">
+      <sc-for list="{{ flowSteps }}" as="item" hint-placeholder-count="4">
+        <div class="cf-node">
+          <div class="cf-ic">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg>
+            <span class="cf-num">{{ item.num }}</span>
+          </div>
+          <h3 style="font-size:18px;font-weight:600;color:#042C53;margin:0 0 8px;">{{ item.title }}</h3>
+          <p style="font-size:14.5px;line-height:1.55;color:rgba(4,44,83,0.62);margin:0;">{{ item.desc }}</p>
+          <sc-if value="{{ item.showArrow }}" hint-placeholder-val="{{ true }}">
+            <span class="cf-arrow"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div style="text-align:center;margin-top:34px;"><a href="Como-funciona.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#0C447C;color:#FFFFFF;font-size:16px;font-weight:600;padding:14px 28px;border-radius:12px;text-decoration:none;" style-hover="background:#0A3A6B;">Ver el proceso completo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIOS (slider) ================= -->
+<section style="background:#FFFFFF;">
+  <div style="width:100%;max-width:880px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;text-align:center;">
+    <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 30px;">Lo que dicen nuestros clientes</p>
+    <p style="font-size:clamp(22px,3vw,32px);font-weight:500;line-height:1.35;letter-spacing:-0.01em;color:#042C53;margin:0 0 32px;text-wrap:balance;min-height:2.7em;">“{{ tQuote }}”</p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:30px;">
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:#E6F1FB;color:#0C447C;border-radius:50%;font-size:18px;font-weight:700;">{{ tIni }}</span>
+      <div style="text-align:left;"><p style="font-size:16px;font-weight:600;color:#042C53;margin:0;">{{ tName }}</p><p style="font-size:14px;color:rgba(4,44,83,0.55);margin:2px 0 0;">{{ tRole }}</p></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
+      <button onClick="{{ prevT }}" aria-label="Anterior" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:#FFFFFF;border:1px solid #D8E6F5;border-radius:50%;cursor:pointer;color:#0C447C;" style-hover="background:#E6F1FB;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <div style="display:flex;gap:8px;">
+        <sc-for list="{{ dots }}" as="d" hint-placeholder-count="3">
+          <button onClick="{{ d.go }}" aria-label="Testimonio" style="width:9px;height:9px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:all .2s;background:{{ d.bg }};"></button>
+        </sc-for>
+      </div>
+      <button onClick="{{ nextT }}" aria-label="Siguiente" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:#FFFFFF;border:1px solid #D8E6F5;border-radius:50%;cursor:pointer;color:#0C447C;" style-hover="background:#E6F1FB;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section style="background:#F5F8FC;">
+  <div style="width:100%;max-width:820px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+    <div style="margin-bottom:clamp(28px,4vw,42px);"><p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Preguntas frecuentes</p><h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;">Resolvemos tus dudas</h2></div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="6">
+        <div style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:14px;overflow:hidden;">
+          <button onClick="{{ item.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;background:transparent;border:none;cursor:pointer;padding:20px 22px;font-size:16px;font-weight:600;color:#042C53;line-height:1.4;"><span>{{ item.q }}</span><span class="faq-chev" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#E6F1FB;border-radius:8px;color:#0C447C;transform:{{ item.chev }};"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></button>
+          <div class="{{ item.bodyClass }}"><div><p style="font-size:15px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0;padding:0 22px 22px;">{{ item.a }}</p></div></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA FINAL ================= -->
+<section data-screen-label="CTA" style="background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;">
+  <div style="width:100%;max-width:880px;margin:0 auto;padding:clamp(60px,9vw,110px) 24px;text-align:center;">
+    <h2 style="font-size:clamp(30px,4vw,52px);font-weight:700;line-height:1.08;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 18px;text-wrap:balance;">¿Listo para digitalizar tu negocio?</h2>
+    <p style="font-size:clamp(17px,1.8vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 34px;max-width:520px;margin-left:auto;margin-right:auto;">Agenda una demo gratis. Te mostramos cómo se vería tu negocio funcionando con aplika.ai.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:13px;">
+      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s cubic-bezier(.22,1,.36,1),box-shadow .2s;" style-hover="background:#4F9AE6;transform:translateY(-2px);box-shadow:0 14px 28px -12px rgba(55,138,221,0.7);">Agenda una demo</a>
+      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,0.08);color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);text-decoration:none;" style-hover="background:rgba(255,255,255,0.16);">Hablar con ventas</a>
+    </div>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,360px"></dc-import>
+
+<!-- WhatsApp flotante -->
+<sc-if value="{{ showWhatsApp }}" hint-placeholder-val="{{ true }}">
+  <a href="Agenda-demo.dc.html" aria-label="Escríbenos por WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#25D366;border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:#1FB855;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg>
+  </a>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = {
+    width: (typeof window !== 'undefined' ? window.innerWidth : 1200),
+    activeTab: 0,
+    slide: 0,
+    openFaq: 0,
+    hv: 0, hp: 0, hi: 0,        // contadores animados del hero
+    invStock: 12,              // demo de inventario en vivo
+    chatN: 0, typing: false,   // conversación del agente IA
+    statCur: [0, 0, 0, 0]      // conteo ascendente de la banda de stats
+  };
+
+  chatScript = [
+    { who: 'user',  text: 'Hola, ¿tienen balatas para Versa 2019?' },
+    { who: 'agent', text: '¡Sí! Tenemos 3 opciones en stock. ¿Cerámicas o semimetálicas?' },
+    { who: 'user',  text: 'Cerámicas, apártamelas.' },
+    { who: 'agent', text: 'Listo, pedido #1042 apartado. 📍' }
+  ];
+
+  componentDidMount() {
+    this._r = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this._r);
+
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Contadores del hero (arrancan al terminar la intro)
+    if (reduce) { this.setState({ hv: 18240, hp: 37, hi: 1284 }); }
+    else { this._countTO = setTimeout(() => this.countUp(), 2000); }
+
+    // Inventario en vivo: el stock baja con cada "venta" y se reabastece
+    this._inv = setInterval(() => {
+      this.setState((s) => ({ invStock: s.invStock <= 2 ? 12 : s.invStock - 1 }));
+    }, 1500);
+
+    // Conversación del agente IA en bucle
+    if (reduce) { this.setState({ chatN: 4, typing: false }); }
+    else { this.runChat(); }
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._r);
+    if (this._io) this._io.disconnect();
+    clearTimeout(this._countTO);
+    clearTimeout(this._chatTO);
+    clearInterval(this._inv);
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._statRaf) cancelAnimationFrame(this._statRaf);
+  }
+
+  // Cuenta progresiva de los KPIs del hero (easeOutCubic)
+  countUp() {
+    const targets = { hv: 18240, hp: 37, hi: 1284 };
+    const dur = 1100, t0 = Date.now();
+    const tick = () => {
+      const k = Math.min(1, (Date.now() - t0) / dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      this.setState({ hv: Math.round(targets.hv * e), hp: Math.round(targets.hp * e), hi: Math.round(targets.hi * e) });
+      if (k < 1) this._raf = requestAnimationFrame(tick);
+    };
+    this._raf = requestAnimationFrame(tick);
+  }
+
+  // Reproduce la conversación del agente paso a paso, con typing, en bucle
+  runChat() {
+    const steps = [
+      () => this.setState({ chatN: 1, typing: false }),
+      () => this.setState({ typing: true }),
+      () => this.setState({ chatN: 2, typing: false }),
+      () => this.setState({ chatN: 3, typing: false }),
+      () => this.setState({ typing: true }),
+      () => this.setState({ chatN: 4, typing: false }),
+      () => this.setState({ chatN: 0, typing: false })
+    ];
+    const delays = [700, 800, 1200, 1100, 800, 1300, 2800];
+    let i = 0;
+    const run = () => {
+      steps[i]();
+      const d = delays[i];
+      i = (i + 1) % steps.length;
+      this._chatTO = setTimeout(run, d);
+    };
+    this._chatTO = setTimeout(run, 900);
+  }
+
+  // Scroll-reveal: revela cada sección al entrar al viewport (excepto el hero).
+  // Se ejecuta una sola vez con el ref del contenedor raíz.
+  setupReveal(el) {
+    if (!el || this._revealInit) return;
+    this._revealInit = true;
+    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION');
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof IntersectionObserver === 'undefined') {
+      secs.forEach((s) => s.classList.add('a-reveal', 'a-in'));
+      this.startStats();
+      return;
+    }
+    secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
+    this._io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('a-in');
+          if (e.target.getAttribute('data-anim') === 'stats') this.startStats();
+          this._io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
+  }
+
+  // Conteo ascendente de la banda de stats al entrar a pantalla (una sola vez)
+  startStats() {
+    if (this._statsStarted) return;
+    this._statsStarted = true;
+    const targets = this.stats.map((s) => (s.plain != null ? 0 : s.num));
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { this.setState({ statCur: targets }); return; }
+    const dur = 1000, t0 = Date.now();
+    const tick = () => {
+      const k = Math.min(1, (Date.now() - t0) / dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      this.setState({ statCur: targets.map((t) => t * e) });
+      if (k < 1) this._statRaf = requestAnimationFrame(tick);
+    };
+    this._statRaf = requestAnimationFrame(tick);
+  }
+
+  tabs = [
+    { key: 'venta', label: 'Venta en línea', title: 'Una tienda lista para vender 24/7', desc: 'Tu catálogo completo, carrito y checkout en una tienda que recibe pedidos a cualquier hora, desde cualquier teléfono.', bullets: ['Catálogo con fotos y variantes', 'Carrito y checkout simples', 'Pedidos organizados en un solo lugar'] },
+    { key: 'inventario', label: 'Inventario', title: 'Inventario al día, sin sorpresas', desc: 'Cada venta actualiza tu inventario y te avisa antes de quedarte sin producto. Sabes qué reordenar y cuándo.', bullets: ['Stock en tiempo real', 'Alertas de productos por agotarse', 'Reportes de lo que más se mueve'] },
+    { key: 'dashboard', label: 'Dashboard', title: 'Tu negocio en una sola pantalla', desc: 'Ventas, pedidos e inventario en un panel claro y fácil de leer, pensado para alguien poco técnico.', bullets: ['Ventas del día y de la semana', 'Pedidos pendientes por surtir', 'Ticket promedio y tendencias'] },
+    { key: 'busqueda', label: 'Búsqueda con imágenes', title: 'Encuentran la pieza correcta por foto', desc: 'Tus clientes buscan por foto, marca o código y encuentran exactamente lo que necesitan. Menos errores, menos devoluciones.', bullets: ['Búsqueda por imagen', 'Filtros por marca y compatibilidad', 'Resultados con foto y precio'] }
+  ];
+
+  aiItems = [
+    { title: 'Responde mensajes', desc: 'Atiende WhatsApp y redes al instante, de día y de noche.', d: 'M4 5H20V16H8L4 19.5ZM8 9H16M8 12H13' },
+    { title: 'Agenda citas', desc: 'Coordina visitas y entregas sin llamadas de ida y vuelta.', d: 'M4 5H20V20H4ZM4 9H20M8 3.5V6.5M16 3.5V6.5M8.5 13H11M14 16.5H16' },
+    { title: 'Captura pedidos', desc: 'Toma el pedido completo y lo deja listo para surtir.', d: 'M8.5 4H15.5V6.5H8.5ZM7 5.2H5.5V20.5H18.5V5.2H17M9 11H15M9 14.5H15M9 17.5H12.5' }
+  ];
+
+  stats = [
+    { pre: '+', num: 38, suf: '%', label: 'más ventas en los primeros meses' },
+    { pre: '−', num: 12, suf: ' hrs', label: 'ahorradas por semana en operación' },
+    { plain: '24/7', label: 'atención automática con IA' },
+    { pre: '', num: 100, suf: '%', label: 'soporte local, hecho en México' }
+  ];
+
+  industries = [
+    { title: 'Refaccionarias', desc: 'Encuentra la pieza por código o imagen y vende más rápido.', d: 'M12 9.5A2.5 2.5 0 1 0 12 14.5A2.5 2.5 0 0 0 12 9.5ZM12 3V5.5M12 18.5V21M3 12H5.5M18.5 12H21M5.6 5.6 7.4 7.4M16.6 16.6 18.4 18.4M18.4 5.6 16.6 7.4M7.4 16.6 5.6 18.4' },
+    { title: 'Ferreterías', desc: 'Miles de productos ordenados y siempre a la mano.', d: 'M16.5 3.5A4 4 0 0 0 11.4 8.5L4 15.9V20H8.1L15.5 12.6A4 4 0 0 0 20.5 7.5L17.6 10.4 14 9.5 13.1 5.9Z' },
+    { title: 'Autopartes y balatas', desc: 'Catálogo por marca, modelo y compatibilidad.', d: 'M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9ZM12 4V6.5M12 17.5V20M4 12H6.5M17.5 12H20' },
+    { title: 'Mayoristas', desc: 'Precios por volumen y pedidos grandes sin errores.', d: 'M3 10 12 4.5 21 10V20.5H3ZM7.5 20.5V13.5H16.5V20.5M7.5 16.5H16.5' }
+  ];
+
+  steps = [
+    { num: '1', title: 'Diagnóstico', desc: 'Vemos tu negocio y definimos qué módulos de Aplika necesitas.', d: 'M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16M8 11h6M11 8v6' },
+    { num: '2', title: 'Configuración', desc: 'Activamos Aplika con tu catálogo, tu marca y tu forma de trabajar.', d: 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 13v4' },
+    { num: '3', title: 'Lanzamiento', desc: 'Sales en vivo y tu equipo empieza a usar el producto.', d: 'M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2a3 3 0 0 0-3-3ZM9 13l-2 2M19 5c0 5-3 9-7 11l-3-3C11 9 15 6 20 6ZM14.5 9.5A1.5 1.5 0 1 0 14.5 6.5A1.5 1.5 0 0 0 14.5 9.5Z' },
+    { num: '4', title: 'Soporte', desc: 'Te acompañamos con soporte en México cuando lo necesites.', d: 'M4.5 13V11A7.5 7.5 0 0 1 19.5 11V13M4.5 13H7V18.5H4.5ZM19.5 13H17V18.5H19.5M17 18.5V19.5A2 2 0 0 1 15 21.5H12' }
+  ];
+
+  logos = ['Su negocio', 'Tu marca', 'Cliente 3', 'Cliente 4', 'Cliente 5'];
+
+  testimonials = [
+    { quote: 'Antes perdíamos pedidos por WhatsApp. Ahora todo queda registrado y vendemos más.', name: 'Laura Méndez', role: 'Refaccionaria del Norte, Monterrey', ini: 'LM' },
+    { quote: 'Mis clientes encuentran la balata correcta por foto. Se acabaron las devoluciones.', name: 'Jorge Salinas', role: 'Autopartes Salinas, León', ini: 'JS' },
+    { quote: 'Tener el inventario al día me ahorra horas cada semana y vendo con más confianza.', name: 'Patricia Gómez', role: 'Ferretería La Herradura, Puebla', ini: 'PG' }
+  ];
+
+  faqData = [
+    { q: '¿Qué es Aplika?', a: 'Es el producto (plataforma) que digitaliza tu negocio: dashboard de ventas y operaciones, inventario, CRM de ventas, pagos, facturación CFDI, agentes de IA y automatizaciones, todo en un solo lugar.' },
+    { q: '¿Cuánto cuesta?', a: 'Aplika se contrata por plan (mensual o anual) según el tamaño de tu catálogo y los módulos que uses. Revisa la página de Precios; puedes empezar con una demo sin costo.' },
+    { q: '¿Cuánto tarda en estar listo?', a: 'Es un producto listo para usar: activas tu cuenta, cargas tu catálogo y empiezas a vender en días, no en meses.' },
+    { q: '¿Necesito conocimientos técnicos?', a: 'No. Aplika está pensado para pymes con procesos manuales; es fácil de usar y te acompañamos para que tu equipo lo domine.' },
+    { q: '¿Se conecta con lo que ya uso?', a: 'Sí. Aplika se integra con pagos, facturación (CFDI 4.0), WhatsApp y tu tienda en línea.' },
+    { q: '¿Funciona desde el celular?', a: 'Sí. Tú y tus clientes usan Aplika desde cualquier teléfono.' },
+    { q: '¿Y si necesito ayuda después?', a: 'Tienes soporte en México por WhatsApp y correo cuando lo necesites.' }
+  ];
+
+  renderVals() {
+    const at = this.state.activeTab;
+    const tab = this.tabs[at];
+    const t = this.testimonials[this.state.slide];
+    return {
+      setReveal: (el) => this.setupReveal(el),
+      showFloats: this.state.width > 720,
+      showWhatsApp: true,
+      logos: this.logos,
+      stats: this.stats.map((s, i) => ({
+        label: s.label,
+        value: s.plain != null ? s.plain : (s.pre + Math.round(this.state.statCur[i]) + s.suf)
+      })),
+      industries: this.industries,
+      steps: this.steps,
+      aiItems: this.aiItems,
+
+      // Hero: contadores
+      heroVentas: '$' + this.state.hv.toLocaleString('en-US'),
+      heroPedidos: String(this.state.hp),
+      heroInv: this.state.hi.toLocaleString('en-US'),
+
+      // Inventario en vivo
+      invStock: this.state.invStock,
+      invPct: Math.max(8, Math.round((this.state.invStock / 12) * 100)) + '%',
+      invBarColor: (this.state.invStock <= 5) ? '#B9682B' : '#1FA85A',
+      invBadgeBg: (this.state.invStock <= 5) ? '#FBEEDD' : '#E4F6EC',
+      invBadgeFg: (this.state.invStock <= 5) ? '#B9682B' : '#1FA85A',
+      invMsg: (this.state.invStock <= 5) ? 'Stock bajo · te sugerimos reordenar' : 'Disponible · se actualiza con cada venta',
+      invMsgColor: (this.state.invStock <= 5) ? '#B9682B' : 'rgba(4,44,83,0.5)',
+
+      // Chat del agente IA
+      chatMsgs: this.chatScript.slice(0, this.state.chatN).map((m) => ({
+        text: m.text,
+        align: m.who === 'user' ? 'flex-start' : 'flex-end',
+        bg: m.who === 'user' ? '#F0F5FB' : '#378ADD',
+        color: m.who === 'user' ? '#042C53' : '#FFFFFF',
+        radius: m.who === 'user' ? '14px 14px 14px 4px' : '14px 14px 4px 14px'
+      })),
+      typing: this.state.typing,
+
+      // Flujo "Cómo funciona"
+      flowSteps: this.steps.map((s, i) => ({ num: s.num, title: s.title, desc: s.desc, d: s.d, showArrow: i < this.steps.length - 1 })),
+
+      tabs: this.tabs.map((x, i) => ({
+        label: x.label,
+        onClick: () => this.setState({ activeTab: i }),
+        bg: i === at ? '#0C447C' : '#FFFFFF',
+        color: i === at ? '#FFFFFF' : 'rgba(4,44,83,0.7)',
+        border: i === at ? '#0C447C' : '#D8E6F5'
+      })),
+      tabTitle: tab.title, tabDesc: tab.desc, tabBullets: tab.bullets,
+      isTabVenta: at === 0, isTabInventario: at === 1, isTabDashboard: at === 2, isTabBusqueda: at === 3,
+
+      tQuote: t.quote, tName: t.name, tRole: t.role, tIni: t.ini,
+      dots: this.testimonials.map((_, i) => ({ go: () => this.setState({ slide: i }), bg: i === this.state.slide ? '#378ADD' : '#C9DCF0' })),
+      prevT: () => this.setState(s => ({ slide: (s.slide - 1 + this.testimonials.length) % this.testimonials.length })),
+      nextT: () => this.setState(s => ({ slide: (s.slide + 1) % this.testimonials.length })),
+
+      faqItems: this.faqData.map((f, i) => ({
+        q: f.q, a: f.a,
+        chev: this.state.openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)',
+        bodyClass: this.state.openFaq === i ? 'faq-body open' : 'faq-body',
+        toggle: () => this.setState(s => ({ openFaq: s.openFaq === i ? -1 : i }))
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

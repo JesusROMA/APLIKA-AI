@@ -23,6 +23,9 @@
   const patch = (p, body) => req(p, { method: 'PATCH', body: JSON.stringify(body || {}) });
 
   window.AplikaAPI = {
+    // Config (¿modo demo?)
+    config: () => get('/api/config'),
+
     // Auth
     login: (email, password) => post('/api/auth/login', { email, password }),
     logout: () => post('/api/auth/logout'),

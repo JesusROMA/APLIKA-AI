@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:#FFFFFF;}
+button{font-family:inherit;}
+::selection{background:#B5D4F4;color:#042C53;}
+/* ===== Scroll reveal ===== */
+.a-reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform;}
+.a-reveal.a-in{opacity:1;transform:none;}
+.a-reveal .a-stag>*{opacity:0;transform:translateY(18px);}
+.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+.a-reveal.a-in .a-stag>*:nth-child(1){transition-delay:.04s}.a-reveal.a-in .a-stag>*:nth-child(2){transition-delay:.1s}
+.a-reveal.a-in .a-stag>*:nth-child(3){transition-delay:.16s}.a-reveal.a-in .a-stag>*:nth-child(4){transition-delay:.22s}
+.a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
+.a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
+@media (prefers-reduced-motion:reduce){.a-reveal,.a-reveal .a-stag>*{opacity:1!important;transform:none!important;transition:none!important;}}
+</style>
+</helmet>
+<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+
+<dc-import name="Header" active="sobre" hint-size="100%,72px"></dc-import>
+
+<!-- ===== HERO ===== -->
+<section style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
+  <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:56px;background:rgba(55,138,221,0.2);transform:rotate(16deg);"></div>
+  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(130px,16vw,160px) 24px clamp(56px,8vw,84px);">
+    <p style="font-size:14px;font-weight:600;color:#6FB3EC;letter-spacing:0.04em;margin:0 0 16px;">Sobre nosotros</p>
+    <h1 style="font-size:clamp(34px,5.2vw,60px);font-weight:700;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 20px;max-width:760px;text-wrap:balance;">Tecnología mexicana para que tu negocio venda más</h1>
+    <p style="font-size:clamp(17px,1.9vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0;max-width:580px;">Somos un equipo que cree que cualquier negocio en México merece vender como los grandes, sin complicarse ni gastar de más.</p>
+  </div>
+</section>
+
+<!-- ===== MISIÓN / HISTORIA ===== -->
+<section style="background:#FFFFFF;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,64px);">
+    <div style="flex:1 1 360px;min-width:300px;">
+      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Nuestra misión</p>
+      <h2 style="font-size:clamp(26px,3.2vw,38px);font-weight:600;line-height:1.15;letter-spacing:-0.01em;color:#042C53;margin:0 0 16px;text-wrap:balance;">Digitalizar a las PYMEs que mueven a México</h2>
+      <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0 0 16px;max-width:520px;">Nacimos viendo a refaccionarias, ferreterías y distribuidoras perder ventas por operar a mano: pedidos en papelitos, inventario en la cabeza y clientes sin respuesta. Por eso creamos <strong>Aplika</strong>, el producto que junta ventas, inventario, CRM, pagos, facturación, agentes de IA y automatizaciones en una sola plataforma simple.</p>
+      <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0;max-width:520px;">Somos una empresa que ayuda a digitalizar negocios a través de su producto, para que tú te concentres en lo que sabes hacer: vender.</p>
+    </div>
+    <div style="flex:1 1 340px;min-width:280px;">
+      <div style="background:#0C447C;border-radius:22px;padding:clamp(28px,4vw,40px);position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-50px;right:-40px;width:170px;height:170px;border-radius:40px;background:rgba(55,138,221,0.25);transform:rotate(18deg);"></div>
+        <div style="position:relative;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;background:rgba(255,255,255,0.12);border-radius:15px;margin-bottom:20px;"><span style="display:grid;grid-template-columns:1fr 1fr;gap:3px;width:24px;height:24px;"><span style="background:#FFFFFF;border-radius:4px;"></span><span style="background:#B5D4F4;border-radius:4px;"></span><span style="background:#4FA0E8;border-radius:4px;"></span><span style="background:#FFFFFF;border-radius:4px;"></span></span></span>
+          <p style="font-size:clamp(19px,2.2vw,24px);font-weight:600;line-height:1.4;color:#FFFFFF;margin:0 0 18px;text-wrap:balance;">"Que digitalizar tu negocio sea tan fácil como vender."</p>
+          <p style="font-size:14.5px;color:rgba(255,255,255,0.66);margin:0;">— El equipo de aplika.ai</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section style="background:#0C447C;">
+  <div class="a-stag" style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(48px,7vw,80px) 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px 24px;">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+      <div style="text-align:center;">
+        <p style="font-size:clamp(32px,4.2vw,50px);font-weight:800;line-height:1;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 10px;">{{ s.value }}</p>
+        <p style="font-size:15px;line-height:1.45;color:rgba(255,255,255,0.66);margin:0;">{{ s.label }}</p>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- ===== VALORES ===== -->
+<section style="background:#FFFFFF;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+    <div style="text-align:center;max-width:620px;margin:0 auto clamp(34px,4vw,52px);">
+      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Lo que nos mueve</p>
+      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;text-wrap:balance;">Nuestros valores</h2>
+    </div>
+    <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+      <sc-for list="{{ valores }}" as="item" hint-placeholder-count="4">
+        <div style="background:#F5F8FC;border:1px solid #EAF1FA;border-radius:18px;padding:28px;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;background:#FFFFFF;border:1px solid #E6F1FB;border-radius:14px;color:#378ADD;margin-bottom:18px;"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
+          <h3 style="font-size:18px;font-weight:600;color:#042C53;margin:0 0 8px;">{{ item.title }}</h3>
+          <p style="font-size:15px;line-height:1.55;color:rgba(4,44,83,0.62);margin:0;">{{ item.desc }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section style="background:#E6F1FB;">
+  <div style="width:100%;max-width:880px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;text-align:center;">
+    <h2 style="font-size:clamp(26px,3.4vw,42px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#042C53;margin:0 0 14px;text-wrap:balance;">¿Listo para digitalizar tu negocio?</h2>
+    <p style="font-size:17px;line-height:1.55;color:rgba(4,44,83,0.64);margin:0 0 28px;max-width:480px;margin-left:auto;margin-right:auto;">Agenda una demo gratis. Te mostramos cómo se vería tu negocio funcionando con aplika.ai.</p>
+    <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;" style-hover="background:#2C6FB5;">Agenda una demo</a>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,360px"></dc-import>
+
+<a href="Agenda-demo.dc.html" aria-label="Escríbenos" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#25D366;border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:#1FB855;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg></a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  componentDidMount() { this._io = null; }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); }
+  setupReveal(el) {
+    if (!el || this._revealInit) return;
+    this._revealInit = true;
+    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION');
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
+    secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
+  }
+
+  stats = [
+    { value: '+38%', label: 'más ventas en los primeros meses' },
+    { value: '−12 hrs', label: 'ahorradas por semana en operación' },
+    { value: '24/7', label: 'atención automática con IA' },
+    { value: '100%', label: 'soporte local, hecho en México' }
+  ];
+  valores = [
+    { title: 'Cercanía', desc: 'Soporte en México que entiende tu negocio y te habla claro.', d: 'M4.5 13V11A7.5 7.5 0 0 1 19.5 11V13M4.5 13H7V18.5H4.5ZM19.5 13H17V18.5H19.5M17 18.5V19.5A2 2 0 0 1 15 21.5H12' },
+    { title: 'Simplicidad', desc: 'Sin tecnicismos. Si no es fácil de usar, no sirve.', d: 'M5 12.5 10 17.5 19 6.5' },
+    { title: 'Resultados', desc: 'Todo lo que hacemos apunta a que vendas más y pierdas menos.', d: 'M4 19V5M4 19h16M8 15l3-4 3 2 4-6' },
+    { title: 'Hecho en México', desc: 'Construido aquí, para negocios de aquí. 🇲🇽', d: 'M12 2.5 19 5V11C19 16 15.8 19.4 12 21.5C8.2 19.4 5 16 5 11V5ZM9 11.5 11.2 13.7 15.5 9' }
+  ];
+  renderVals() {
+    return { setReveal: (el) => this.setupReveal(el), stats: this.stats, valores: this.valores };
+  }
+}
+</script>
+</body>
+</html>

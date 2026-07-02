@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;}
+button{font-family:inherit;}
+::selection{background:#B5D4F4;color:#042C53;}
+</style>
+</helmet>
+<div ref="{{ setRoot }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;">
+
+  <!-- Topbar -->
+  <div style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--surface,#FFFFFF);border-bottom:1px solid var(--border,#E6F1FB);padding:14px clamp(18px,3vw,40px);">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="display:grid;grid-template-columns:1fr 1fr;gap:2.5px;width:26px;height:26px;"><span style="background:var(--accent,#378ADD);border-radius:4px;"></span><span style="background:var(--detail,#B5D4F4);border-radius:4px;"></span><span style="background:#0C447C;border-radius:4px;"></span><span style="background:var(--accent,#378ADD);border-radius:4px;"></span></span>
+      <p style="font-size:16px;font-weight:700;margin:0;color:var(--text,#042C53);">aplika<span style="color:var(--accent,#378ADD);">.ai</span></p>
+      <span style="font-size:13px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));border-left:1px solid var(--border,#E6F1FB);padding-left:12px;margin-left:4px;">Design system · Panel</span>
+    </div>
+    <button onClick="{{ toggleDark }}" style="display:inline-flex;align-items:center;gap:8px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:999px;padding:8px 14px;cursor:pointer;color:var(--text,#042C53);font-size:13px;font-weight:600;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ themeIcon }}"></path></svg>{{ themeLabel }}
+    </button>
+  </div>
+
+  <div style="max-width:1120px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(18px,3vw,40px) 80px;display:flex;flex-direction:column;gap:22px;">
+
+    <div>
+      <h1 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-0.02em;margin:0 0 8px;color:var(--text,#042C53);">Design system</h1>
+      <p style="font-size:16px;line-height:1.55;color:var(--muted,rgba(4,44,83,0.6));margin:0;max-width:640px;">Tokens, tipografía y componentes base del panel de Aplika.ai. La misma marca de la web, lista para un ERP denso en datos. Modo claro y oscuro.</p>
+    </div>
+
+    <!-- COLORES -->
+    <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+      <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 18px;">Colores de marca</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px;">
+        <sc-for list="{{ palette }}" as="c" hint-placeholder-count="6">
+          <div style="border:1px solid var(--border,#E6F1FB);border-radius:13px;overflow:hidden;">
+            <div style="height:64px;background:{{ c.hex }};"></div>
+            <div style="padding:11px 13px;background:var(--surface,#FFFFFF);">
+              <p style="font-size:13.5px;font-weight:600;margin:0;color:var(--text,#042C53);">{{ c.name }}</p>
+              <p style="font-size:12px;margin:2px 0 0;color:var(--muted,rgba(4,44,83,0.6));font-variant-numeric:tabular-nums;">{{ c.hex }}</p>
+              <p style="font-size:11.5px;margin:3px 0 0;color:var(--faint,rgba(4,44,83,0.4));">{{ c.use }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 14px;">Estados</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <sc-for list="{{ states }}" as="s" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:11px;padding:10px 15px;">
+            <span style="width:18px;height:18px;border-radius:5px;background:{{ s.hex }};"></span>
+            <div><p style="font-size:13px;font-weight:600;margin:0;color:var(--text,#042C53);">{{ s.name }}</p><p style="font-size:11.5px;margin:1px 0 0;color:var(--muted,rgba(4,44,83,0.6));font-variant-numeric:tabular-nums;">{{ s.hex }}</p></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;">
+      <!-- TIPOGRAFÍA -->
+      <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 6px;">Tipografía</p>
+        <p style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 20px;">Plus Jakarta Sans · sentence case</p>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="6">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border,#E6F1FB);padding-bottom:14px;">
+              <span style="font-size:{{ t.size }};font-weight:{{ t.weight }};color:var(--text,#042C53);line-height:1.1;letter-spacing:-0.01em;">{{ t.sample }}</span>
+              <span style="flex:none;font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));font-variant-numeric:tabular-nums;white-space:nowrap;">{{ t.meta }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- ESPACIADO -->
+      <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 6px;">Escala de espaciado</p>
+        <p style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 20px;">Base 4 px</p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{ spacing }}" as="s" hint-placeholder-count="7">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span style="flex:none;width:42px;font-size:12.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));font-variant-numeric:tabular-nums;">{{ s.px }}</span>
+              <span style="height:14px;width:{{ s.px }};background:var(--accent,#378ADD);border-radius:4px;"></span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:24px 0 12px;">Radios</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div style="text-align:center;"><div style="width:54px;height:42px;background:var(--accent-weak,#E6F1FB);border:1px solid var(--accent,#378ADD);border-radius:8px;"></div><p style="font-size:11.5px;color:var(--muted,rgba(4,44,83,0.6));margin:6px 0 0;">8</p></div>
+          <div style="text-align:center;"><div style="width:54px;height:42px;background:var(--accent-weak,#E6F1FB);border:1px solid var(--accent,#378ADD);border-radius:12px;"></div><p style="font-size:11.5px;color:var(--muted,rgba(4,44,83,0.6));margin:6px 0 0;">12</p></div>
+          <div style="text-align:center;"><div style="width:54px;height:42px;background:var(--accent-weak,#E6F1FB);border:1px solid var(--accent,#378ADD);border-radius:16px;"></div><p style="font-size:11.5px;color:var(--muted,rgba(4,44,83,0.6));margin:6px 0 0;">16</p></div>
+          <div style="text-align:center;"><div style="width:54px;height:42px;background:var(--accent-weak,#E6F1FB);border:1px solid var(--accent,#378ADD);border-radius:999px;"></div><p style="font-size:11.5px;color:var(--muted,rgba(4,44,83,0.6));margin:6px 0 0;">full</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES + INPUTS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;">
+      <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 18px;">Botones</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;">
+          <button style="background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;">Primario</button>
+          <button style="background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;">Secundario</button>
+          <button style="background:transparent;color:var(--accent,#378ADD);border:none;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:600;cursor:pointer;">Fantasma</button>
+          <button style="background:var(--error,#D24545);color:#FFFFFF;border:none;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;">Peligro</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+          <button style="background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;">Pequeño</button>
+          <button disabled="true" style="background:var(--surface-2,#F5F8FC);color:var(--faint,rgba(4,44,83,0.4));border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;cursor:not-allowed;">Deshabilitado</button>
+          <button style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Con icono</button>
+        </div>
+      </div>
+
+      <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 18px;">Campos</p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div><label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text,#042C53);">Texto</label><input type="text" value="Refaccionaria del Norte" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;" style-focus="border-color:var(--accent,#378ADD);box-shadow:0 0 0 3px var(--accent-weak,rgba(55,138,221,0.18));"></input></div>
+          <div><label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text,#042C53);">Select</label><select style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"><option>Todos los almacenes</option><option>Matriz</option></select></div>
+          <div><label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--error,#D24545);">Con error</label><input type="text" value="RFC inválido" style="width:100%;padding:11px 13px;border:1px solid var(--error,#D24545);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;box-shadow:0 0 0 3px var(--error-weak,rgba(210,69,69,0.14));"></input><p style="font-size:12px;color:var(--error,#D24545);margin:6px 0 0;">El RFC no tiene un formato válido.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BADGES + TABS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;">
+      <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 18px;">Badges de estado</p>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;">
+          <sc-for list="{{ badges }}" as="b" hint-placeholder-count="8">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;background:{{ b.bg }};color:{{ b.fg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ b.fg }};"></span>{{ b.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+        <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 18px;">Tabs</p>
+        <div style="display:flex;gap:4px;background:var(--surface-2,#F5F8FC);padding:4px;border-radius:11px;width:fit-content;">
+          <span style="font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:8px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);box-shadow:0 1px 2px rgba(4,44,83,0.08);">Todos</span>
+          <span style="font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:8px;color:var(--muted,rgba(4,44,83,0.6));">Pendientes</span>
+          <span style="font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:8px;color:var(--muted,rgba(4,44,83,0.6));">Pagados</span>
+        </div>
+        <div style="display:flex;gap:24px;border-bottom:1px solid var(--border,#E6F1FB);margin-top:22px;">
+          <span style="font-size:14px;font-weight:600;padding:0 0 12px;color:var(--accent,#378ADD);border-bottom:2px solid var(--accent,#378ADD);">Detalle</span>
+          <span style="font-size:14px;font-weight:500;padding:0 0 12px;color:var(--muted,rgba(4,44,83,0.6));">Timeline</span>
+          <span style="font-size:14px;font-weight:500;padding:0 0 12px;color:var(--muted,rgba(4,44,83,0.6));">Pagos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI + GRÁFICAS -->
+    <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;padding:clamp(20px,3vw,28px);">
+      <p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 18px;">KPI cards y gráficas</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px;">
+        <div style="border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));">Ventas del periodo</span><span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"></path></svg></span></div>
+          <p style="font-size:26px;font-weight:700;margin:0;color:var(--text,#042C53);letter-spacing:-0.02em;">$284,500</p>
+          <p style="font-size:12.5px;margin:7px 0 0;color:var(--success,#1FA85A);font-weight:600;">▲ 12.4% vs periodo anterior</p>
+        </div>
+        <div style="border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));">Stock bajo</span><span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--warn-weak,#FBEEDD);color:var(--warn,#B9682B);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17v.01M10.3 4.3 3 18a2 2 0 0 0 1.7 3h14.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z"></path></svg></span></div>
+          <p style="font-size:26px;font-weight:700;margin:0;color:var(--text,#042C53);letter-spacing:-0.02em;">14</p>
+          <p style="font-size:12.5px;margin:7px 0 0;color:var(--warn,#B9682B);font-weight:600;">productos por reordenar</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+        <!-- Línea -->
+        <div style="border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
+          <p style="font-size:13px;font-weight:600;margin:0 0 14px;color:var(--text,#042C53);">Tendencia · línea</p>
+          <svg viewBox="0 0 300 100" width="100%" height="90" preserveAspectRatio="none"><polyline points="0,78 43,66 86,70 129,48 171,54 214,30 257,36 300,16" fill="none" stroke="var(--accent,#378ADD)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="0,78 43,66 86,70 129,48 171,54 214,30 257,36 300,16 300,100 0,100" fill="var(--accent-weak,#E6F1FB)" stroke="none" opacity="0.7"></polyline></svg>
+        </div>
+        <!-- Barras -->
+        <div style="border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
+          <p style="font-size:13px;font-weight:600;margin:0 0 14px;color:var(--text,#042C53);">Comparativo · barras</p>
+          <div style="display:flex;align-items:flex-end;gap:8px;height:90px;">
+            <span style="flex:1;height:50%;background:var(--detail,#B5D4F4);border-radius:5px 5px 0 0;"></span><span style="flex:1;height:72%;background:var(--detail,#B5D4F4);border-radius:5px 5px 0 0;"></span><span style="flex:1;height:60%;background:var(--detail,#B5D4F4);border-radius:5px 5px 0 0;"></span><span style="flex:1;height:88%;background:var(--accent,#378ADD);border-radius:5px 5px 0 0;"></span><span style="flex:1;height:100%;background:var(--accent,#378ADD);border-radius:5px 5px 0 0;"></span><span style="flex:1;height:78%;background:var(--accent,#378ADD);border-radius:5px 5px 0 0;"></span>
+          </div>
+        </div>
+        <!-- Dona -->
+        <div style="border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
+          <p style="font-size:13px;font-weight:600;margin:0 0 14px;color:var(--text,#042C53);">Composición · dona</p>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:90px;height:90px;border-radius:50%;background:conic-gradient(var(--accent,#378ADD) 0 45%,var(--detail,#B5D4F4) 45% 72%,var(--success,#1FA85A) 72% 100%);display:flex;align-items:center;justify-content:center;"><div style="width:54px;height:54px;border-radius:50%;background:var(--surface,#FFFFFF);"></div></div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--accent,#378ADD);"></span>En línea 45%</span>
+              <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--detail,#B5D4F4);"></span>Mostrador 27%</span>
+              <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--success,#1FA85A);"></span>Agente IA 28%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA -->
+    <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:16px;overflow:hidden;">
+      <div style="padding:18px clamp(20px,3vw,28px);border-bottom:1px solid var(--border,#E6F1FB);"><p style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0;">Tabla · pedidos de mayoreo</p></div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:640px;">
+          <thead><tr style="background:var(--surface-2,#F5F8FC);">
+            <th style="text-align:left;font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Folio</th>
+            <th style="text-align:left;font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Cliente</th>
+            <th style="text-align:right;font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Total</th>
+            <th style="text-align:left;font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Estado</th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+              <tr style="border-top:1px solid var(--border,#E6F1FB);" style-hover="background:var(--surface-2,#F5F8FC);">
+                <td style="font-size:13.5px;font-weight:600;color:var(--text,#042C53);padding:14px 20px;font-variant-numeric:tabular-nums;">{{ r.folio }}</td>
+                <td style="font-size:13.5px;color:var(--text,#042C53);padding:14px 20px;">{{ r.client }}</td>
+                <td style="font-size:13.5px;font-weight:600;color:var(--text,#042C53);padding:14px 20px;text-align:right;font-variant-numeric:tabular-nums;">{{ r.total }}</td>
+                <td style="padding:14px 20px;"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ r.bg }};color:{{ r.fg }};">{{ r.status }}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const LIGHT = {
+  '--bg': '#F5F8FC', '--surface': '#FFFFFF', '--surface-2': '#F5F8FC',
+  '--border': '#E6F1FB', '--text': '#042C53', '--muted': 'rgba(4,44,83,0.6)', '--faint': 'rgba(4,44,83,0.42)',
+  '--accent': '#378ADD', '--accent-weak': '#E6F1FB', '--detail': '#B5D4F4',
+  '--success': '#1FA85A', '--success-weak': '#E4F6EC',
+  '--warn': '#B9682B', '--warn-weak': '#FBEEDD',
+  '--error': '#D24545', '--error-weak': '#FBE7E7',
+  '--info': '#378ADD', '--info-weak': '#E6F1FB'
+};
+const DARK = {
+  '--bg': '#081B31', '--surface': '#0E2742', '--surface-2': '#0A2138',
+  '--border': 'rgba(255,255,255,0.09)', '--text': '#E8F0FA', '--muted': 'rgba(232,240,250,0.62)', '--faint': 'rgba(232,240,250,0.4)',
+  '--accent': '#4FA0E8', '--accent-weak': 'rgba(79,160,232,0.16)', '--detail': '#3C6CA0',
+  '--success': '#34C77B', '--success-weak': 'rgba(52,199,123,0.16)',
+  '--warn': '#E0A24B', '--warn-weak': 'rgba(224,162,75,0.16)',
+  '--error': '#E8736B', '--error-weak': 'rgba(232,115,107,0.16)',
+  '--info': '#4FA0E8', '--info-weak': 'rgba(79,160,232,0.16)'
+};
+
+class Component extends DCLogic {
+  state = { dark: false };
+
+  applyTheme() {
+    const el = this._root; if (!el) return;
+    const t = this.state.dark ? DARK : LIGHT;
+    for (const k in t) el.style.setProperty(k, t[k]);
+    el.style.setProperty('background-color', t['--bg'], 'important');
+    el.style.setProperty('color', t['--text'], 'important');
+  }
+  componentDidMount() { this.applyTheme(); }
+  componentDidUpdate() { this.applyTheme(); }
+
+  palette = [
+    { name: 'Primario', hex: '#0C447C', use: 'Sidebar, encabezados' },
+    { name: 'Acento', hex: '#378ADD', use: 'Acciones, enlaces' },
+    { name: 'Suave', hex: '#E6F1FB', use: 'Fondos de sección' },
+    { name: 'Detalle', hex: '#B5D4F4', use: 'Bordes, gráficas' },
+    { name: 'Texto', hex: '#042C53', use: 'Texto sobre claro' },
+    { name: 'Neutro', hex: '#F5F8FC', use: 'Fondo de la app' }
+  ];
+  states = [
+    { name: 'Éxito', hex: '#1FA85A' },
+    { name: 'Alerta', hex: '#B9682B' },
+    { name: 'Error', hex: '#D24545' },
+    { name: 'Info', hex: '#378ADD' }
+  ];
+  typeScale = [
+    { sample: 'Panel de administración', size: '30px', weight: 700, meta: 'Display · 30 / 700' },
+    { sample: 'Pedidos de mayoreo', size: '22px', weight: 600, meta: 'Título · 22 / 600' },
+    { sample: 'Resumen del periodo', size: '17px', weight: 600, meta: 'Subtítulo · 17 / 600' },
+    { sample: 'Texto de cuerpo y descripciones', size: '15px', weight: 400, meta: 'Cuerpo · 15 / 400' },
+    { sample: 'Etiquetas y metadatos', size: '13px', weight: 500, meta: 'Etiqueta · 13 / 500' }
+  ];
+  spacing = [{ px: '4px' }, { px: '8px' }, { px: '12px' }, { px: '16px' }, { px: '24px' }, { px: '32px' }, { px: '48px' }];
+
+  badgeStyle(kind) {
+    const map = {
+      success: { bg: 'var(--success-weak,#E4F6EC)', fg: 'var(--success,#1FA85A)' },
+      warn: { bg: 'var(--warn-weak,#FBEEDD)', fg: 'var(--warn,#B9682B)' },
+      error: { bg: 'var(--error-weak,#FBE7E7)', fg: 'var(--error,#D24545)' },
+      info: { bg: 'var(--info-weak,#E6F1FB)', fg: 'var(--info,#378ADD)' },
+      neutral: { bg: 'var(--surface-2,#F5F8FC)', fg: 'var(--muted,rgba(4,44,83,0.6))' }
+    };
+    return map[kind] || map.neutral;
+  }
+
+  renderVals() {
+    const badgeData = [
+      { label: 'Pagado', kind: 'success' }, { label: 'Pendiente', kind: 'warn' },
+      { label: 'Borrador', kind: 'neutral' }, { label: 'Cancelada', kind: 'error' },
+      { label: 'Timbrada', kind: 'info' }, { label: 'Stock bajo', kind: 'warn' },
+      { label: 'Surtido', kind: 'success' }, { label: 'Enviado', kind: 'info' }
+    ];
+    const rowData = [
+      { folio: 'PD-1042', client: 'Autopartes Salinas', total: '$12,480', status: 'Pagado', kind: 'success' },
+      { folio: 'PD-1041', client: 'Ferretería La Herradura', total: '$3,950', status: 'Pendiente', kind: 'warn' },
+      { folio: 'PD-1039', client: 'Distribuidora Centro', total: '$28,100', status: 'Surtido', kind: 'info' },
+      { folio: 'PD-1038', client: 'Refaccionaria del Bajío', total: '$1,240', status: 'Cancelada', kind: 'error' }
+    ];
+    return {
+      setRoot: (el) => { this._root = el; if (el) this.applyTheme(); },
+      toggleDark: () => this.setState(s => ({ dark: !s.dark })),
+      themeLabel: this.state.dark ? 'Modo claro' : 'Modo oscuro',
+      themeIcon: this.state.dark
+        ? 'M12 3v2M12 19v2M5 12H3M21 12h-2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z'
+        : 'M21 12.8A8 8 0 1 1 11.2 3 6.2 6.2 0 0 0 21 12.8Z',
+      palette: this.palette, states: this.states, typeScale: this.typeScale, spacing: this.spacing,
+      badges: badgeData.map(b => ({ label: b.label, ...this.badgeStyle(b.kind) })),
+      rows: rowData.map(r => ({ folio: r.folio, client: r.client, total: r.total, status: r.status, ...this.badgeStyle(r.kind) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

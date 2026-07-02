@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:#FFFFFF;}
+button{font-family:inherit;}
+::selection{background:#B5D4F4;color:#042C53;}
+/* ===== Scroll reveal ===== */
+.a-reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform;}
+.a-reveal.a-in{opacity:1;transform:none;}
+.a-reveal .a-stag>*{opacity:0;transform:translateY(18px);}
+.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+.a-reveal.a-in .a-stag>*:nth-child(1){transition-delay:.04s}.a-reveal.a-in .a-stag>*:nth-child(2){transition-delay:.1s}
+.a-reveal.a-in .a-stag>*:nth-child(3){transition-delay:.16s}.a-reveal.a-in .a-stag>*:nth-child(4){transition-delay:.22s}
+.a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
+.a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
+@media (prefers-reduced-motion:reduce){.a-reveal,.a-reveal .a-stag>*{opacity:1!important;transform:none!important;transition:none!important;}}
+</style>
+</helmet>
+<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+
+<dc-import name="Header" active="precios" hint-size="100%,72px"></dc-import>
+
+<!-- HERO -->
+<section style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
+  <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:56px;background:rgba(55,138,221,0.2);transform:rotate(16deg);"></div>
+  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(128px,15vw,158px) 24px clamp(40px,6vw,64px);text-align:center;">
+    <p style="font-size:14px;font-weight:600;color:#6FB3EC;letter-spacing:0.04em;margin:0 0 16px;">Planes y suscripciones</p>
+    <h1 style="font-size:clamp(34px,5vw,58px);font-weight:700;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 18px;max-width:740px;margin-left:auto;margin-right:auto;text-wrap:balance;">Precios claros, sin sorpresas</h1>
+    <p style="font-size:clamp(17px,1.9vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 32px;max-width:540px;margin-left:auto;margin-right:auto;">Elige el plan que va con tu negocio. Cambia o cancela cuando quieras.</p>
+    <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:5px;">
+      <button onClick="{{ setMensual }}" style="border:none;cursor:pointer;font-size:14px;font-weight:600;padding:10px 20px;border-radius:999px;transition:all .2s;background:{{ mBg }};color:{{ mColor }};">Mensual</button>
+      <button onClick="{{ setAnual }}" style="display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-size:14px;font-weight:600;padding:10px 20px;border-radius:999px;transition:all .2s;background:{{ aBg }};color:{{ aColor }};">Anual<span style="font-size:11px;font-weight:700;color:#0C447C;background:#9CE0B6;padding:2px 8px;border-radius:999px;">2 meses gratis</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- PLANES -->
+<section style="background:#FFFFFF;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(36px,5vw,56px) 24px clamp(40px,6vw,64px);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;align-items:start;">
+      <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+        <div style="position:relative;background:{{ p.cardBg }};border:1.5px solid {{ p.cardBorder }};border-radius:22px;padding:clamp(26px,3vw,34px);box-shadow:{{ p.shadow }};">
+          <sc-if value="{{ p.highlight }}" hint-placeholder-val="{{ false }}">
+            <span style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;color:#0C447C;background:#9CC6F0;padding:5px 14px;border-radius:999px;white-space:nowrap;">Más popular</span>
+          </sc-if>
+          <p style="font-size:19px;font-weight:700;margin:0 0 6px;color:{{ p.titleColor }};">{{ p.name }}</p>
+          <p style="font-size:14px;line-height:1.5;color:{{ p.subColor }};margin:0 0 20px;min-height:42px;">{{ p.tagline }}</p>
+          <div style="display:flex;align-items:flex-end;gap:6px;margin-bottom:4px;">
+            <span style="font-size:clamp(32px,4vw,44px);font-weight:800;letter-spacing:-0.02em;line-height:1;color:{{ p.titleColor }};">{{ p.priceText }}</span>
+            <span style="font-size:15px;font-weight:600;color:{{ p.subColor }};padding-bottom:5px;">{{ p.period }}</span>
+          </div>
+          <p style="font-size:13px;color:{{ p.subColor }};margin:0 0 24px;">{{ p.billed }}</p>
+          <a href="{{ p.href }}" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-size:15.5px;font-weight:600;padding:14px;border-radius:12px;text-decoration:none;margin-bottom:26px;background:{{ p.btnBg }};color:{{ p.btnColor }};border:1px solid {{ p.btnBorder }};">{{ p.cta }}</a>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:18px;">
+            <p style="font-size:13px;font-weight:700;color:{{ p.titleColor }};margin:0;">{{ p.productos }}</p>
+            <p style="font-size:13px;color:{{ p.subColor }};margin:0;">{{ p.pedidos }} · {{ p.usuarios }}</p>
+          </div>
+          <div style="height:1px;background:{{ p.divider }};margin-bottom:18px;"></div>
+          <div style="display:flex;flex-direction:column;gap:13px;">
+            <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="5">
+              <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;margin-top:1px;color:{{ p.checkColor }};"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:14.5px;line-height:1.4;color:{{ p.featColor }};">{{ f }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUYE -->
+<section style="background:#F5F8FC;">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(44px,6vw,72px) 24px;">
+    <p style="text-align:center;font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 26px;">Todos los planes incluyen</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;">
+      <sc-for list="{{ includes }}" as="i" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #EAF1FA;border-radius:14px;padding:18px 20px;">
+          <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;background:#E6F1FB;border-radius:11px;color:#0C447C;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ i.d }}"></path></svg></span>
+          <span style="font-size:15px;font-weight:600;color:#042C53;">{{ i.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:#FFFFFF;">
+  <div style="width:100%;max-width:820px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+    <div style="text-align:center;margin-bottom:clamp(28px,4vw,42px);"><p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Preguntas sobre planes</p><h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;">Dudas frecuentes</h2></div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="4">
+        <div style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:14px;overflow:hidden;">
+          <button onClick="{{ item.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;background:transparent;border:none;cursor:pointer;padding:20px 22px;font-size:16px;font-weight:600;color:#042C53;line-height:1.4;"><span>{{ item.q }}</span><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#E6F1FB;border-radius:8px;color:#0C447C;font-size:18px;">{{ item.sign }}</span></button>
+          <sc-if value="{{ item.open }}" hint-placeholder-val="{{ false }}"><p style="font-size:15px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0;padding:0 22px 22px;">{{ item.a }}</p></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;">
+  <div style="width:100%;max-width:820px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;text-align:center;">
+    <h2 style="font-size:clamp(28px,3.8vw,46px);font-weight:700;line-height:1.08;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 16px;text-wrap:balance;">¿No sabes qué plan elegir?</h2>
+    <p style="font-size:clamp(17px,1.8vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 32px;max-width:480px;margin-left:auto;margin-right:auto;">Agenda una demo y te ayudamos a definir el plan ideal para tu negocio, sin compromiso.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:13px;">
+      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;" style-hover="background:#4F9AE6;">Agenda una demo</a>
+      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);text-decoration:none;" style-hover="background:rgba(255,255,255,0.16);">Hablar con ventas</a>
+    </div>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,360px"></dc-import>
+
+<a href="Agenda-demo.dc.html" aria-label="WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#25D366;border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:#1FB855;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg></a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { annual: false, openFaq: 0 };
+
+  componentDidMount() { this._io = null; }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); }
+  setupReveal(el) {
+    if (!el || this._revealInit) return;
+    this._revealInit = true;
+    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION');
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
+    secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
+  }
+
+  plans = [
+    { name: 'Básico', tagline: 'Para empezar a vender en línea y ordenar tu inventario.', m: 990, a: 790, productos: '500 productos', pedidos: '1,000 pedidos/mes', usuarios: '3 usuarios', cta: 'Agenda una demo', href: 'Agenda-demo.dc.html', highlight: false, features: ['Tienda en línea', 'Control de inventario', 'CRM de ventas', 'Búsqueda con imágenes', 'Soporte por correo'] },
+    { name: 'Pro', tagline: 'Para negocios que quieren vender más con IA y automatizar.', m: 2490, a: 1990, productos: '5,000 productos', pedidos: '10,000 pedidos/mes', usuarios: '10 usuarios', cta: 'Agenda una demo', href: 'Agenda-demo.dc.html', highlight: true, features: ['Todo lo de Básico', 'Agentes de IA en WhatsApp', 'Automatizaciones', 'Pagos en línea (Stripe)', 'Facturación CFDI 4.0', 'Dashboard interactivo', 'Soporte prioritario'] },
+    { name: 'Enterprise', tagline: 'Para distribuidoras y mayoristas con operación grande.', custom: true, productos: 'Productos ilimitados', pedidos: 'Pedidos ilimitados', usuarios: 'Usuarios ilimitados', cta: 'Hablar con ventas', href: 'Agenda-demo.dc.html', highlight: false, features: ['Todo lo de Pro', 'Multi-almacén', 'Integraciones a la medida', 'Gerente de cuenta dedicado', 'SLA y soporte 24/7'] }
+  ];
+
+  includes = [
+    { label: 'Sin instalaciones', d: 'M5 12.5 10 17.5 19 6.5' },
+    { label: 'Capacitación a tu equipo', d: 'M12 3 21 7.5 12 12 3 7.5ZM7 9.7V14.5C7 14.5 9 16.5 12 16.5C15 16.5 17 14.5 17 14.5V9.7' },
+    { label: 'Soporte hecho en México', d: 'M4.5 13V11A7.5 7.5 0 0 1 19.5 11V13M4.5 13H7V18.5H4.5ZM19.5 13H17V18.5H19.5Z' },
+    { label: 'Cancela cuando quieras', d: 'M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 8v4l3 2' }
+  ];
+
+  faqData = [
+    { q: '¿Puedo cambiar de plan después?', a: 'Sí. Puedes subir o bajar de plan cuando quieras; el cobro se ajusta de forma proporcional.' },
+    { q: '¿Hay permanencia o contrato forzoso?', a: 'No. Puedes cancelar en cualquier momento. El plan anual te da el descuento por pago adelantado.' },
+    { q: '¿Los agentes de IA tienen costo extra?', a: 'No. Los agentes de IA y las automatizaciones están incluidos desde el plan Pro, sin cargos adicionales por mensajes.' },
+    { q: '¿Cómo se factura?', a: 'Te entregamos factura CFDI 4.0 de tu suscripción. Aceptamos tarjeta y transferencia.' }
+  ];
+
+  money(n) { return '$' + n.toLocaleString('en-US'); }
+
+  renderVals() {
+    const annual = this.state.annual;
+    const plans = this.plans.map(p => {
+      const hl = p.highlight;
+      return {
+        name: p.name, tagline: p.tagline, productos: p.productos, pedidos: p.pedidos, usuarios: p.usuarios,
+        cta: p.cta, href: p.href, features: p.features, highlight: hl,
+        priceText: p.custom ? 'A medida' : this.money(annual ? p.a : p.m),
+        period: p.custom ? '' : '/mes',
+        billed: p.custom ? 'Cotización personalizada' : (annual ? 'Facturado anual · 2 meses gratis' : 'Facturado mensual'),
+        cardBg: hl ? '#0C447C' : '#FFFFFF',
+        cardBorder: hl ? '#0C447C' : '#E6F1FB',
+        shadow: hl ? '0 30px 60px -28px rgba(12,68,124,0.45)' : '0 1px 2px rgba(12,68,124,0.04)',
+        titleColor: hl ? '#FFFFFF' : '#042C53',
+        subColor: hl ? 'rgba(255,255,255,0.7)' : 'rgba(4,44,83,0.6)',
+        featColor: hl ? 'rgba(255,255,255,0.92)' : '#042C53',
+        checkColor: hl ? '#6FB3EC' : '#378ADD',
+        divider: hl ? 'rgba(255,255,255,0.14)' : '#E6F1FB',
+        btnBg: hl ? '#378ADD' : '#FFFFFF',
+        btnColor: hl ? '#FFFFFF' : '#0C447C',
+        btnBorder: hl ? '#378ADD' : '#B5D4F4'
+      };
+    });
+    return {
+      setReveal: (el) => this.setupReveal(el),
+      plans, includes: this.includes,
+      setMensual: () => this.setState({ annual: false }),
+      setAnual: () => this.setState({ annual: true }),
+      mBg: annual ? 'transparent' : '#FFFFFF', mColor: annual ? 'rgba(255,255,255,0.75)' : '#0C447C',
+      aBg: annual ? '#FFFFFF' : 'transparent', aColor: annual ? '#0C447C' : 'rgba(255,255,255,0.75)',
+      faqItems: this.faqData.map((f, i) => ({ q: f.q, a: f.a, open: this.state.openFaq === i, sign: this.state.openFaq === i ? '–' : '+', toggle: () => this.setState(s => ({ openFaq: s.openFaq === i ? -1 : i })) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
