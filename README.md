@@ -77,6 +77,7 @@ Para que los commits fluyan solos entre el equipo (sin pedir pull/push manual):
    ```
    A partir de ahí, **cada `git commit` se sube solo** a `origin/main`; si el
    remoto va adelante, integra con `pull --rebase --autostash` y reintenta.
+   Verás `[auto-push] listo.` en la salida cuando el push se complete.
 2. **VS Code** ya queda configurado por `.vscode/settings.json`: auto-fetch cada
    60 s (verás la flecha ↓ con los commits entrantes) y Sync con rebase+autostash.
 3. **Auto-pull continuo (opcional):** en una terminal aparte corre
