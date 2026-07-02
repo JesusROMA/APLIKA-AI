@@ -1651,7 +1651,8 @@ class Component extends DCLogic {
     if (cliFind) clienteView = { name: cliFind.name, rfc: cliFind.rfc, regimen: cliFind.regimen, uso: cliFind.uso, contacto: cliFind.contacto, tel: cliFind.tel, lista: cliFind.lista, limite: this.money(cliFind.limite), dias: cliFind.dias + ' días', desc: cliFind.desc, saldo: this.money(cliFind.saldo), ini: cliFind.ini, saldoColor: cliFind.saldo > 0 ? 'var(--warn,#B9682B)' : 'var(--success,#1FA85A)' };
 
     const iaConvRows = this.iaConvs.map((c, i) => ({ name: c.name, preview: c.preview, time: c.time, ini: c.ini, tag: c.tag, unread: c.unread, onClick: () => this.setState({ selectedConv: i }), bg: this.state.selectedConv === i ? 'var(--accent-weak,#E6F1FB)' : 'transparent', border: this.state.selectedConv === i ? 'var(--accent,#378ADD)' : 'transparent' }));
-    const iaSel = this.iaConvs[this.state.selectedConv] || this.iaConvs[0];
+    // Tenants sin conversaciones (p. ej. recién creados) no deben romper el render
+    const iaSel = this.iaConvs[this.state.selectedConv] || this.iaConvs[0] || { name: 'Sin conversaciones', ini: '—' };
 
     // Menú de perfil (usuario de sesión; fallback demo del tenant)
     const me = this.state.me || { name: 'Juan Méndez', email: 'juan@refanorte.mx', role: 'tenant_admin' };
@@ -1760,7 +1761,7 @@ class Component extends DCLogic {
       })),
       citasRows: (this.state.citasFilter === 'todas' ? this.citas : this.citas.filter(c => c.status === this.state.citasFilter)).map(c => ({
         date: c.date, time: c.time, endTime: c.endTime, patient: c.patient, professional: c.professional, notes: c.notes || '—',
-        statusLabel: this.apptMeta[c.status].label, ...this.badge(this.apptMeta[c.status].kind),
+        statusLabel: (this.apptMeta[c.status] || { label: c.status }).label, ...this.badge((this.apptMeta[c.status] || { kind: 'neutral' }).kind),
         canConfirm: c.status === 'agendada',
         canComplete: c.status === 'confirmada',
         canCancel: c.status === 'agendada' || c.status === 'confirmada',
