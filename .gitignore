@@ -36,6 +36,7 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+.claude/settings.local.json
 
 # Tests
 coverage/
