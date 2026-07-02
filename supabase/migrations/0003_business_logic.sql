@@ -32,6 +32,13 @@ begin
   return v;
 end; $$;
 
+-- Wrapper público: PostgREST (supabase.rpc) solo expone funciones de `public`.
+create or replace function public.next_folio(p_org uuid, p_entity text)
+returns integer language sql security definer set search_path = public, app as $$
+  select app.next_folio(p_org, p_entity);
+$$;
+grant execute on function public.next_folio(uuid, text) to authenticated, service_role;
+
 -- ----------------------------------------------------------------------------
 -- Ajuste / movimiento de inventario (entrada, salida o ajuste) + kardex
 -- p_qty con signo. Devuelve la fila de inventario resultante.

@@ -57,6 +57,18 @@ export const POST = handle(async (req) => {
   if (fErr) throw new ApiError(400, fErr.message);
   const folio = `PD-${folioNum}`;
 
+  // Resuelve variantes por SKU para ligar las líneas al inventario
+  // (sin esto, el decremento de stock al pagar no encuentra la variante).
+  const skus = body.items.filter((it) => !it.variantId && it.sku).map((it) => it.sku as string);
+  let bySku: Record<string, string> = {};
+  if (skus.length) {
+    const { data: variants } = await supabase
+      .from('product_variants')
+      .select('id, sku')
+      .in('sku', skus);
+    bySku = Object.fromEntries((variants ?? []).map((v: any) => [v.sku, v.id]));
+  }
+
   const { data: order, error: oErr } = await supabase
     .from('orders')
     .insert({
@@ -80,7 +92,7 @@ export const POST = handle(async (req) => {
     body.items.map((it) => ({
       organization_id: ctx.organizationId,
       order_id: order.id,
-      product_variant_id: it.variantId ?? null,
+      product_variant_id: it.variantId ?? (it.sku ? bySku[it.sku] ?? null : null),
       sku: it.sku ?? null,
       name: it.name,
       qty: it.qty,

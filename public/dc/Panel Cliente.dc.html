@@ -123,7 +123,7 @@ button,input,select{font-family:inherit;}
           </div>
           <div style="display:flex;gap:9px;">
             <button style="display:inline-flex;align-items:center;gap:8px;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:10px 15px;font-size:13.5px;font-weight:600;color:var(--text,#042C53);cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3M16 3v3M4 8h16M5 6h14v14H5zM8 13h3"></path></svg>Últimos 30 días</button>
-            <button style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nuevo pedido</button>
+            <button onClick="{{ openNuevoPedido }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nuevo pedido</button>
           </div>
         </div>
 
@@ -217,7 +217,7 @@ button,input,select{font-family:inherit;}
                 <span style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:var(--surface-2,#F5F8FC);border-radius:16px;color:var(--faint,rgba(4,44,83,0.4));margin-bottom:16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7zM9 7V5a3 3 0 0 1 6 0v2"></path></svg></span>
                 <p style="font-size:16px;font-weight:600;color:var(--text,#042C53);margin:0 0 6px;">Aún no hay pedidos</p>
                 <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 20px;">Cuando entren pedidos por tu tienda o el agente de IA, aparecerán aquí.</p>
-                <button style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Crear pedido manual</button>
+                <button onClick="{{ openNuevoPedido }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Crear pedido manual</button>
               </div>
             </sc-if>
             <sc-if value="{{ ordersError }}" hint-placeholder-val="{{ false }}">
@@ -267,7 +267,7 @@ button,input,select{font-family:inherit;}
           </div>
           <div style="display:flex;gap:9px;">
             <button style="display:inline-flex;align-items:center;gap:8px;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:10px 15px;font-size:13.5px;font-weight:600;color:var(--text,#042C53);cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>Exportar</button>
-            <button style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nuevo pedido</button>
+            <button onClick="{{ openNuevoPedido }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nuevo pedido</button>
           </div>
         </div>
 
@@ -795,6 +795,71 @@ button,input,select{font-family:inherit;}
         </div>
       </sc-if>
 
+      <!-- ===== DRAWER: NUEVO PEDIDO (conectado a POST /api/orders) ===== -->
+      <sc-if value="{{ npOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeNuevoPedido }}" style="position:fixed;inset:0;z-index:45;background:rgba(4,28,53,0.45);"></div>
+        <aside style="position:fixed;top:0;right:0;bottom:0;z-index:46;width:min(540px,100%);background:var(--surface,#FFFFFF);border-left:1px solid var(--border,#E6F1FB);box-shadow:-20px 0 50px -24px rgba(4,28,53,0.4);overflow-y:auto;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--border,#E6F1FB);position:sticky;top:0;background:var(--surface,#FFFFFF);z-index:2;">
+            <p style="font-size:18px;font-weight:700;margin:0;color:var(--text,#042C53);">Nuevo pedido</p>
+            <button onClick="{{ closeNuevoPedido }}" aria-label="Cerrar" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:10px;cursor:pointer;color:var(--text,#042C53);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6 18 18M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="padding:22px 24px;">
+            <!-- Cliente y canal -->
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+              <div style="flex:1 1 220px;">
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Cliente</label>
+                <select value="{{ npCustomer }}" onChange="{{ onNpCustomer }}" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;cursor:pointer;">
+                  <option value="">Público en general</option>
+                  <sc-for list="{{ npClientes }}" as="c" hint-placeholder-count="4">
+                    <option value="{{ c.value }}">{{ c.label }}</option>
+                  </sc-for>
+                </select>
+              </div>
+              <div style="flex:1 1 160px;">
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Canal</label>
+                <select value="{{ npChannel }}" onChange="{{ onNpChannel }}" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;cursor:pointer;">
+                  <option value="Mostrador">Mostrador</option>
+                  <option value="Tienda en línea">Tienda en línea</option>
+                  <option value="Agente IA · WhatsApp">Agente IA · WhatsApp</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Artículos -->
+            <p style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 12px;">Artículos</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
+              <sc-for list="{{ npLineRows }}" as="l" hint-placeholder-count="1">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <select value="{{ l.sku }}" onChange="{{ l.onSku }}" style="flex:1;min-width:0;padding:10px 11px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:13.5px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;cursor:pointer;">
+                    <sc-for list="{{ npProductos }}" as="p" hint-placeholder-count="4">
+                      <option value="{{ p.sku }}">{{ p.label }}</option>
+                    </sc-for>
+                  </select>
+                  <input type="number" min="1" value="{{ l.qty }}" onInput="{{ l.onQty }}" style="flex:none;width:70px;padding:10px 11px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:13.5px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;text-align:center;"></input>
+                  <span style="flex:none;min-width:76px;text-align:right;font-size:13.5px;font-weight:600;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ l.total }}</span>
+                  <button onClick="{{ l.onRemove }}" aria-label="Quitar" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:transparent;border:1px solid var(--border,#E6F1FB);border-radius:9px;cursor:pointer;color:var(--error,#D24545);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6 18 18M18 6 6 18"></path></svg></button>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ npAddLine }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border:1px dashed var(--border,#E6F1FB);border-radius:10px;padding:10px 15px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:20px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Agregar artículo</button>
+
+            <sc-if value="{{ npError }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:13px;color:var(--error,#D24545);margin:0 0 14px;">{{ npError }}</p>
+            </sc-if>
+
+            <!-- Totales -->
+            <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:22px;border-top:1px solid var(--border,#E6F1FB);padding-top:14px;">
+              <div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;color:var(--muted,rgba(4,44,83,0.6));">Subtotal</span><span style="font-size:13.5px;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ npSubtotal }}</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;color:var(--muted,rgba(4,44,83,0.6));">IVA (16%)</span><span style="font-size:13.5px;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ npIva }}</span></div>
+              <div style="display:flex;justify-content:space-between;padding-top:9px;border-top:1px solid var(--border,#E6F1FB);"><span style="font-size:15px;font-weight:700;color:var(--text,#042C53);">Total</span><span style="font-size:15px;font-weight:700;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ npTotal }}</span></div>
+            </div>
+
+            <button onClick="{{ npSubmit }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">{{ npSubmitLabel }}</button>
+            <p style="font-size:12px;color:var(--faint,rgba(4,44,83,0.45));margin:10px 0 0;text-align:center;">El pedido se crea en borrador; después lo confirmas y registras el pago.</p>
+          </div>
+        </aside>
+      </sc-if>
+
       <!-- Placeholder para módulos por iterar -->
       <sc-if value="{{ isOther }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:60vh;">
@@ -846,7 +911,10 @@ class Component extends DCLogic {
     selectedCliente: null,
     selectedConv: 0,
     profileOpen: false,
-    me: null
+    me: null,
+    // Nuevo pedido
+    npOpen: false, npCustomer: '', npChannel: 'Mostrador',
+    npLines: [], npSaving: false, npError: ''
   };
 
   applyTheme() {
@@ -990,6 +1058,56 @@ class Component extends DCLogic {
 
   // Estado destino de cada acción del pipeline
   nextStatus = { borrador: 'confirmado', confirmado: 'pagado', pagado: 'surtido', surtido: 'facturado', facturado: 'enviado' };
+
+  // ==== Nuevo pedido (POST /api/orders; fallback demo local) ====
+
+  openNuevoPedido() {
+    const firstSku = this.productos.length ? this.productos[0].sku : '';
+    this.setState({ npOpen: true, npCustomer: '', npChannel: 'Mostrador', npLines: [{ sku: firstSku, qty: 1 }], npSaving: false, npError: '' });
+  }
+
+  npSetLine(i, patch) {
+    const lines = this.state.npLines.map((l, j) => (j === i ? { ...l, ...patch } : l));
+    this.setState({ npLines: lines, npError: '' });
+  }
+
+  async submitNuevoPedido() {
+    if (this.state.npSaving) return;
+    const lines = this.state.npLines.filter(l => l.sku && Number(l.qty) > 0);
+    if (!lines.length) { this.setState({ npError: 'Agrega al menos un artículo.' }); return; }
+    const items = lines.map(l => {
+      const p = this.productos.find(x => x.sku === l.sku);
+      return { sku: l.sku, name: p ? p.name : l.sku, qty: Number(l.qty), unitPrice: p ? p.price : 0 };
+    });
+
+    // Demo local: agrega el pedido a la lista embebida
+    if (!this.usingApi()) {
+      const next = Math.max(0, ...this.ventas.map(o => parseInt((o.folio || '').replace('PD-', '')) || 0)) + 1;
+      const subtotal = items.reduce((a, it) => a + it.qty * it.unitPrice, 0);
+      const cust = this.clientes.find(c => (c.id || c.rfc) === this.state.npCustomer);
+      this.ventas.unshift({
+        folio: 'PD-' + next, client: cust ? cust.name : 'Público en general', rfc: cust ? cust.rfc : '',
+        date: 'hoy', items: items.reduce((a, it) => a + it.qty, 0),
+        totalNum: Math.round(subtotal * 1.16 * 100) / 100, status: 'borrador', channel: this.state.npChannel
+      });
+      this.setState({ npOpen: false, view: 'ventas', statusFilter: 'todos' });
+      return;
+    }
+
+    this.setState({ npSaving: true, npError: '' });
+    const A = window.AplikaAPI;
+    try {
+      const payload = { channel: this.state.npChannel, items };
+      if (this.state.npCustomer) payload.customerId = this.state.npCustomer;
+      const r = await A.createOrder(payload);
+      const ords = await A.orders('todos');
+      this.ventas = ords.orders;
+      this.setState({ npOpen: false, npSaving: false, view: 'ventas', statusFilter: 'todos' });
+      this.openOrder(r.folio); // abre el drawer del pedido recién creado
+    } catch (e) {
+      this.setState({ npSaving: false, npError: e.message || 'No se pudo crear el pedido.' });
+    }
+  }
 
   nav = [
     { key: 'inicio', label: 'Inicio', d: 'M4 12 12 5l8 7M6 10v10h12V10' },
@@ -1369,6 +1487,12 @@ class Component extends DCLogic {
     const me = this.state.me || { name: 'Juan Méndez', email: 'juan@refanorte.mx', role: 'tenant_admin' };
     const meIni = (me.name || '?').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
+    // Nuevo pedido: subtotal en vivo según líneas elegidas
+    const npSubtotalNum = this.state.npLines.reduce((a, l) => {
+      const p = this.productos.find(x => x.sku === l.sku);
+      return a + (p ? p.price : 0) * (Number(l.qty) || 0);
+    }, 0);
+
     return {
       setRoot: (el) => { this._root = el; if (el) this.applyTheme(); },
 
@@ -1395,6 +1519,34 @@ class Component extends DCLogic {
         if (window.AplikaAPI && window.AplikaAPI.logout) window.AplikaAPI.logout().then(done, done);
         else done();
       },
+
+      // Nuevo pedido
+      npOpen: this.state.npOpen,
+      openNuevoPedido: () => this.openNuevoPedido(),
+      closeNuevoPedido: () => this.setState({ npOpen: false }),
+      npCustomer: this.state.npCustomer,
+      onNpCustomer: (e) => this.setState({ npCustomer: e.target.value }),
+      npChannel: this.state.npChannel,
+      onNpChannel: (e) => this.setState({ npChannel: e.target.value }),
+      npClientes: this.clientes.map(c => ({ value: c.id || c.rfc, label: c.name })),
+      npProductos: this.productos.map(p => ({ sku: p.sku, label: p.name + ' · ' + this.money(p.price) })),
+      npLineRows: this.state.npLines.map((l, i) => {
+        const p = this.productos.find(x => x.sku === l.sku);
+        return {
+          sku: l.sku, qty: l.qty,
+          total: this.money((p ? p.price : 0) * (Number(l.qty) || 0)),
+          onSku: (e) => this.npSetLine(i, { sku: e.target.value }),
+          onQty: (e) => this.npSetLine(i, { qty: e.target.value }),
+          onRemove: () => this.setState({ npLines: this.state.npLines.filter((_, j) => j !== i) })
+        };
+      }),
+      npAddLine: () => this.setState({ npLines: [...this.state.npLines, { sku: this.productos.length ? this.productos[0].sku : '', qty: 1 }] }),
+      npError: this.state.npError,
+      npSubtotal: this.money(npSubtotalNum),
+      npIva: this.money(npSubtotalNum * 0.16),
+      npTotal: this.money(npSubtotalNum * 1.16),
+      npSubmitLabel: this.state.npSaving ? 'Creando…' : 'Crear pedido',
+      npSubmit: () => this.submitNuevoPedido(),
       toggleDark: () => this.setState(s => ({ dark: !s.dark })),
       themeIcon: this.state.dark
         ? 'M12 3v2M12 19v2M5 12H3M21 12h-2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z'
