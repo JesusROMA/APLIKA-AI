@@ -248,3 +248,32 @@ insert into incidents (organization_id, title, detail, severity, created_at) val
   ('11111111-1111-1111-1111-111111111115','Timbrado CFDI rechazado','PAC · certificado del tenant','warn', now() - interval '32 min'),
   ('11111111-1111-1111-1111-111111111112','Pico de uso de API','91% del límite de plan','warn', now() - interval '1 hour'),
   ('11111111-1111-1111-1111-111111111113','Agente de IA reconectado','WhatsApp','ok', now() - interval '2 hour');
+
+-- ---------------------------------------------------------------------------
+-- VERTICALES Y MÓDULOS (0005) — asignación de vertical a tenants demo
+-- El trigger trg_org_vertical inserta los módulos default de cada vertical.
+-- ---------------------------------------------------------------------------
+update organizations set vertical_id = 'b0000000-0000-0000-0000-000000000001'
+ where vertical_id is null
+   and slug in ('refanorte','salinas','centro','herradura','frenosgt','hidalgo','express','dnorte');
+
+-- Segundo tenant demo: vertical 'servicios_agenda' (consultorio de psicología)
+insert into organizations (id, slug, name, status, plan_id, vertical_id, created_at) values
+  ('11111111-1111-1111-1111-111111111119','vitalis','Consultorio Vitalis','activo',
+   'a0000000-0000-0000-0000-000000000001','b0000000-0000-0000-0000-000000000002','2026-05-15')
+on conflict (id) do nothing;
+
+-- Usuaria tenant_admin del consultorio (password Aplika2026!)
+insert into auth.users (instance_id, id, aud, role, email, encrypted_password,
+  email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data,
+  confirmation_token, recovery_token, email_change, email_change_token_new,
+  email_change_token_current, phone_change, phone_change_token, reauthentication_token)
+values ('00000000-0000-0000-0000-000000000000','d0000000-0000-0000-0000-0000000000b3',
+  'authenticated','authenticated','ana@vitalis.mx', crypt('Aplika2026!', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{"full_name":"Ana Sofía Rivera","role":"tenant_admin"}',
+  '', '', '', '', '', '', '', '')
+on conflict (id) do nothing;
+
+update profiles set organization_id='11111111-1111-1111-1111-111111111119', role='tenant_admin'
+ where id='d0000000-0000-0000-0000-0000000000b3';
