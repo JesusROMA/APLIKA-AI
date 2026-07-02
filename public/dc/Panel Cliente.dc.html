@@ -759,6 +759,109 @@ button,input,select{font-family:inherit;}
         </div>
       </sc-if>
 
+      <!-- ===== CALENDARIO / CITAS (módulo del vertical servicios_agenda) ===== -->
+      <sc-if value="{{ isCalendario }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;">
+          <div>
+            <h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Calendario / Citas</h2>
+            <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">{{ citasCount }}</p>
+          </div>
+          <button onClick="{{ openNuevaCita }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nueva cita</button>
+        </div>
+
+        <!-- Conectado: GET /api/appointments -->
+        <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;">
+          <sc-for list="{{ citasTabs }}" as="t" hint-placeholder-count="5">
+            <button onClick="{{ t.onClick }}" style="flex:none;display:inline-flex;align-items:center;gap:7px;border:1px solid {{ t.border }};cursor:pointer;font-size:13px;font-weight:600;padding:8px 13px;border-radius:999px;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}<span style="font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:{{ t.countBg }};color:{{ t.countColor }};">{{ t.count }}</span></button>
+          </sc-for>
+        </div>
+
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
+          <sc-if value="{{ citasEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:56px 24px;text-align:center;">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:var(--surface-2,#F5F8FC);border-radius:16px;color:var(--faint,rgba(4,44,83,0.4));margin-bottom:16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5H20V20H4ZM4 9H20M8 3.5V6.5M16 3.5V6.5"></path></svg></span>
+              <p style="font-size:16px;font-weight:600;color:var(--text,#042C53);margin:0 0 6px;">Sin citas en este filtro</p>
+              <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:0;">Agenda una cita nueva o cambia el filtro.</p>
+            </div>
+          </sc-if>
+          <sc-if value="{{ citasHasRows }}" hint-placeholder-val="{{ true }}">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;min-width:760px;">
+                <thead><tr style="background:var(--surface-2,#F5F8FC);">
+                  <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Fecha</th>
+                  <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Horario</th>
+                  <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Paciente</th>
+                  <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Profesional</th>
+                  <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Estado</th>
+                  <th style="text-align:right;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Acciones</th>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{ citasRows }}" as="c" hint-placeholder-count="5">
+                    <tr style="border-top:1px solid var(--border,#E6F1FB);" style-hover="background:var(--surface-2,#F5F8FC);">
+                      <td style="font-size:13px;font-weight:600;color:var(--text,#042C53);padding:13px 20px;white-space:nowrap;">{{ c.date }}</td>
+                      <td style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));padding:13px 20px;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ c.time }} – {{ c.endTime }}</td>
+                      <td style="padding:13px 20px;"><p style="font-size:13.5px;font-weight:600;color:var(--text,#042C53);margin:0;">{{ c.patient }}</p><p style="font-size:11.5px;color:var(--muted,rgba(4,44,83,0.6));margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;">{{ c.notes }}</p></td>
+                      <td style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));padding:13px 20px;">{{ c.professional }}</td>
+                      <td style="padding:13px 20px;"><span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ c.bg }};color:{{ c.fg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ c.fg }};"></span>{{ c.statusLabel }}</span></td>
+                      <td style="padding:13px 20px;text-align:right;white-space:nowrap;">
+                        <sc-if value="{{ c.canConfirm }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onConfirm }}" style="display:inline-flex;align-items:center;gap:5px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border:none;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-left:6px;">Confirmar</button></sc-if>
+                        <sc-if value="{{ c.canComplete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onComplete }}" style="display:inline-flex;align-items:center;gap:5px;background:var(--success-weak,#E4F6EC);color:var(--success,#1FA85A);border:none;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-left:6px;">Completar</button></sc-if>
+                        <sc-if value="{{ c.canCancel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onCancel }}" style="display:inline-flex;align-items:center;gap:5px;background:transparent;color:var(--error,#D24545);border:1px solid var(--error,#D24545);border-radius:9px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-left:6px;">Cancelar</button></sc-if>
+                      </td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Drawer: nueva cita · POST /api/appointments -->
+        <sc-if value="{{ ncOpen }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeNuevaCita }}" style="position:fixed;inset:0;z-index:45;background:rgba(4,28,53,0.45);"></div>
+          <aside style="position:fixed;top:0;right:0;bottom:0;z-index:46;width:min(460px,100%);background:var(--surface,#FFFFFF);border-left:1px solid var(--border,#E6F1FB);box-shadow:-20px 0 50px -24px rgba(4,28,53,0.4);overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--border,#E6F1FB);position:sticky;top:0;background:var(--surface,#FFFFFF);z-index:2;">
+              <p style="font-size:18px;font-weight:700;margin:0;color:var(--text,#042C53);">Nueva cita</p>
+              <button onClick="{{ closeNuevaCita }}" aria-label="Cerrar" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:10px;cursor:pointer;color:var(--text,#042C53);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6 18 18M18 6 6 18"></path></svg></button>
+            </div>
+            <div style="padding:22px 24px;display:flex;flex-direction:column;gap:15px;">
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Paciente</label>
+                <input type="text" value="{{ ncPatient }}" onInput="{{ onNcPatient }}" placeholder="Nombre del paciente" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+              </div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <div style="flex:1 1 150px;">
+                  <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Fecha</label>
+                  <input type="date" value="{{ ncDate }}" onInput="{{ onNcDate }}" style="width:100%;padding:10px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+                </div>
+                <div style="flex:1 1 110px;">
+                  <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Hora</label>
+                  <input type="time" value="{{ ncTime }}" onInput="{{ onNcTime }}" style="width:100%;padding:10px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+                </div>
+                <div style="flex:1 1 110px;">
+                  <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Duración</label>
+                  <select value="{{ ncDur }}" onChange="{{ onNcDur }}" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;cursor:pointer;">
+                    <option value="30">30 min</option>
+                    <option value="45">45 min</option>
+                    <option value="50">50 min</option>
+                    <option value="60">60 min</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Notas (opcional)</label>
+                <textarea value="{{ ncNotes }}" onInput="{{ onNcNotes }}" rows="3" placeholder="Motivo o notas de la cita" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;resize:vertical;font-family:inherit;"></textarea>
+              </div>
+              <sc-if value="{{ ncError }}" hint-placeholder-val="{{ false }}">
+                <p style="font-size:13px;color:var(--error,#D24545);margin:0;">{{ ncError }}</p>
+              </sc-if>
+              <button onClick="{{ ncSubmit }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">{{ ncSubmitLabel }}</button>
+              <p style="font-size:12px;color:var(--faint,rgba(4,44,83,0.45));margin:0;text-align:center;">La cita se crea como «Agendada»; confírmala cuando el paciente responda.</p>
+            </div>
+          </aside>
+        </sc-if>
+      </sc-if>
+
       <!-- ===== CONFIGURACIÓN ===== -->
       <sc-if value="{{ isConfig }}" hint-placeholder-val="{{ false }}">
         <div style="margin-bottom:20px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Configuración</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Empresa, usuarios e integraciones</p></div>
@@ -914,7 +1017,10 @@ class Component extends DCLogic {
     me: null,
     // Nuevo pedido
     npOpen: false, npCustomer: '', npChannel: 'Mostrador',
-    npLines: [], npSaving: false, npError: ''
+    npLines: [], npSaving: false, npError: '',
+    // Calendario / Citas
+    citasFilter: 'todas',
+    ncOpen: false, ncPatient: '', ncDate: '', ncTime: '', ncDur: '50', ncNotes: '', ncSaving: false, ncError: ''
   };
 
   applyTheme() {
@@ -966,6 +1072,16 @@ class Component extends DCLogic {
       set(() => A.payments(), (r) => { this.pagos = r.payments; }),
       set(() => A.customers(), (r) => { this.clientes = r.clientes; }),
       set(() => A.aiConversations(), (r) => { this.iaConvs = r.conversations; }),
+      // Nav dinámico: módulos activos del tenant (registry en la tabla modules)
+      set(() => A.organizationModules(), (r) => {
+        this.orgModules = r.modules;
+        const items = (r.modules || [])
+          .filter(m => m.route && m.route !== 'config')
+          .map(m => ({ key: m.route, label: m.name, d: m.icon }));
+        if (items.length) this.nav = items;
+      }),
+      // Citas (módulo calendario; tenants sin el módulo reciben lista vacía)
+      set(() => A.appointments.list(), (r) => { this.citas = r.appointments; }),
     ]);
     this.forceUpdate();
   }
@@ -1059,6 +1175,60 @@ class Component extends DCLogic {
   // Estado destino de cada acción del pipeline
   nextStatus = { borrador: 'confirmado', confirmado: 'pagado', pagado: 'surtido', surtido: 'facturado', facturado: 'enviado' };
 
+  // ==== Calendario / Citas (módulo del vertical servicios_agenda) ====
+
+  apptMeta = {
+    agendada: { label: 'Agendada', kind: 'info' },
+    confirmada: { label: 'Confirmada', kind: 'success' },
+    completada: { label: 'Completada', kind: 'neutral' },
+    cancelada: { label: 'Cancelada', kind: 'error' }
+  };
+
+  // Citas demo embebidas (modo demo / fallback)
+  citas = [
+    { id: null, patient: 'Mariana López', professional: 'Ana Sofía Rivera', date: 'hoy', time: '09:00', endTime: '09:50', status: 'completada', notes: 'Sesión de seguimiento' },
+    { id: null, patient: 'Carlos Estrada', professional: 'Ana Sofía Rivera', date: 'hoy', time: '12:00', endTime: '12:50', status: 'confirmada', notes: 'Primera consulta' },
+    { id: null, patient: 'Lucía Fernández', professional: 'Ana Sofía Rivera', date: 'hoy', time: '16:00', endTime: '16:50', status: 'agendada', notes: 'Terapia individual' },
+    { id: null, patient: 'Roberto Díaz', professional: 'Ana Sofía Rivera', date: 'mañana', time: '11:00', endTime: '11:50', status: 'agendada', notes: 'Sesión de pareja' }
+  ];
+
+  async setCitaStatus(c, status) {
+    if (!this.usingApi() || !c.id) { c.status = status; this.forceUpdate(); return; }
+    try {
+      await window.AplikaAPI.appointments.setStatus(c.id, status);
+      const r = await window.AplikaAPI.appointments.list();
+      this.citas = r.appointments;
+      this.forceUpdate();
+    } catch (e) { alert('No se pudo actualizar la cita: ' + e.message); }
+  }
+
+  async submitNuevaCita() {
+    if (this.state.ncSaving) return;
+    const patient = this.state.ncPatient.trim();
+    if (!patient) { this.setState({ ncError: 'Escribe el nombre del paciente.' }); return; }
+    if (!this.state.ncDate || !this.state.ncTime) { this.setState({ ncError: 'Elige fecha y hora.' }); return; }
+
+    if (!this.usingApi()) {
+      this.citas.push({ id: null, patient, professional: '—', date: this.state.ncDate, time: this.state.ncTime, endTime: '', status: 'agendada', notes: this.state.ncNotes });
+      this.setState({ ncOpen: false, view: 'calendario', citasFilter: 'todas' });
+      return;
+    }
+
+    this.setState({ ncSaving: true, ncError: '' });
+    try {
+      const starts = new Date(this.state.ncDate + 'T' + this.state.ncTime);
+      await window.AplikaAPI.appointments.create({
+        patientName: patient,
+        startsAt: starts.toISOString(),
+        durationMin: Number(this.state.ncDur) || 50,
+        notes: this.state.ncNotes || undefined
+      });
+      const r = await window.AplikaAPI.appointments.list();
+      this.citas = r.appointments;
+      this.setState({ ncOpen: false, ncSaving: false, citasFilter: 'todas' });
+    } catch (e) { this.setState({ ncSaving: false, ncError: e.message || 'No se pudo crear la cita.' }); }
+  }
+
   // ==== Nuevo pedido (POST /api/orders; fallback demo local) ====
 
   openNuevoPedido() {
@@ -1119,7 +1289,7 @@ class Component extends DCLogic {
     { key: 'ia', label: 'Agente IA', d: 'M5 5h14v10H8l-3 3zM9 10h.01M13 10h.01M16 10h.01' }
   ];
 
-  titles = { inicio: 'Inicio', ventas: 'Ventas / Pedidos', pagos: 'Pagos', inventario: 'Inventario', facturacion: 'Facturación', clientes: 'CRM Clientes', ia: 'Agente IA', config: 'Configuración' };
+  titles = { inicio: 'Inicio', ventas: 'Ventas / Pedidos', calendario: 'Calendario / Citas', pagos: 'Pagos', inventario: 'Inventario', facturacion: 'Facturación', clientes: 'CRM Clientes', ia: 'Agente IA', config: 'Configuración' };
   otherIcons = {
     ventas: 'M6 7h12l-1 13H7zM9 7V5a3 3 0 0 1 6 0v2', pagos: 'M3 7h18v10H3zM3 11h18M7 15h3',
     inventario: 'M12 3 3 7l9 4 9-4zM3 7v10l9 4 9-4V7M12 11v10', facturacion: 'M7 3h8l3 3v15l-2-1-2 1-2-1-2 1-2-1-2 1V3zM9 9h6M9 12h6',
@@ -1574,10 +1744,55 @@ class Component extends DCLogic {
       viewTitle: this.titles[v] || 'Inicio',
       isInicio: v === 'inicio',
       isVentas: v === 'ventas',
+      isCalendario: v === 'calendario',
+
+      // Calendario / Citas
+      citasTabs: ['todas', 'agendada', 'confirmada', 'completada', 'cancelada'].map(k => ({
+        key: k,
+        label: k === 'todas' ? 'Todas' : this.apptMeta[k].label,
+        count: k === 'todas' ? this.citas.length : this.citas.filter(c => c.status === k).length,
+        onClick: () => this.setState({ citasFilter: k }),
+        bg: this.state.citasFilter === k ? 'var(--accent,#378ADD)' : 'var(--surface,#FFFFFF)',
+        color: this.state.citasFilter === k ? '#FFFFFF' : 'var(--muted,rgba(4,44,83,0.6))',
+        border: this.state.citasFilter === k ? 'var(--accent,#378ADD)' : 'var(--border,#E6F1FB)',
+        countBg: this.state.citasFilter === k ? 'rgba(255,255,255,0.22)' : 'var(--surface-2,#F5F8FC)',
+        countColor: this.state.citasFilter === k ? '#FFFFFF' : 'var(--faint,rgba(4,44,83,0.5))'
+      })),
+      citasRows: (this.state.citasFilter === 'todas' ? this.citas : this.citas.filter(c => c.status === this.state.citasFilter)).map(c => ({
+        date: c.date, time: c.time, endTime: c.endTime, patient: c.patient, professional: c.professional, notes: c.notes || '—',
+        statusLabel: this.apptMeta[c.status].label, ...this.badge(this.apptMeta[c.status].kind),
+        canConfirm: c.status === 'agendada',
+        canComplete: c.status === 'confirmada',
+        canCancel: c.status === 'agendada' || c.status === 'confirmada',
+        onConfirm: () => this.setCitaStatus(c, 'confirmada'),
+        onComplete: () => this.setCitaStatus(c, 'completada'),
+        onCancel: () => this.setCitaStatus(c, 'cancelada')
+      })),
+      citasEmpty: (this.state.citasFilter === 'todas' ? this.citas : this.citas.filter(c => c.status === this.state.citasFilter)).length === 0,
+      citasHasRows: (this.state.citasFilter === 'todas' ? this.citas : this.citas.filter(c => c.status === this.state.citasFilter)).length > 0,
+      citasCount: this.citas.length + ' citas en el período',
+
+      // Nueva cita
+      ncOpen: this.state.ncOpen,
+      openNuevaCita: () => this.setState({ ncOpen: true, ncPatient: '', ncDate: '', ncTime: '', ncDur: '50', ncNotes: '', ncError: '' }),
+      closeNuevaCita: () => this.setState({ ncOpen: false }),
+      ncPatient: this.state.ncPatient,
+      onNcPatient: (e) => this.setState({ ncPatient: e.target.value, ncError: '' }),
+      ncDate: this.state.ncDate,
+      onNcDate: (e) => this.setState({ ncDate: e.target.value, ncError: '' }),
+      ncTime: this.state.ncTime,
+      onNcTime: (e) => this.setState({ ncTime: e.target.value, ncError: '' }),
+      ncDur: this.state.ncDur,
+      onNcDur: (e) => this.setState({ ncDur: e.target.value }),
+      ncNotes: this.state.ncNotes,
+      onNcNotes: (e) => this.setState({ ncNotes: e.target.value }),
+      ncError: this.state.ncError,
+      ncSubmitLabel: this.state.ncSaving ? 'Agendando…' : 'Agendar cita',
+      ncSubmit: () => this.submitNuevaCita(),
       isInventario: v === 'inventario',
       isFacturacion: v === 'facturacion',
       isPagos: v === 'pagos', isClientes: v === 'clientes', isIA: v === 'ia', isConfig: v === 'config',
-      isOther: v === 'inicio' ? false : !['ventas', 'inventario', 'facturacion', 'pagos', 'clientes', 'ia', 'config'].includes(v),
+      isOther: v === 'inicio' ? false : !['ventas', 'calendario', 'inventario', 'facturacion', 'pagos', 'clientes', 'ia', 'config'].includes(v),
       pagoRows, pagosSummary,
       clienteRows, clienteOpen: !!cliFind, cliente: clienteView, closeCliente: () => this.setState({ selectedCliente: null }),
       iaConvRows, iaSelName: iaSel.name, iaSelIni: iaSel.ini,
