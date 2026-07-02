@@ -82,6 +82,24 @@
     aiMetrics: () => get('/api/ai-agent/metrics'),
     aiConversations: () => get('/api/ai-agent/conversations'),
 
+    // Módulos activos del tenant (nav dinámico del Panel Cliente)
+    organizationModules: () => get('/api/organization/modules'),
+
+    // Calendario / Citas (vertical servicios_agenda)
+    appointments: {
+      list: (from, to, status) => {
+        const q = new URLSearchParams();
+        if (from) q.set('from', from);
+        if (to) q.set('to', to);
+        if (status) q.set('status', status);
+        return get('/api/appointments?' + q.toString());
+      },
+      create: (payload) => post('/api/appointments', payload),
+      get: (id) => get('/api/appointments/' + id),
+      update: (id, payload) => patch('/api/appointments/' + id, payload),
+      setStatus: (id, status) => patch('/api/appointments/' + id, { status }),
+    },
+
     // Leads (landing pública)
     lead: (payload) => post('/api/leads', payload),
 

@@ -1,6 +1,6 @@
 -- ============================================================
 -- Aplika.ai — SETUP COMPLETO (pegar en Supabase SQL Editor y Run)
--- Genera esquema + RLS + lógica + storage + verticales + datos demo.
+-- Esquema + RLS + lógica + storage + verticales + citas + datos demo.
 -- ============================================================
 
 -- >>>>>>>>>>>>>>>>>>>>>>>> supabase/migrations/0001_init_schema.sql <<<<<<<<<<<<<<<<<<<<<<<<
@@ -956,6 +956,42 @@ insert into verticals (id, key, name, description, default_modules) values
 on conflict (key) do nothing;
 
 
+-- >>>>>>>>>>>>>>>>>>>>>>>> supabase/migrations/0006_appointments.sql <<<<<<<<<<<<<<<<<<<<<<<<
+-- ============================================================================
+-- Aplika.ai — 0006 · Módulo Calendario/Citas (vertical servicios_agenda)
+-- Mismo patrón que orders/inventory: organization_id + RLS por tenant.
+-- ============================================================================
+
+create type appointment_status as enum ('agendada', 'confirmada', 'completada', 'cancelada');
+
+create table appointments (
+  id              uuid primary key default uuid_generate_v4(),
+  organization_id uuid not null references organizations(id) on delete cascade,
+  customer_id     uuid references customers(id),          -- paciente con ficha CRM (opcional)
+  patient_name    text not null,                          -- nombre mostrado (walk-in o CRM)
+  professional_id uuid references profiles(id),           -- profesional que atiende
+  starts_at       timestamptz not null,
+  ends_at         timestamptz not null,
+  status          appointment_status not null default 'agendada',
+  notes           text,
+  created_by      uuid references profiles(id),
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now(),
+  check (ends_at > starts_at)
+);
+create index idx_appt_org_starts on appointments(organization_id, starts_at);
+
+create trigger trg_appt_touch before update on appointments
+  for each row execute function app.touch_updated_at();
+
+-- RLS: aislamiento por tenant (mismo patrón que el resto del esquema)
+alter table appointments enable row level security;
+create policy tenant_isolation on appointments
+  for all to authenticated
+  using ( app.is_super_admin() or organization_id = app.current_org_id() )
+  with check ( app.is_super_admin() or organization_id = app.current_org_id() );
+
+
 -- >>>>>>>>>>>>>>>>>>>>>>>> supabase/seed.sql <<<<<<<<<<<<<<<<<<<<<<<<
 -- ============================================================================
 -- Aplika.ai — seed demo (coherente con el frontend Claude Design)
@@ -1236,5 +1272,21 @@ on conflict (id) do nothing;
 
 update profiles set organization_id='11111111-1111-1111-1111-111111111119', role='tenant_admin'
  where id='d0000000-0000-0000-0000-0000000000b3';
+
+-- ---------------------------------------------------------------------------
+-- CITAS DEMO (0006 · Consultorio Vitalis, módulo calendario)
+-- Horarios relativos a now() para que el demo siempre se vea vigente.
+-- ---------------------------------------------------------------------------
+insert into appointments (organization_id, patient_name, professional_id, starts_at, ends_at, status, notes) values
+  ('11111111-1111-1111-1111-111111111119','Mariana López','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) - interval '3 hour', date_trunc('hour', now()) - interval '3 hour' + interval '50 min','completada','Sesión de seguimiento'),
+  ('11111111-1111-1111-1111-111111111119','Carlos Estrada','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '2 hour', date_trunc('hour', now()) + interval '2 hour' + interval '50 min','confirmada','Primera consulta'),
+  ('11111111-1111-1111-1111-111111111119','Lucía Fernández','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '4 hour', date_trunc('hour', now()) + interval '4 hour' + interval '50 min','agendada','Terapia individual'),
+  ('11111111-1111-1111-1111-111111111119','Roberto Díaz','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '1 day' + interval '1 hour', date_trunc('hour', now()) + interval '1 day' + interval '1 hour' + interval '50 min','agendada','Sesión de pareja'),
+  ('11111111-1111-1111-1111-111111111119','Sofía Marín','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '2 day', date_trunc('hour', now()) + interval '2 day' + interval '50 min','cancelada','Reagendará la próxima semana');
 
 

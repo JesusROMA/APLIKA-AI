@@ -277,3 +277,19 @@ on conflict (id) do nothing;
 
 update profiles set organization_id='11111111-1111-1111-1111-111111111119', role='tenant_admin'
  where id='d0000000-0000-0000-0000-0000000000b3';
+
+-- ---------------------------------------------------------------------------
+-- CITAS DEMO (0006 · Consultorio Vitalis, módulo calendario)
+-- Horarios relativos a now() para que el demo siempre se vea vigente.
+-- ---------------------------------------------------------------------------
+insert into appointments (organization_id, patient_name, professional_id, starts_at, ends_at, status, notes) values
+  ('11111111-1111-1111-1111-111111111119','Mariana López','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) - interval '3 hour', date_trunc('hour', now()) - interval '3 hour' + interval '50 min','completada','Sesión de seguimiento'),
+  ('11111111-1111-1111-1111-111111111119','Carlos Estrada','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '2 hour', date_trunc('hour', now()) + interval '2 hour' + interval '50 min','confirmada','Primera consulta'),
+  ('11111111-1111-1111-1111-111111111119','Lucía Fernández','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '4 hour', date_trunc('hour', now()) + interval '4 hour' + interval '50 min','agendada','Terapia individual'),
+  ('11111111-1111-1111-1111-111111111119','Roberto Díaz','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '1 day' + interval '1 hour', date_trunc('hour', now()) + interval '1 day' + interval '1 hour' + interval '50 min','agendada','Sesión de pareja'),
+  ('11111111-1111-1111-1111-111111111119','Sofía Marín','d0000000-0000-0000-0000-0000000000b3',
+   date_trunc('hour', now()) + interval '2 day', date_trunc('hour', now()) + interval '2 day' + interval '50 min','cancelada','Reagendará la próxima semana');
