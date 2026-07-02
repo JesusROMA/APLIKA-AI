@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "sync": "powershell -ExecutionPolicy Bypass -File scripts/auto-sync.ps1",
     "db:reset": "supabase db reset",
     "db:push": "supabase db push",
     "db:seed": "supabase db reset --linked=false"

@@ -67,6 +67,22 @@ APLIKA/
 - Super-admin: `admin@aplika.ai`
 - Tenant admin (Refaccionaria del Norte): `juan@refanorte.mx`
 
+## Sincronización automática del equipo
+
+Para que los commits fluyan solos entre el equipo (sin pedir pull/push manual):
+
+1. **Activa el auto-push (una sola vez por desarrollador):**
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+   A partir de ahí, **cada `git commit` se sube solo** a `origin/main`; si el
+   remoto va adelante, integra con `pull --rebase --autostash` y reintenta.
+2. **VS Code** ya queda configurado por `.vscode/settings.json`: auto-fetch cada
+   60 s (verás la flecha ↓ con los commits entrantes) y Sync con rebase+autostash.
+3. **Auto-pull continuo (opcional):** en una terminal aparte corre
+   `npm run sync` (Windows) o `./scripts/auto-sync.sh` (macOS/Linux) — baja los
+   commits del equipo cada 60 s mientras trabajas, preservando tus cambios.
+
 ## Contrato de API (implementado)
 
 Auth: `POST /api/auth/login`, `/logout`.

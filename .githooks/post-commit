@@ -1,0 +1,22 @@
+#!/bin/sh
+# ============================================================================
+# Aplika — auto-push tras cada commit (rama main).
+# Si el remoto va adelante, baja con rebase (autostash) y reintenta el push.
+# Activación por desarrollador (una sola vez):
+#   git config core.hooksPath .githooks
+# ============================================================================
+branch=$(git rev-parse --abbrev-ref HEAD)
+[ "$branch" != "main" ] && exit 0
+
+echo "[auto-push] subiendo commit a origin/main..."
+if git push origin main 2>/dev/null; then
+  echo "[auto-push] listo."
+else
+  echo "[auto-push] remoto adelante; integrando con rebase..."
+  if git pull --rebase --autostash origin main && git push origin main; then
+    echo "[auto-push] integrado y subido."
+  else
+    echo "[auto-push] ⚠ no se pudo subir (¿sin red o conflicto?). Sube manualmente con: git pull --rebase && git push"
+  fi
+fi
+exit 0
