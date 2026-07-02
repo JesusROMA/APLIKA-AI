@@ -105,7 +105,11 @@
 
     // Super-admin
     adminMetrics: () => get('/api/admin/metrics'),
-    adminTenants: (status) => get('/api/admin/tenants?status=' + (status || 'todos')),
+    adminTenants: (status, vertical) => get('/api/admin/tenants?status=' + (status || 'todos') + '&vertical=' + (vertical || 'todos')),
+    adminVerticals: () => get('/api/admin/verticals'),
+    adminTenantModules: (id) => get('/api/admin/tenants/' + id + '/modules'),
+    adminSetTenantModule: (id, moduleKey, enabled) => patch('/api/admin/tenants/' + id + '/modules', { moduleKey, enabled }),
+    adminCreateTenant: (payload) => post('/api/admin/tenants', payload),
     adminPlans: () => get('/api/admin/plans'),
     adminHealth: () => get('/api/admin/health'),
     adminIncidents: () => get('/api/admin/incidents'),
