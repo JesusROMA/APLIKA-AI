@@ -366,7 +366,7 @@ button,input,select{font-family:inherit;}
               </sc-if>
 
               <!-- Items -->
-              <p style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 12px;">Artículos · TODO backend: GET /api/orders/{id}/items</p>
+              <p style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 12px;">Artículos</p>
               <div style="border:1px solid var(--border,#E6F1FB);border-radius:12px;overflow:hidden;margin-bottom:18px;">
                 <sc-for list="{{ order.lines }}" as="l" hint-placeholder-count="3">
                   <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--border,#E6F1FB);">
@@ -386,7 +386,7 @@ button,input,select{font-family:inherit;}
 
               <!-- Acciones -->
               <sc-if value="{{ order.hasAction }}" hint-placeholder-val="{{ false }}">
-                <button style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">{{ order.nextAction }}</button>
+                <button onClick="{{ order.onAction }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">{{ order.nextAction }}</button>
               </sc-if>
               <div style="display:flex;gap:9px;">
                 <button style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l3 3v15l-2-1-2 1-2-1-2 1-2-1-2 1V3z"></path></svg>Ver factura</button>
@@ -491,7 +491,7 @@ button,input,select{font-family:inherit;}
                 </sc-for>
               </div>
 
-              <p style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 12px;">Kardex de movimientos · TODO backend: GET /api/inventory/{sku}/kardex</p>
+              <p style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.4));margin:0 0 12px;">Kardex de movimientos</p>
               <div style="border:1px solid var(--border,#E6F1FB);border-radius:12px;overflow:hidden;margin-bottom:22px;">
                 <sc-for list="{{ kardex }}" as="m" hint-placeholder-count="5">
                   <div style="display:flex;align-items:center;gap:12px;padding:12px 15px;border-bottom:1px solid var(--border,#E6F1FB);">
@@ -619,16 +619,16 @@ button,input,select{font-family:inherit;}
 
               <!-- Acciones contextuales -->
               <sc-if value="{{ factura.isBorrador }}" hint-placeholder-val="{{ false }}">
-                <!-- TODO backend: POST /api/invoices/{id}/timbrar -->
-                <button style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.5 11.5 15 16 9.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"></path></svg>Timbrar CFDI 4.0</button>
+                <!-- Conectado: POST /api/invoices/{id}/timbrar -->
+                <button onClick="{{ factura.onTimbrar }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.5 11.5 15 16 9.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"></path></svg>Timbrar CFDI 4.0</button>
               </sc-if>
               <sc-if value="{{ factura.isTimbrada }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;gap:9px;margin-bottom:10px;">
                   <button style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>XML</button>
                   <button style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:11px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>PDF</button>
                 </div>
-                <!-- TODO backend: POST /api/invoices/{id}/cancelar -->
-                <button style="display:inline-flex;align-items:center;justify-content:center;gap:7px;width:100%;background:transparent;color:var(--error,#D24545);border:1px solid var(--error,#D24545);border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancelar factura</button>
+                <!-- Conectado: POST /api/invoices/{id}/cancelar -->
+                <button onClick="{{ factura.onCancelar }}" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;width:100%;background:transparent;color:var(--error,#D24545);border:1px solid var(--error,#D24545);border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancelar factura</button>
               </sc-if>
               <sc-if value="{{ factura.isCancelada }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;align-items:center;gap:10px;background:var(--error-weak,#FBE7E7);border-radius:12px;padding:14px 16px;"><span style="color:var(--error,#D24545);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16v.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"></path></svg></span><span style="font-size:13.5px;font-weight:600;color:var(--error,#D24545);">Factura cancelada ante el SAT.</span></div>
@@ -878,6 +878,7 @@ class Component extends DCLogic {
     }
     let cfg;
     try { cfg = await A.config(); } catch (e) { return; }
+    this._demo = !!cfg.demo;
     if (cfg.demo) { console.info('[aplika] modo demo: usando datos embebidos del panel'); return; }
     const set = async (fn, assign) => { try { assign(await fn()); } catch (e) { console.warn('[aplika] carga parcial:', e.message); } };
     await Promise.all([
@@ -900,6 +901,95 @@ class Component extends DCLogic {
     ]);
     this.forceUpdate();
   }
+
+  // ==== Drawers: detalle bajo demanda desde /api (fallback demo embebido) ====
+
+  usingApi() { return !!window.AplikaAPI && this._demo === false; }
+
+  // Pedido: líneas + totales reales (GET /api/orders/{folio}/items)
+  async openOrder(folio) {
+    this.orderDetail = null;
+    this.setState({ selectedOrder: folio });
+    if (!this.usingApi()) return;
+    try { this.orderDetail = await window.AplikaAPI.orderItems(folio); this.forceUpdate(); }
+    catch (e) { console.warn('[aplika] detalle de pedido:', e.message); }
+  }
+
+  // Avanza el pedido al siguiente estado (POST /api/orders/{folio}/transition)
+  async doTransition(folio, current) {
+    const target = this.nextStatus[current];
+    if (!target) return;
+    if (!this.usingApi()) {
+      const o = this.ventas.find(x => x.folio === folio);
+      if (o) o.status = target;
+      this.forceUpdate();
+      return;
+    }
+    const A = window.AplikaAPI;
+    try {
+      await A.transitionOrder(folio, target);
+      const [ords, inv] = await Promise.all([A.orders('todos'), A.inventory('todos')]);
+      this.ventas = ords.orders; this.productos = inv.products;
+      try { this.orderDetail = await A.orderItems(folio); } catch (e) {}
+      this.forceUpdate();
+    } catch (e) { alert('No se pudo actualizar el pedido: ' + e.message); }
+  }
+
+  // Producto: kardex + stock por almacén reales (GET /api/inventory/{sku}/kardex)
+  async openProduct(sku) {
+    this.productDetail = null;
+    this.setState({ selectedProduct: sku });
+    if (!this.usingApi()) return;
+    try { this.productDetail = await window.AplikaAPI.kardex(sku); this.forceUpdate(); }
+    catch (e) { console.warn('[aplika] kardex:', e.message); }
+  }
+
+  // Factura: conceptos reales desde las líneas del pedido origen
+  async openFactura(f) {
+    this.facturaDetail = null;
+    this.setState({ selectedFactura: f.serie + f.folio });
+    if (!this.usingApi() || !f.pedido) return;
+    try {
+      const r = await window.AplikaAPI.orderItems(f.pedido);
+      this.facturaDetail = { key: f.serie + f.folio, lines: r.lines };
+      this.forceUpdate();
+    } catch (e) { console.warn('[aplika] conceptos de factura:', e.message); }
+  }
+
+  // Timbrar CFDI (POST /api/invoices/{id}/timbrar) y recargar
+  async doTimbrar(fac) {
+    if (!this.usingApi() || !fac.id) {
+      fac.status = 'timbrada'; fac.uuid = fac.uuid || 'DEMO-UUID-' + fac.folio;
+      this.forceUpdate();
+      return;
+    }
+    const A = window.AplikaAPI;
+    try {
+      await A.timbrar(fac.id);
+      const [inv, ords] = await Promise.all([A.invoices('todas'), A.orders('todos')]);
+      this.facturas = inv.invoices; this.ventas = ords.orders;
+      this.forceUpdate();
+    } catch (e) { alert('No se pudo timbrar: ' + e.message); }
+  }
+
+  // Cancelar CFDI (POST /api/invoices/{id}/cancelar) y recargar
+  async doCancelar(fac) {
+    if (!this.usingApi() || !fac.id) {
+      fac.status = 'cancelada';
+      this.forceUpdate();
+      return;
+    }
+    const A = window.AplikaAPI;
+    try {
+      await A.cancelarFactura(fac.id);
+      const inv = await A.invoices('todas');
+      this.facturas = inv.invoices;
+      this.forceUpdate();
+    } catch (e) { alert('No se pudo cancelar: ' + e.message); }
+  }
+
+  // Estado destino de cada acción del pipeline
+  nextStatus = { borrador: 'confirmado', confirmado: 'pagado', pagado: 'surtido', surtido: 'facturado', facturado: 'enviado' };
 
   nav = [
     { key: 'inicio', label: 'Inicio', d: 'M4 12 12 5l8 7M6 10v10h12V10' },
@@ -1113,7 +1203,7 @@ class Component extends DCLogic {
     const ventasRows = vList.map(o => ({
       folio: o.folio, client: o.client, date: o.date, items: o.items + ' artículos', total: this.money(o.totalNum),
       status: this.statusMeta[o.status].label, ...this.badge(this.statusMeta[o.status].kind),
-      onClick: () => this.setState({ selectedOrder: o.folio })
+      onClick: () => this.openOrder(o.folio)
     }));
 
     const order = this.ventas.find(o => o.folio === this.state.selectedOrder);
@@ -1140,15 +1230,20 @@ class Component extends DCLogic {
       });
       const sub = order.totalNum / 1.16;
       const sb = this.badge(this.statusMeta[order.status].kind);
+      // Detalle real (líneas/totales del API) si está cargado; si no, demo embebido
+      const od = (this.orderDetail && this.orderDetail.folio === order.folio) ? this.orderDetail : null;
       orderView = {
         folio: order.folio, client: order.client, rfc: order.rfc, date: order.date, channel: order.channel,
         statusLabel: this.statusMeta[order.status].label, statusBg: sb.bg, statusFg: sb.fg,
         cancelled,
         active: !cancelled,
         hasAction: !!this.nextActions[order.status],
-        subtotal: this.money(sub), iva: this.money(order.totalNum - sub), total: this.money(order.totalNum),
+        subtotal: od ? od.subtotal : this.money(sub),
+        iva: od ? od.iva : this.money(order.totalNum - sub),
+        total: od ? od.total : this.money(order.totalNum),
         nextAction: this.nextActions[order.status] || null,
-        lines: this.detailLines.map(l => ({ name: l.name, sku: l.sku, qty: l.qty, price: this.money(l.price), total: this.money(l.qty * l.price) }))
+        onAction: () => this.doTransition(order.folio, order.status),
+        lines: od ? od.lines : this.detailLines.map(l => ({ name: l.name, sku: l.sku, qty: l.qty, price: this.money(l.price), total: this.money(l.qty * l.price) }))
       };
     }
 
@@ -1169,7 +1264,7 @@ class Component extends DCLogic {
       return {
         sku: p.sku, name: p.name, cat: p.cat, wh: p.wh, stock: p.stock + ' u', min: 'mín ' + p.min,
         valor: this.money(p.stock * p.price), semLabel: this.semMeta[sem].label, ...this.badge(this.semMeta[sem].kind),
-        onClick: () => this.setState({ selectedProduct: p.sku })
+        onClick: () => this.openProduct(p.sku)
       };
     });
     const valorTotal = this.productos.reduce((a, p) => a + p.stock * p.price, 0);
@@ -1197,7 +1292,7 @@ class Component extends DCLogic {
       serie: f.serie + '-' + f.folio, client: f.client, rfc: f.rfc, date: f.date,
       uuid: f.uuid ? f.uuid.slice(0, 8) + '…' : '—', total: this.money(f.totalNum),
       status: this.facStatusMeta[f.status].label, ...this.badge(this.facStatusMeta[f.status].kind),
-      onClick: () => this.setState({ selectedFactura: f.serie + f.folio })
+      onClick: () => this.openFactura(f)
     }));
     const facTimbradas = this.facturas.filter(f => f.status === 'timbrada');
     const facSummary = [
@@ -1212,13 +1307,17 @@ class Component extends DCLogic {
     if (fac) {
       const sub = fac.totalNum / 1.16;
       const fb = this.badge(this.facStatusMeta[fac.status].kind);
+      // Conceptos reales (líneas del pedido origen) si están cargados; si no, demo
+      const fd = (this.facturaDetail && this.facturaDetail.key === (fac.serie + fac.folio)) ? this.facturaDetail : null;
       facturaView = {
         serie: fac.serie + '-' + fac.folio, client: fac.client, rfc: fac.rfc, regimen: fac.regimen, uso: fac.uso,
         date: fac.date, uuid: fac.uuid || 'Sin timbrar', pedido: fac.pedido,
         statusLabel: this.facStatusMeta[fac.status].label, statusBg: fb.bg, statusFg: fb.fg,
         isBorrador: fac.status === 'borrador', isTimbrada: fac.status === 'timbrada', isCancelada: fac.status === 'cancelada',
         subtotal: this.money(sub), iva: this.money(fac.totalNum - sub), total: this.money(fac.totalNum),
-        conceptos: this.conceptos.map(c => ({ name: c.name, sku: c.sku, qty: c.qty, price: this.money(c.price), total: this.money(c.qty * c.price) }))
+        onTimbrar: () => this.doTimbrar(fac),
+        onCancelar: () => this.doCancelar(fac),
+        conceptos: fd ? fd.lines : this.conceptos.map(c => ({ name: c.name, sku: c.sku, qty: c.qty, price: this.money(c.price), total: this.money(c.qty * c.price) }))
       };
     }
 
@@ -1228,14 +1327,21 @@ class Component extends DCLogic {
       const sem = this.semaforo(prod);
       const sb = this.badge(this.semMeta[sem].kind);
       const other = prod.wh === 'Matriz' ? 'Bodega 2' : 'Matriz';
+      // Detalle real (kardex + almacenes del API) si está cargado; si no, demo
+      const pd = (this.productDetail && this.productDetail.product && this.productDetail.product.sku === prod.sku) ? this.productDetail : null;
       productView = {
         sku: prod.sku, name: prod.name, cat: prod.cat,
         semLabel: this.semMeta[sem].label, statusBg: sb.bg, statusFg: sb.fg,
-        stock: prod.stock, min: prod.min, max: prod.max, valor: this.money(prod.stock * prod.price), price: this.money(prod.price),
-        almacenes: [{ name: prod.wh, qty: prod.stock + ' u' }, { name: other, qty: '0 u' }]
+        stock: pd ? pd.product.stock : prod.stock,
+        min: pd ? pd.product.min : prod.min,
+        max: pd ? pd.product.max : prod.max,
+        valor: pd ? pd.product.valor : this.money(prod.stock * prod.price),
+        price: this.money(prod.price),
+        almacenes: pd ? pd.product.almacenes : [{ name: prod.wh, qty: prod.stock + ' u' }, { name: other, qty: '0 u' }]
       };
-      kardexRows = this.kardex.map(m => ({
-        date: m.date, tipo: m.tipo, detail: m.detail, qty: (m.qty > 0 ? '+' : '') + m.qty,
+      const kardexSrc = pd ? pd.kardex : this.kardex.map(m => ({ date: m.date, tipo: m.tipo, detail: m.detail, qty: (m.qty > 0 ? '+' : '') + m.qty, kind: m.kind }));
+      kardexRows = kardexSrc.map(m => ({
+        date: m.date, tipo: m.tipo, detail: m.detail, qty: m.qty,
         qtyColor: m.kind === 'entrada' ? 'var(--success,#1FA85A)' : (m.kind === 'salida' ? 'var(--error,#D24545)' : 'var(--muted,rgba(4,44,83,0.6))'),
         tipoBg: m.kind === 'entrada' ? 'var(--success-weak,#E4F6EC)' : (m.kind === 'salida' ? 'var(--error-weak,#FBE7E7)' : 'var(--surface-2,#F5F8FC)'),
         tipoFg: m.kind === 'entrada' ? 'var(--success,#1FA85A)' : (m.kind === 'salida' ? 'var(--error,#D24545)' : 'var(--muted,rgba(4,44,83,0.6))')
