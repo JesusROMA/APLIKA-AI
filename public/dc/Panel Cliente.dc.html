@@ -769,6 +769,36 @@ button,input,select{font-family:inherit;}
           <button onClick="{{ openNuevaCita }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nueva cita</button>
         </div>
 
+        <!-- Vista semanal (rejilla horas × días) — GET /api/appointments -->
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border,#E6F1FB);">
+            <p style="font-size:15px;font-weight:700;margin:0;color:var(--text,#042C53);">{{ weekTitle }}</p>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button onClick="{{ weekPrev }}" aria-label="Semana anterior" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:9px;cursor:pointer;color:var(--text,#042C53);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+              <button onClick="{{ weekToday }}" style="background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:9px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--text,#042C53);">Hoy</button>
+              <button onClick="{{ weekNext }}" aria-label="Semana siguiente" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:9px;cursor:pointer;color:var(--text,#042C53);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <div style="display:grid;grid-template-columns:54px repeat(7,minmax(96px,1fr));min-width:760px;">
+              <div style="border-bottom:1px solid var(--border,#E6F1FB);border-right:1px solid var(--border,#E6F1FB);"></div>
+              <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+                <div style="padding:10px 6px;text-align:center;font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));border-bottom:1px solid var(--border,#E6F1FB);background:{{ d.headBg }};">{{ d.label }}</div>
+              </sc-for>
+              <sc-for list="{{ weekRows }}" as="r" hint-placeholder-count="13">
+                <div style="padding:6px 8px;text-align:right;font-size:11px;font-variant-numeric:tabular-nums;color:var(--faint,rgba(4,44,83,0.5));border-right:1px solid var(--border,#E6F1FB);border-bottom:1px solid var(--border,#E6F1FB);">{{ r.hour }}</div>
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="7">
+                  <div style="min-height:38px;padding:3px;border-bottom:1px solid var(--border,#E6F1FB);border-right:1px solid var(--border,#E6F1FB);background:{{ c.todayBg }};display:flex;flex-direction:column;gap:3px;">
+                    <sc-for list="{{ c.appts }}" as="a" hint-placeholder-count="0">
+                      <div style="background:{{ a.bg }};color:{{ a.fg }};border-radius:7px;padding:4px 7px;font-size:11px;font-weight:600;line-height:1.2;overflow:hidden;"><span style="font-variant-numeric:tabular-nums;opacity:0.85;">{{ a.time }}</span> {{ a.patient }}</div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
         <!-- Conectado: GET /api/appointments -->
         <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;">
           <sc-for list="{{ citasTabs }}" as="t" hint-placeholder-count="5">
@@ -860,6 +890,65 @@ button,input,select{font-family:inherit;}
             </div>
           </aside>
         </sc-if>
+      </sc-if>
+
+      <!-- ===== RESERVA DE CITAS POR WHATSAPP (vertical servicios_agenda) ===== -->
+      <sc-if value="{{ isReservas }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;">
+          <div>
+            <h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Reserva de citas por WhatsApp</h2>
+            <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">El Agente IA capta la solicitud y la agenda en tu calendario</p>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--success,#1FA85A);background:var(--success-weak,#E4F6EC);padding:6px 12px;border-radius:999px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5z"></path></svg>WhatsApp conectado</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:14px;align-items:start;">
+          <!-- Bandeja de solicitudes -->
+          <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
+            <div style="padding:15px 18px;border-bottom:1px solid var(--border,#E6F1FB);"><p style="font-size:14px;font-weight:700;margin:0;color:var(--text,#042C53);">Solicitudes entrantes</p></div>
+            <sc-for list="{{ waRows }}" as="c" hint-placeholder-count="3">
+              <div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border,#E6F1FB);border-left:3px solid {{ c.border }};cursor:pointer;background:{{ c.bg }};">
+                <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border-radius:50%;font-size:13px;font-weight:700;">{{ c.ini }}</span>
+                <div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;gap:8px;"><p style="font-size:13.5px;font-weight:600;color:var(--text,#042C53);margin:0;">{{ c.patient }}</p><span style="font-size:11px;color:var(--faint,rgba(4,44,83,0.45));flex:none;">{{ c.time }}</span></div><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.preview }}</p></div>
+                <sc-if value="{{ c.done }}" hint-placeholder-val="{{ false }}"><span style="flex:none;color:var(--success,#1FA85A);" title="Agendada"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Conversación + generación de cita -->
+          <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;">
+            <div style="display:flex;align-items:center;gap:11px;padding:15px 18px;border-bottom:1px solid var(--border,#E6F1FB);">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border-radius:50%;font-size:13px;font-weight:700;">{{ waSelIni }}</span>
+              <div><p style="font-size:14px;font-weight:600;color:var(--text,#042C53);margin:0;">{{ waSelPatient }}</p><p style="font-size:12px;color:var(--muted,rgba(4,44,83,0.6));margin:1px 0 0;font-variant-numeric:tabular-nums;">{{ waSelPhone }}</p></div>
+            </div>
+            <div style="flex:1;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:180px;background:var(--surface-2,#F5F8FC);">
+              <sc-for list="{{ waThread }}" as="m" hint-placeholder-count="3">
+                <div style="align-self:{{ m.align }};max-width:80%;background:{{ m.bg }};color:{{ m.color }};font-size:13.5px;line-height:1.45;padding:9px 13px;border-radius:{{ m.radius }};">{{ m.text }}</div>
+              </sc-for>
+            </div>
+
+            <!-- Datos detectados + acción -->
+            <div style="padding:16px 18px;border-top:1px solid var(--border,#E6F1FB);display:flex;flex-direction:column;gap:13px;">
+              <div style="display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:11px;background:{{ waCardBg }};border:1px solid {{ waCardBorder }};">
+                <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:{{ waCardIconBg }};color:#FFFFFF;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5H20V20H4ZM4 9H20M8 3.5V6.5M16 3.5V6.5"></path></svg></span>
+                <div style="flex:1;min-width:0;"><p style="font-size:11.5px;font-weight:600;letter-spacing:0.03em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.5));margin:0 0 2px;">Cita detectada por la IA</p><p style="font-size:14px;font-weight:700;color:{{ waCardIconFg }};margin:0;">{{ waParsedWhen }}</p></div>
+              </div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <div style="flex:1 1 160px;">
+                  <label style="display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--muted,rgba(4,44,83,0.6));">Paciente</label>
+                  <input type="text" value="{{ waName }}" onInput="{{ onWaName }}" placeholder="Nombre del paciente" style="width:100%;padding:10px 12px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:13.5px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+                </div>
+                <div style="flex:2 1 220px;">
+                  <label style="display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--muted,rgba(4,44,83,0.6));">Mensaje de WhatsApp</label>
+                  <input type="text" value="{{ waMsg }}" onInput="{{ onWaMsg }}" placeholder="p. ej. mañana a las 4pm" style="width:100%;padding:10px 12px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:13.5px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+                </div>
+              </div>
+              <sc-if value="{{ waError }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:var(--error,#D24545);margin:0;">{{ waError }}</p></sc-if>
+              <button onClick="{{ agendarReserva }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:13px;font-size:14.5px;font-weight:600;cursor:pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 9h18M5 5h14v15H5zM9 15l2 2 4-4"></path></svg>{{ waSubmitLabel }}</button>
+              <p style="font-size:12px;color:var(--faint,rgba(4,44,83,0.45));margin:0;text-align:center;">Edita el mensaje o el nombre si hace falta; la cita entra al calendario como «Agendada».</p>
+            </div>
+          </div>
+        </div>
       </sc-if>
 
       <!-- ===== CONFIGURACIÓN ===== -->
@@ -1019,8 +1108,10 @@ class Component extends DCLogic {
     npOpen: false, npCustomer: '', npChannel: 'Mostrador',
     npLines: [], npSaving: false, npError: '',
     // Calendario / Citas
-    citasFilter: 'todas',
-    ncOpen: false, ncPatient: '', ncDate: '', ncTime: '', ncDur: '50', ncNotes: '', ncSaving: false, ncError: ''
+    citasFilter: 'todas', weekOffset: 0,
+    ncOpen: false, ncPatient: '', ncDate: '', ncTime: '', ncDur: '50', ncNotes: '', ncSaving: false, ncError: '',
+    // Reserva de Citas por WhatsApp
+    waSel: 0, waName: '', waMsg: '', waSaving: false, waError: ''
   };
 
   applyTheme() {
@@ -1034,6 +1125,7 @@ class Component extends DCLogic {
     this.applyTheme();
     this._r = () => this.setState({ width: window.innerWidth, sidebarOpen: window.innerWidth >= 900 ? false : this.state.sidebarOpen });
     window.addEventListener('resize', this._r);
+    if (this.reservas.length) this.selectReserva(0); // precarga la reserva WhatsApp seleccionada
     this.loadFromApi();
   }
   componentDidUpdate() { this.applyTheme(); }
@@ -1184,13 +1276,35 @@ class Component extends DCLogic {
     cancelada: { label: 'Cancelada', kind: 'error' }
   };
 
-  // Citas demo embebidas (modo demo / fallback)
-  citas = [
-    { id: null, patient: 'Mariana López', professional: 'Ana Sofía Rivera', date: 'hoy', time: '09:00', endTime: '09:50', status: 'completada', notes: 'Sesión de seguimiento' },
-    { id: null, patient: 'Carlos Estrada', professional: 'Ana Sofía Rivera', date: 'hoy', time: '12:00', endTime: '12:50', status: 'confirmada', notes: 'Primera consulta' },
-    { id: null, patient: 'Lucía Fernández', professional: 'Ana Sofía Rivera', date: 'hoy', time: '16:00', endTime: '16:50', status: 'agendada', notes: 'Terapia individual' },
-    { id: null, patient: 'Roberto Díaz', professional: 'Ana Sofía Rivera', date: 'mañana', time: '11:00', endTime: '11:50', status: 'agendada', notes: 'Sesión de pareja' }
-  ];
+  // ---- Helpers de fecha (citas demo con fechas reales para el calendario) ----
+  pad2(n) { return String(n).padStart(2, '0'); }
+  fmtHM(d) { return this.pad2(d.getHours()) + ':' + this.pad2(d.getMinutes()); }
+  atDay(offsetDays, h, m) { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + offsetDays); d.setHours(h, m || 0, 0, 0); return d; }
+  dayLabel(d) {
+    const now = new Date();
+    const a = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const b = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diff = Math.round((b - a) / 86400000);
+    if (diff === 0) return 'Hoy';
+    if (diff === 1) return 'Mañana';
+    if (diff === -1) return 'Ayer';
+    return d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+  citaFrom(patient, professional, start, durMin, status, notes) {
+    const end = new Date(start.getTime() + durMin * 60000);
+    return { id: null, patient, professional, startsAt: start, endsAt: end, durMin,
+      date: this.dayLabel(start), time: this.fmtHM(start), endTime: this.fmtHM(end), status, notes };
+  }
+  buildDemoCitas() {
+    return [
+      this.citaFrom('Mariana López', 'Ana Sofía Rivera', this.atDay(0, 9, 0), 50, 'completada', 'Sesión de seguimiento'),
+      this.citaFrom('Carlos Estrada', 'Ana Sofía Rivera', this.atDay(0, 12, 0), 50, 'confirmada', 'Primera consulta'),
+      this.citaFrom('Lucía Fernández', 'Ana Sofía Rivera', this.atDay(0, 16, 0), 50, 'agendada', 'Terapia individual'),
+      this.citaFrom('Roberto Díaz', 'Ana Sofía Rivera', this.atDay(1, 11, 0), 50, 'agendada', 'Sesión de pareja')
+    ];
+  }
+  // Citas demo embebidas con fechas reales (modo demo / fallback)
+  citas = this.buildDemoCitas();
 
   async setCitaStatus(c, status) {
     if (!this.usingApi() || !c.id) { c.status = status; this.forceUpdate(); return; }
@@ -1227,6 +1341,144 @@ class Component extends DCLogic {
       this.citas = r.appointments;
       this.setState({ ncOpen: false, ncSaving: false, citasFilter: 'todas' });
     } catch (e) { this.setState({ ncSaving: false, ncError: e.message || 'No se pudo crear la cita.' }); }
+  }
+
+  // ==== Reserva de Citas por WhatsApp (Agente IA → calendario) ====
+
+  // Conversaciones de reserva demo (modo demo / fallback). En modo API la
+  // bandeja real vive en el Agente IA; aquí basta con demostrar el flujo.
+  reservas = [
+    { patient: 'Daniela Ríos', phone: '+52 55 1234 9087', ini: 'DR', time: 'hace 8 min', unread: true,
+      message: 'Hola, quiero agendar una consulta para mañana a las 4 de la tarde',
+      thread: [ { who: 'user', text: 'Hola, quiero agendar una consulta' }, { who: 'agent', text: '¡Claro! ¿Para qué día y hora te acomoda?' }, { who: 'user', text: 'Mañana a las 4 de la tarde' } ] },
+    { patient: 'Miguel Ángel Soto', phone: '+52 33 7788 5566', ini: 'MS', time: 'hace 25 min', unread: true,
+      message: '¿Tienen espacio el viernes a las 11am? A nombre de Miguel Ángel Soto',
+      thread: [ { who: 'user', text: 'Buenas, ¿tienen espacio el viernes a las 11am?' }, { who: 'agent', text: 'Sí, hay disponibilidad. ¿A nombre de quién la agendo?' }, { who: 'user', text: 'Miguel Ángel Soto, primera vez' } ] },
+    { patient: 'Gabriela Núñez', phone: '+52 81 4455 2211', ini: 'GN', time: 'hace 2 min', unread: true,
+      message: 'Quiero una cita para el día 15 a las 10:30',
+      thread: [ { who: 'user', text: 'Quiero una cita para el día 15 a las 10:30' }, { who: 'agent', text: 'Con gusto. ¿Me confirmas tu nombre?' }, { who: 'user', text: 'Gabriela Núñez' } ] }
+  ];
+
+  // Parser de mensajes (espejo de src/lib/appointments/whatsapp.ts para el demo).
+  _stripAccents(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  _period(text, hour) {
+    if (/\b(pm|p\.m\.|de la tarde|por la tarde|de la noche|por la noche)\b/.test(text) && hour < 12) return 12;
+    if (/\b(am|a\.m\.|de la mañana|por la mañana|en la mañana)\b/.test(text)) return 0;
+    if (hour >= 1 && hour <= 7) return 12;
+    return 0;
+  }
+  _parseTime(raw) {
+    const text = raw.toLowerCase();
+    if (/\bmediod[ií]a\b/.test(text)) return { hour: 12, minute: 0, timeText: 'mediodía' };
+    const hm = text.match(/\b([0-2]?\d)[:.]([0-5]\d)\b/);
+    if (hm) { let h = parseInt(hm[1], 10); const m = parseInt(hm[2], 10); if (h <= 12) h += this._period(text, h); if (h >= 0 && h <= 23) return { hour: h, minute: m, timeText: this.pad2(h) + ':' + hm[2] }; }
+    const h12 = text.match(/(?:a\s+las?\s+)?\b([1-9]|1[0-2])\s*(am|pm|a\.m\.|p\.m\.|de la (?:mañana|tarde|noche)|hrs?|horas?)?\b/);
+    if (h12) { let h = parseInt(h12[1], 10); const marker = h12[2] ? ' ' + h12[2] : ''; h += this._period(text, h); return { hour: h, minute: 0, timeText: (h12[1] + marker).trim() }; }
+    return null;
+  }
+  _parseDate(raw, now) {
+    const text = this._stripAccents(raw.toLowerCase());
+    const base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const WD = { domingo: 0, lunes: 1, martes: 2, miercoles: 3, jueves: 4, viernes: 5, sabado: 6 };
+    const MO = { enero: 0, febrero: 1, marzo: 2, abril: 3, mayo: 4, junio: 5, julio: 6, agosto: 7, septiembre: 8, setiembre: 8, octubre: 9, noviembre: 10, diciembre: 11 };
+    const at = (d, label) => ({ date: d, dateText: label });
+    if (/\bpasado\s+manana\b/.test(text)) { const d = new Date(base); d.setDate(d.getDate() + 2); return at(d, 'pasado mañana'); }
+    if (/\bhoy\b/.test(text)) return at(new Date(base), 'hoy');
+    if (/(^|[^a-z])manana\b/.test(text) && !/(de|por|en)\s+la\s+manana/.test(text)) { const d = new Date(base); d.setDate(d.getDate() + 1); return at(d, 'mañana'); }
+    const dm = text.match(/\b([0-3]?\d)\s+de\s+([a-z]+)\b/);
+    if (dm && MO[dm[2]] !== undefined) { const day = parseInt(dm[1], 10); let year = now.getFullYear(); const month = MO[dm[2]]; if (month < now.getMonth() || (month === now.getMonth() && day < now.getDate())) year += 1; return at(new Date(year, month, day), day + ' de ' + dm[2]); }
+    const slash = text.match(/\b([0-3]?\d)[\/\-]([01]?\d)(?:[\/\-](\d{2,4}))?\b/);
+    if (slash) { const day = parseInt(slash[1], 10); const month = parseInt(slash[2], 10) - 1; let year = slash[3] ? parseInt(slash[3], 10) : now.getFullYear(); if (year < 100) year += 2000; if (month >= 0 && month <= 11 && day >= 1 && day <= 31) return at(new Date(year, month, day), slash[1] + '/' + slash[2]); }
+    for (const name in WD) { if (new RegExp('\\b' + name + '\\b').test(text)) { const d = new Date(base); let delta = (WD[name] - d.getDay() + 7) % 7; if (delta === 0) delta = 7; d.setDate(d.getDate() + delta); return at(d, name); } }
+    const dom = text.match(/\bel\s+(?:dia\s+)?([0-3]?\d)\b/);
+    if (dom) { const day = parseInt(dom[1], 10); if (day >= 1 && day <= 31) { let month = now.getMonth(); let year = now.getFullYear(); if (day < now.getDate()) { month += 1; if (month > 11) { month = 0; year += 1; } } return at(new Date(year, month, day), 'día ' + day); } }
+    return null;
+  }
+  parseBooking(message, now) {
+    now = now || new Date();
+    const dh = this._parseDate(message, now);
+    const th = this._parseTime(message);
+    if (dh && th) { const d = new Date(dh.date); d.setHours(th.hour, th.minute, 0, 0); return { startsAt: d, dateText: dh.dateText, timeText: th.timeText, confident: true }; }
+    return { startsAt: null, dateText: dh ? dh.dateText : null, timeText: th ? th.timeText : null, confident: false };
+  }
+
+  selectReserva(i) {
+    const r = this.reservas[i]; if (!r) return;
+    this.setState({ waSel: i, waName: r.patient, waMsg: r.message, waError: '' });
+  }
+  weekIndexFor(date) {
+    const ws0 = this.weekStart(0);
+    const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return Math.round((target - ws0) / (7 * 86400000));
+  }
+  async agendarReserva() {
+    if (this.state.waSaving) return;
+    const name = (this.state.waName || '').trim();
+    const msg = (this.state.waMsg || '').trim();
+    if (!name) { this.setState({ waError: 'Falta el nombre del paciente.' }); return; }
+    const p = this.parseBooking(msg, new Date());
+    if (!p.startsAt) { this.setState({ waError: 'No detecté fecha y hora en el mensaje. Escríbelas, p. ej. «mañana a las 4pm».' }); return; }
+
+    if (!this.usingApi()) {
+      const start = new Date(p.startsAt);
+      const r = this.reservas[this.state.waSel];
+      this.citas.push(this.citaFrom(name, 'Ana Sofía Rivera', start, 50, 'agendada', 'Reserva por WhatsApp' + (r ? ' · ' + r.phone : '')));
+      if (r) r.done = true;
+      this.setState({ view: 'calendario', citasFilter: 'todas', weekOffset: this.weekIndexFor(start), waError: '' });
+      return;
+    }
+
+    this.setState({ waSaving: true, waError: '' });
+    try {
+      const r = this.reservas[this.state.waSel];
+      await window.AplikaAPI.appointments.fromWhatsApp({ message: msg, patientName: name, phone: r ? r.phone : undefined });
+      const list = await window.AplikaAPI.appointments.list();
+      this.citas = list.appointments;
+      if (r) r.done = true;
+      this.setState({ waSaving: false, view: 'calendario', citasFilter: 'todas' });
+    } catch (e) { this.setState({ waSaving: false, waError: e.message || 'No se pudo agendar la cita.' }); }
+  }
+
+  // ==== Calendario semanal (rejilla horas × días) ====
+  weekStart(offset) {
+    const n = new Date();
+    const d = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    const dow = (d.getDay() + 6) % 7; // lunes = 0
+    d.setDate(d.getDate() - dow + offset * 7);
+    return d;
+  }
+  buildWeek() {
+    const start = this.weekStart(this.state.weekOffset);
+    const now = new Date();
+    const names = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start); d.setDate(d.getDate() + i);
+      days.push({ date: d, label: names[i] + ' ' + d.getDate(), isToday: d.toDateString() === now.toDateString() });
+    }
+    const bucket = {}; // 'dia-hora' -> [citas]
+    (this.citas || []).forEach(c => {
+      const s = new Date(c.startsAt);
+      const h = s.getHours();
+      if (h < 8 || h > 20) return;
+      for (let i = 0; i < 7; i++) {
+        if (s.toDateString() === days[i].date.toDateString()) { const k = i + '-' + h; (bucket[k] = bucket[k] || []).push(c); }
+      }
+    });
+    const rows = [];
+    for (let h = 8; h <= 20; h++) {
+      rows.push({
+        hour: this.pad2(h) + ':00',
+        cells: days.map((d, i) => {
+          const appts = (bucket[i + '-' + h] || [])
+            .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt))
+            .map(c => { const b = this.badge((this.apptMeta[c.status] || { kind: 'neutral' }).kind); return { patient: c.patient, time: c.time || this.fmtHM(new Date(c.startsAt)), bg: b.bg, fg: b.fg }; });
+          return { appts, todayBg: d.isToday ? 'var(--accent-weak,#E6F1FB)' : 'transparent' };
+        })
+      });
+    }
+    const title = start.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+    return { days, rows, title: title.charAt(0).toUpperCase() + title.slice(1) };
   }
 
   // ==== Nuevo pedido (POST /api/orders; fallback demo local) ====
@@ -1281,6 +1533,8 @@ class Component extends DCLogic {
 
   nav = [
     { key: 'inicio', label: 'Inicio', d: 'M4 12 12 5l8 7M6 10v10h12V10' },
+    { key: 'reservas', label: 'Reserva por WhatsApp', d: 'M4 5h16v11H8l-4 3.5zM9 10h.01M13 10h.01M16 10h.01' },
+    { key: 'calendario', label: 'Calendario / Citas', d: 'M4 5H20V20H4ZM4 9H20M8 3.5V6.5M16 3.5V6.5M8.5 13H11M14 16.5H16' },
     { key: 'ventas', label: 'Ventas / Pedidos', d: 'M6 7h12l-1 13H7zM9 7V5a3 3 0 0 1 6 0v2' },
     { key: 'pagos', label: 'Pagos', d: 'M3 7h18v10H3zM3 11h18M7 15h3' },
     { key: 'inventario', label: 'Inventario', d: 'M12 3 3 7l9 4 9-4zM3 7v10l9 4 9-4V7M12 11v10' },
@@ -1289,7 +1543,7 @@ class Component extends DCLogic {
     { key: 'ia', label: 'Agente IA', d: 'M5 5h14v10H8l-3 3zM9 10h.01M13 10h.01M16 10h.01' }
   ];
 
-  titles = { inicio: 'Inicio', ventas: 'Ventas / Pedidos', calendario: 'Calendario / Citas', pagos: 'Pagos', inventario: 'Inventario', facturacion: 'Facturación', clientes: 'CRM Clientes', ia: 'Agente IA', config: 'Configuración' };
+  titles = { inicio: 'Inicio', reservas: 'Reserva por WhatsApp', ventas: 'Ventas / Pedidos', calendario: 'Calendario / Citas', pagos: 'Pagos', inventario: 'Inventario', facturacion: 'Facturación', clientes: 'CRM Clientes', ia: 'Agente IA', config: 'Configuración' };
   otherIcons = {
     ventas: 'M6 7h12l-1 13H7zM9 7V5a3 3 0 0 1 6 0v2', pagos: 'M3 7h18v10H3zM3 11h18M7 15h3',
     inventario: 'M12 3 3 7l9 4 9-4zM3 7v10l9 4 9-4V7M12 11v10', facturacion: 'M7 3h8l3 3v15l-2-1-2 1-2-1-2 1-2-1-2 1V3zM9 9h6M9 12h6',
@@ -1755,6 +2009,60 @@ class Component extends DCLogic {
       isInicio: v === 'inicio',
       isVentas: v === 'ventas',
       isCalendario: v === 'calendario',
+      isReservas: v === 'reservas',
+
+      // Calendario semanal (rejilla horas × días)
+      ...(() => {
+        const w = this.buildWeek();
+        return {
+          weekTitle: w.title,
+          weekDays: w.days.map(d => ({ label: d.label, headBg: d.isToday ? 'var(--accent-weak,#E6F1FB)' : 'transparent' })),
+          weekRows: w.rows,
+          weekPrev: () => this.setState({ weekOffset: this.state.weekOffset - 1 }),
+          weekNext: () => this.setState({ weekOffset: this.state.weekOffset + 1 }),
+          weekToday: () => this.setState({ weekOffset: 0 })
+        };
+      })(),
+
+      // Reserva de Citas por WhatsApp
+      ...(() => {
+        const conv = this.reservas[this.state.waSel] || this.reservas[0] || null;
+        const p = this.parseBooking(this.state.waMsg || '', new Date());
+        let when, tone;
+        if (p.confident) { const s = new Date(p.startsAt); when = this.dayLabel(s) + ' · ' + this.fmtHM(s); tone = 'ok'; }
+        else { when = p.dateText ? 'Falta la hora — escríbela' : (p.timeText ? 'Falta la fecha — escríbela' : 'Escribe fecha y hora en el mensaje'); tone = 'warn'; }
+        const cardOk = tone === 'ok';
+        return {
+          waRows: this.reservas.map((r, i) => ({
+            patient: r.patient, ini: r.ini, time: r.time, preview: r.message, done: !!r.done,
+            onClick: () => this.selectReserva(i),
+            bg: this.state.waSel === i ? 'var(--accent-weak,#E6F1FB)' : 'transparent',
+            border: this.state.waSel === i ? 'var(--accent,#378ADD)' : 'transparent'
+          })),
+          waSelIni: conv ? conv.ini : '—',
+          waSelPatient: conv ? conv.patient : 'Sin solicitudes',
+          waSelPhone: conv ? conv.phone : '',
+          waThread: conv ? conv.thread.map(m => ({
+            text: m.text,
+            align: m.who === 'user' ? 'flex-start' : 'flex-end',
+            bg: m.who === 'user' ? 'var(--surface,#FFFFFF)' : 'var(--accent,#378ADD)',
+            color: m.who === 'user' ? 'var(--text,#042C53)' : '#FFFFFF',
+            radius: m.who === 'user' ? '13px 13px 13px 4px' : '13px 13px 4px 13px'
+          })) : [],
+          waName: this.state.waName,
+          onWaName: (e) => this.setState({ waName: e.target.value, waError: '' }),
+          waMsg: this.state.waMsg,
+          onWaMsg: (e) => this.setState({ waMsg: e.target.value, waError: '' }),
+          waParsedWhen: when,
+          waCardBg: cardOk ? 'var(--success-weak,#E4F6EC)' : 'var(--warn-weak,#FBEEDD)',
+          waCardBorder: cardOk ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)',
+          waCardIconBg: cardOk ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)',
+          waCardIconFg: cardOk ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)',
+          waError: this.state.waError,
+          waSubmitLabel: this.state.waSaving ? 'Agendando…' : 'Agendar en calendario',
+          agendarReserva: () => this.agendarReserva()
+        };
+      })(),
 
       // Calendario / Citas
       citasTabs: ['todas', 'agendada', 'confirmada', 'completada', 'cancelada'].map(k => ({
@@ -1802,7 +2110,7 @@ class Component extends DCLogic {
       isInventario: v === 'inventario',
       isFacturacion: v === 'facturacion',
       isPagos: v === 'pagos', isClientes: v === 'clientes', isIA: v === 'ia', isConfig: v === 'config',
-      isOther: v === 'inicio' ? false : !['ventas', 'calendario', 'inventario', 'facturacion', 'pagos', 'clientes', 'ia', 'config'].includes(v),
+      isOther: v === 'inicio' ? false : !['reservas', 'ventas', 'calendario', 'inventario', 'facturacion', 'pagos', 'clientes', 'ia', 'config'].includes(v),
       pagoRows, pagosSummary,
       clienteRows, clienteOpen: !!cliFind, cliente: clienteView, closeCliente: () => this.setState({ selectedCliente: null }),
       iaConvRows, iaSelName: iaSel.name, iaSelIni: iaSel.ini,
