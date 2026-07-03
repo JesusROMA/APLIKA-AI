@@ -44,8 +44,8 @@ button,input,select{font-family:inherit;}
     </div>
     <div style="padding:14px 16px;border-top:1px solid var(--sidebar-border,rgba(255,255,255,0.1));">
       <div style="display:flex;align-items:center;gap:11px;">
-        <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:rgba(255,255,255,0.14);border-radius:11px;color:#FFFFFF;font-size:14px;font-weight:700;">RN</span>
-        <div style="min-width:0;"><p style="font-size:13.5px;font-weight:600;color:#FFFFFF;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Refaccionaria del Norte</p><p style="font-size:12px;color:var(--sidebar-muted,rgba(255,255,255,0.5));margin:1px 0 0;">Plan Pro</p></div>
+        <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:rgba(255,255,255,0.14);border-radius:11px;color:#FFFFFF;font-size:14px;font-weight:700;">{{ orgIni }}</span>
+        <div style="min-width:0;"><p style="font-size:13.5px;font-weight:600;color:#FFFFFF;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ orgName }}</p><p style="font-size:12px;color:var(--sidebar-muted,rgba(255,255,255,0.5));margin:1px 0 0;">{{ orgPlan }}</p></div>
       </div>
     </div>
   </aside>
@@ -119,7 +119,7 @@ button,input,select{font-family:inherit;}
         <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;">
           <div>
             <h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Resumen del negocio</h2>
-            <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Hoy es {{ today }} · Refaccionaria del Norte</p>
+            <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Hoy es {{ today }} · {{ orgName }}</p>
           </div>
           <div style="display:flex;gap:9px;">
             <button style="display:inline-flex;align-items:center;gap:8px;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:10px 15px;font-size:13.5px;font-weight:600;color:var(--text,#042C53);cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3M16 3v3M4 8h16M5 6h14v14H5zM8 13h3"></path></svg>Últimos 30 días</button>
@@ -1047,7 +1047,7 @@ class Component extends DCLogic {
     // Usuario de la sesión (nombre, correo, rol) para el menú de perfil
     if (A.me) {
       A.me().then((r) => {
-        if (r && r.authenticated && !r.demo) this.setState({ me: { name: r.name, email: r.email, role: r.role } });
+        if (r && r.authenticated && !r.demo) this.setState({ me: { name: r.name, email: r.email, role: r.role, org: r.org || null } });
       }).catch(() => {});
     }
     let cfg;
@@ -1658,6 +1658,10 @@ class Component extends DCLogic {
     const me = this.state.me || { name: 'Juan Méndez', email: 'juan@refanorte.mx', role: 'tenant_admin' };
     const meIni = (me.name || '?').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
+    // Organización de la sesión (pie del sidebar; fallback demo)
+    const org = (this.state.me && this.state.me.org) || { name: 'Refaccionaria del Norte', plan: 'Pro' };
+    const orgIni = (org.name || '?').split(/\s+/).filter(w => w.length > 2 || /[A-ZÁÉÍÓÚÑ]/.test(w[0] || '')).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+
     // Nuevo pedido: subtotal en vivo según líneas elegidas
     const npSubtotalNum = this.state.npLines.reduce((a, l) => {
       const p = this.productos.find(x => x.sku === l.sku);
@@ -1666,6 +1670,11 @@ class Component extends DCLogic {
 
     return {
       setRoot: (el) => { this._root = el; if (el) this.applyTheme(); },
+
+      // Organización (pie del sidebar)
+      orgIni,
+      orgName: org.name,
+      orgPlan: org.plan ? 'Plan ' + org.plan : 'Sin plan',
 
       // Perfil
       meIni, meName: me.name, meEmail: me.email,

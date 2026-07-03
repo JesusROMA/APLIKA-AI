@@ -22,14 +22,26 @@ export const GET = handle(async () => {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role, full_name, email')
+    .select('role, full_name, email, organization_id')
     .eq('id', user.id)
     .single();
+
+  // Organización del usuario (nombre y plan) para el pie del sidebar
+  let org: { name: string; plan: string | null } | null = null;
+  if ((profile as any)?.organization_id) {
+    const { data: o } = await supabase
+      .from('organizations')
+      .select('name, plans ( name )')
+      .eq('id', (profile as any).organization_id)
+      .maybeSingle();
+    if (o) org = { name: (o as any).name, plan: (o as any).plans?.name ?? null };
+  }
 
   return ok({
     authenticated: true,
     name: (profile as any)?.full_name ?? user.email,
     email: (profile as any)?.email ?? user.email,
     role: (profile as any)?.role ?? 'tenant_user',
+    org,
   });
 });
