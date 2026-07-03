@@ -1139,7 +1139,7 @@ class Component extends DCLogic {
     // Usuario de la sesión (nombre, correo, rol) para el menú de perfil
     if (A.me) {
       A.me().then((r) => {
-        if (r && r.authenticated && !r.demo) this.setState({ me: { name: r.name, email: r.email, role: r.role, org: r.org || null } });
+        if (r && r.authenticated && r.name) this.setState({ me: { name: r.name, email: r.email, role: r.role, org: r.org || null } });
       }).catch(() => {});
     }
     let cfg;

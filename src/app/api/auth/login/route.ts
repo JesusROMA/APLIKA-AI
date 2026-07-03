@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ApiError, handle, ok } from '@/lib/api';
-import { isDemo } from '@/lib/demo';
+import { isDemo, demoIdentity, DEMO_COOKIE } from '@/lib/demo';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,15 +22,21 @@ export const POST = handle(async (req) => {
 
   // --- Modo demo: pruebas locales sin Supabase ---
   if (isDemo()) {
-    const isAdmin = email.toLowerCase() === 'admin@aplika.ai';
     // En demo aceptamos cualquier contraseña no vacía (Zod ya valida min 1)
     // para facilitar la exploración del frontend.
-    return ok({
+    const id = demoIdentity(email);
+    const isAdmin = id.role === 'super_admin';
+    const res = ok({
       ok: true,
       demo: true,
-      role: isAdmin ? 'super_admin' : 'tenant_admin',
+      role: id.role,
       redirect: isAdmin ? adminRedirect : clientRedirect,
     });
+    // Recuerda quién inició sesión para que /api/auth/me devuelva su identidad.
+    res.cookies.set(DEMO_COOKIE, email.trim().toLowerCase(), {
+      path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 7,
+    });
+    return res;
   }
 
   // --- Modo real: Supabase ---

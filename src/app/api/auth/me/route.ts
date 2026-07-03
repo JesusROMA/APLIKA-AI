@@ -1,16 +1,19 @@
+import { cookies } from 'next/headers';
 import { handle, ok } from '@/lib/api';
-import { isDemo } from '@/lib/demo';
+import { isDemo, demoIdentity, DEMO_COOKIE } from '@/lib/demo';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/auth/me — usuario de la sesión actual (para el menú de perfil).
- * Modo demo (sin Supabase): devuelve un usuario genérico; el frontend usa
- * su propio default por panel. Modo real: perfil desde Supabase.
+ * Modo demo (sin Supabase): identidad según el correo con que se inició sesión
+ * (cookie DEMO_COOKIE). Modo real: perfil desde Supabase.
  */
 export const GET = handle(async () => {
   if (isDemo()) {
-    return ok({ authenticated: true, demo: true, name: 'Usuario demo', email: 'demo@aplika.ai', role: 'tenant_admin' });
+    const email = cookies().get(DEMO_COOKIE)?.value;
+    const id = demoIdentity(email);
+    return ok({ authenticated: true, demo: true, name: id.name, email: id.email, role: id.role, org: id.org });
   }
 
   const { createSupabaseServerClient } = await import('@/lib/supabase/server');
