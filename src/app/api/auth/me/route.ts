@@ -13,7 +13,7 @@ export const GET = handle(async () => {
   if (isDemo()) {
     const email = cookies().get(DEMO_COOKIE)?.value;
     const id = demoIdentity(email);
-    return ok({ authenticated: true, demo: true, name: id.name, email: id.email, role: id.role, org: id.org });
+    return ok({ authenticated: true, demo: true, name: id.name, email: id.email, role: id.role, org: id.org, slug: id.slug, vertical: id.vertical });
   }
 
   const { createSupabaseServerClient } = await import('@/lib/supabase/server');

@@ -15,14 +15,16 @@ export interface DemoIdentity {
   email: string;
   role: string;
   org: { name: string; plan: string | null } | null;
+  slug: string | null;      // clave del tenant (para el dataset demo del panel)
+  vertical: string | null;  // inventario_pesado | servicios_agenda
 }
 
 // Usuarios demo conocidos (los del seed). Cualquier otro correo obtiene una
 // identidad derivada para que el panel muestre algo coherente.
 const DEMO_USERS: Record<string, DemoIdentity> = {
-  'admin@aplika.ai': { name: 'Admin Aplika', email: 'admin@aplika.ai', role: 'super_admin', org: null },
-  'juan@refanorte.mx': { name: 'Juan Méndez', email: 'juan@refanorte.mx', role: 'tenant_admin', org: { name: 'Refaccionaria del Norte', plan: 'Pro' } },
-  'ana@vitalis.mx': { name: 'Ana Sofía Rivera', email: 'ana@vitalis.mx', role: 'tenant_admin', org: { name: 'Consultorio Vitalis', plan: 'Pro' } },
+  'admin@aplika.ai': { name: 'Admin Aplika', email: 'admin@aplika.ai', role: 'super_admin', org: null, slug: null, vertical: null },
+  'juan@refanorte.mx': { name: 'Juan Méndez', email: 'juan@refanorte.mx', role: 'tenant_admin', org: { name: 'Refaccionaria del Norte', plan: 'Pro' }, slug: 'refanorte', vertical: 'inventario_pesado' },
+  'ana@vitalis.mx': { name: 'Ana Sofía Rivera', email: 'ana@vitalis.mx', role: 'tenant_admin', org: { name: 'Consultorio Vitalis', plan: 'Pro' }, slug: 'vitalis', vertical: 'servicios_agenda' },
 };
 
 /** Identidad demo a partir del correo (para login y /api/auth/me). */
@@ -46,5 +48,7 @@ export function demoIdentity(email?: string | null): DemoIdentity {
     email: key || 'demo@aplika.ai',
     role: isAdmin ? 'super_admin' : 'tenant_admin',
     org: isAdmin ? null : { name: 'Mi negocio', plan: 'Pro' },
+    slug: isAdmin ? null : 'refanorte',
+    vertical: isAdmin ? null : 'inventario_pesado',
   };
 }
