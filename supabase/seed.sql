@@ -293,3 +293,37 @@ insert into appointments (organization_id, patient_name, professional_id, starts
    date_trunc('hour', now()) + interval '1 day' + interval '1 hour', date_trunc('hour', now()) + interval '1 day' + interval '1 hour' + interval '50 min','agendada','Sesión de pareja'),
   ('11111111-1111-1111-1111-111111111119','Sofía Marín','d0000000-0000-0000-0000-0000000000b3',
    date_trunc('hour', now()) + interval '2 day', date_trunc('hour', now()) + interval '2 day' + interval '50 min','cancelada','Reagendará la próxima semana');
+
+-- ---------------------------------------------------------------------------
+-- RESERVAS POR WHATSAPP DEMO (0007 · Consultorio Vitalis)
+-- Conversaciones entrantes que el Agente IA convierte en citas del calendario.
+-- ---------------------------------------------------------------------------
+do $$
+declare org uuid := '11111111-1111-1111-1111-111111111119'; conv uuid;
+begin
+  insert into ai_conversations (organization_id, customer_phone, customer_name, channel, tag, appointment, resolved, unread, last_message_at)
+  values (org,'+52 55 1234 9087','Daniela Ríos','whatsapp','Cita',true,false,true, now() - interval '8 min')
+  returning id into conv;
+  insert into ai_messages (organization_id, conversation_id, role, body) values
+    (org, conv,'user','Hola, quiero agendar una consulta'),
+    (org, conv,'agent','¡Claro! ¿Para qué día y hora te acomoda?'),
+    (org, conv,'user','Mañana a las 4 de la tarde'),
+    (org, conv,'agent','Perfecto Daniela, te agendo mañana a las 16:00 ✅');
+
+  insert into ai_conversations (organization_id, customer_phone, customer_name, channel, tag, appointment, resolved, unread, last_message_at)
+  values (org,'+52 33 7788 5566','Miguel Ángel Soto','whatsapp','Cita',true,false,true, now() - interval '25 min')
+  returning id into conv;
+  insert into ai_messages (organization_id, conversation_id, role, body) values
+    (org, conv,'user','Buenas, ¿tienen espacio el viernes a las 11am?'),
+    (org, conv,'agent','Sí, hay disponibilidad. ¿A nombre de quién la agendo?'),
+    (org, conv,'user','Miguel Ángel Soto, primera vez'),
+    (org, conv,'agent','Listo Miguel, tu cita quedó el viernes a las 11:00 ✅');
+
+  insert into ai_conversations (organization_id, customer_phone, customer_name, channel, tag, appointment, resolved, unread, last_message_at)
+  values (org,'+52 81 4455 2211','Gabriela Núñez','whatsapp','Cita',false,false,true, now() - interval '2 min')
+  returning id into conv;
+  insert into ai_messages (organization_id, conversation_id, role, body) values
+    (org, conv,'user','Quiero una cita para el 15 a las 10:30'),
+    (org, conv,'agent','Con gusto. ¿Me confirmas tu nombre?'),
+    (org, conv,'user','Gabriela Núñez');
+end $$;

@@ -95,6 +95,8 @@
         return get('/api/appointments?' + q.toString());
       },
       create: (payload) => post('/api/appointments', payload),
+      // Reserva de citas por WhatsApp: interpreta el mensaje y agenda la cita
+      fromWhatsApp: (payload) => post('/api/appointments/whatsapp', payload),
       get: (id) => get('/api/appointments/' + id),
       update: (id, payload) => patch('/api/appointments/' + id, payload),
       setStatus: (id, status) => patch('/api/appointments/' + id, { status }),
