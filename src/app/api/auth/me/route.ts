@@ -29,15 +29,21 @@ export const GET = handle(async () => {
     .eq('id', user.id)
     .single();
 
-  // Organización del usuario (nombre y plan) para el pie del sidebar
+  // Organización del usuario (nombre, plan, slug y vertical) para el panel
   let org: { name: string; plan: string | null } | null = null;
+  let slug: string | null = null;
+  let vertical: string | null = null;
   if ((profile as any)?.organization_id) {
     const { data: o } = await supabase
       .from('organizations')
-      .select('name, plans ( name )')
+      .select('name, slug, plans ( name ), verticals ( key )')
       .eq('id', (profile as any).organization_id)
       .maybeSingle();
-    if (o) org = { name: (o as any).name, plan: (o as any).plans?.name ?? null };
+    if (o) {
+      org = { name: (o as any).name, plan: (o as any).plans?.name ?? null };
+      slug = (o as any).slug ?? null;
+      vertical = (o as any).verticals?.key ?? null;
+    }
   }
 
   return ok({
@@ -46,5 +52,7 @@ export const GET = handle(async () => {
     email: (profile as any)?.email ?? user.email,
     role: (profile as any)?.role ?? 'tenant_user',
     org,
+    slug,
+    vertical,
   });
 });

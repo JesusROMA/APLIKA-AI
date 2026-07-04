@@ -1139,7 +1139,8 @@ class Component extends DCLogic {
       A.me().then((r) => {
         if (r && r.authenticated && r.name) {
           this.setState({ me: { name: r.name, email: r.email, role: r.role, org: r.org || null } });
-          this.applyTenant(r.slug); // demo: dataset + nav del tenant de la sesión
+          // demo: dataset completo · real: solo etiquetas (los datos vienen del API)
+          this.applyTenant(r.slug, !r.demo);
         }
       }).catch(() => {});
     }
@@ -1168,9 +1169,14 @@ class Component extends DCLogic {
       // Nav dinámico: módulos activos del tenant (registry en la tabla modules)
       set(() => A.organizationModules(), (r) => {
         this.orgModules = r.modules;
+        const agenda = r.vertical === 'servicios_agenda';
         const items = (r.modules || [])
           .filter(m => m.route && m.route !== 'config')
-          .map(m => ({ key: m.route, label: m.name, d: m.icon }));
+          .map(m => ({
+            key: m.route,
+            label: agenda && m.key === 'crm' ? 'CRM Pacientes' : m.name,
+            d: m.icon
+          }));
         if (items.length) this.nav = items;
       }),
       // Citas (módulo calendario; tenants sin el módulo reciben lista vacía)
@@ -1649,19 +1655,26 @@ class Component extends DCLogic {
     };
   }
 
-  // Aplica el dataset y la navegación del tenant de la sesión (modo demo).
-  applyTenant(slug) {
+  // Aplica el dataset y la navegación del tenant de la sesión.
+  // labelsOnly=true (modo API real): solo etiquetas/nav/cosméticos sin fuente
+  // en la BD; los datos vienen de los endpoints. false (demo): dataset completo.
+  applyTenant(slug, labelsOnly) {
     const t = slug === 'vitalis' ? 'vitalis' : 'refanorte';
     if (t === this.tenant) return;
     this.tenant = t;
     if (t === 'vitalis') {
       const d = this.vitalisDataset();
-      this.kpis = d.kpis; this.topProducts = d.topProducts; this.ordersData = d.ordersData;
-      this.clientes = d.clientes; this.pagos = d.pagos; this.facturas = d.facturas;
-      this.iaConvs = d.iaConvs; this.usuarios = d.usuarios;
-      this.nav = this.navVitalis; this.labels = this.labelsVitalis;
+      this.topProducts = d.topProducts; this.usuarios = d.usuarios;
+      this.labels = this.labelsVitalis;
+      if (!labelsOnly) {
+        this.kpis = d.kpis; this.ordersData = d.ordersData;
+        this.clientes = d.clientes; this.pagos = d.pagos; this.facturas = d.facturas;
+        this.iaConvs = d.iaConvs;
+        this.nav = this.navVitalis;
+      }
     } else {
-      this.nav = this.navRefac; this.labels = this.labelsRefac;
+      this.labels = this.labelsRefac;
+      if (!labelsOnly) this.nav = this.navRefac;
     }
     this.forceUpdate();
   }
@@ -2272,7 +2285,16 @@ class Component extends DCLogic {
 
       kpis: this.kpis.map(k => ({ label: k.label, value: k.value, delta: k.delta, d: k.d, ...this.iconTone(k.tone) })),
       topProducts: this.topProducts,
-      orders: this.ordersData.map(o => ({ folio: o.folio, client: o.client, date: o.date, total: o.total, status: o.status, ...this.badge(o.kind) })),
+      // "Pedidos/Citas recientes" del inicio: consultorios muestran sus citas
+      orders: (this.tenant === 'vitalis' && this.usingApi()
+        ? (this.citas || []).slice()
+            .sort((a, b) => new Date(b.startsAt) - new Date(a.startsAt))
+            .slice(0, 6)
+            .map(c => {
+              const meta = this.apptMeta[c.status] || { label: c.status, kind: 'neutral' };
+              return { folio: c.time, client: c.patient, date: c.date, total: '—', status: meta.label, ...this.badge(meta.kind) };
+            })
+        : this.ordersData.map(o => ({ folio: o.folio, client: o.client, date: o.date, total: o.total, status: o.status, ...this.badge(o.kind) }))),
       skeleton: this.skeleton,
 
       // Etiquetas del dashboard por vertical
