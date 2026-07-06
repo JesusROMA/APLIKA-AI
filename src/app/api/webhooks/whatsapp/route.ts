@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { parseBookingMessage } from '@/lib/appointments/whatsapp';
+import { matchAutoResponse, DEFAULT_AUTO_RESPONSES } from '@/lib/appointments/auto-responses';
 import { isDemo } from '@/lib/demo';
 
 // El webhook de Twilio manda el body como x-www-form-urlencoded y firma la
@@ -131,6 +132,29 @@ export async function POST(req: Request) {
     return twiml(`Recibí tu solicitud de cita para el ${when} ✅ En breve te confirmamos.`);
   }
 
-  // No se detectó fecha/hora: pide los datos.
-  return twiml('Con gusto te agendo 🙂 Dime el día y la hora, por ejemplo: «el viernes a las 11 am» o «mañana a las 4 pm».');
+  // Respuestas automáticas por palabra clave (panel Super-admin → WhatsApp
+  // automático). Con Supabase: globales + las del tenant; en demo: defaults.
+  let rows = DEFAULT_AUTO_RESPONSES;
+  if (!isDemo()) {
+    try {
+      const { createSupabaseAdminClient } = await import('@/lib/supabase/admin');
+      const admin = createSupabaseAdminClient() as any;
+      const { data } = await admin
+        .from('whatsapp_auto_responses')
+        .select('keyword, response, category, active, organization_id')
+        .eq('active', true)
+        .or(orgId ? `organization_id.is.null,organization_id.eq.${orgId}` : 'organization_id.is.null');
+      if (data?.length) {
+        // Las del tenant tienen prioridad sobre las globales con la misma clave
+        rows = data.sort((a: any, b: any) => (a.organization_id ? -1 : 1) - (b.organization_id ? -1 : 1));
+      }
+    } catch (e) {
+      console.warn('[whatsapp] respuestas automáticas no disponibles:', (e as any)?.message);
+    }
+  }
+  const auto = matchAutoResponse(body, rows);
+  if (auto) return twiml(auto.response);
+
+  // No se detectó fecha/hora ni palabra clave: pide los datos.
+  return twiml('Con gusto te agendo 🙂 Dime el día y la hora, por ejemplo: «el viernes a las 11 am» o «mañana a las 4 pm». Escribe "ayuda" para ver opciones.');
 }

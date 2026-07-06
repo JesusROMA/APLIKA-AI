@@ -281,6 +281,108 @@ button,input,select{font-family:inherit;}
           </sc-for>
         </div>
       </sc-if>
+
+      <!-- ===== WHATSAPP AUTOMÁTICO (respuestas programadas de la plataforma) ===== -->
+      <sc-if value="{{ isWhatsApp }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;">
+          <div>
+            <h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">WhatsApp automático</h2>
+            <p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Respuestas programadas por palabra clave — el bot contesta solo cuando el mensaje no es una reserva</p>
+          </div>
+          <button onClick="{{ wrOpenNew }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nueva respuesta</button>
+        </div>
+
+        <!-- Probador: simula un mensaje entrante -->
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px 20px;margin-bottom:16px;">
+          <p style="font-size:13px;font-weight:700;margin:0 0 10px;color:var(--text,#042C53);">Probador — escribe un mensaje como si fueras el cliente</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <input type="text" value="{{ wrTest }}" onInput="{{ onWrTest }}" placeholder="p. ej. hola / cuál es su horario / gracias" style="flex:1 1 260px;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+          </div>
+          <sc-if value="{{ wrTestHas }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;">
+              <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:{{ wrTestBg }};color:#FFFFFF;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5z"></path></svg></span>
+              <div style="flex:1;background:var(--surface-2,#F5F8FC);border-radius:4px 13px 13px 13px;padding:11px 14px;">
+                <p style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));margin:0 0 4px;">{{ wrTestLabel }}</p>
+                <p style="font-size:13.5px;line-height:1.5;color:var(--text,#042C53);margin:0;white-space:pre-wrap;">{{ wrTestReply }}</p>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Tabla de respuestas -->
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;min-width:820px;">
+              <thead><tr style="background:var(--surface-2,#F5F8FC);">
+                <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Palabra clave</th>
+                <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Categoría</th>
+                <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Respuesta</th>
+                <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Alcance</th>
+                <th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Estado</th>
+                <th style="text-align:right;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Acciones</th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ wrRows }}" as="r" hint-placeholder-count="6">
+                  <tr style="border-top:1px solid var(--border,#E6F1FB);" style-hover="background:var(--surface-2,#F5F8FC);">
+                    <td style="font-size:13.5px;font-weight:700;color:var(--text,#042C53);padding:13px 20px;white-space:nowrap;">{{ r.keyword }}</td>
+                    <td style="padding:13px 20px;"><span style="display:inline-flex;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);">{{ r.category }}</span></td>
+                    <td style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));padding:13px 20px;max-width:340px;"><span style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.preview }}</span></td>
+                    <td style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));padding:13px 20px;white-space:nowrap;">{{ r.scope }}</td>
+                    <td style="padding:13px 20px;">
+                      <button onClick="{{ r.onToggle }}" style="display:inline-flex;align-items:center;gap:7px;border:none;background:transparent;cursor:pointer;padding:0;">
+                        <span style="position:relative;width:34px;height:19px;border-radius:999px;background:{{ r.swBg }};transition:background .15s;"><span style="position:absolute;top:2px;left:{{ r.swLeft }};width:15px;height:15px;border-radius:50%;background:#FFFFFF;transition:left .15s;box-shadow:0 1px 2px rgba(4,28,53,0.25);"></span></span>
+                        <span style="font-size:12px;font-weight:600;color:{{ r.swColor }};">{{ r.swLabel }}</span>
+                      </button>
+                    </td>
+                    <td style="padding:13px 20px;text-align:right;white-space:nowrap;">
+                      <button onClick="{{ r.onEdit }}" style="display:inline-flex;align-items:center;gap:5px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border:none;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-left:6px;">Editar</button>
+                      <button onClick="{{ r.onDelete }}" style="display:inline-flex;align-items:center;gap:5px;background:transparent;color:var(--error,#D24545);border:1px solid var(--error,#D24545);border-radius:9px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-left:6px;">Eliminar</button>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Drawer: nueva/editar respuesta -->
+        <sc-if value="{{ wrOpen }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ wrClose }}" style="position:fixed;inset:0;z-index:45;background:rgba(4,28,53,0.45);"></div>
+          <aside style="position:fixed;top:0;right:0;bottom:0;z-index:46;width:min(480px,100%);background:var(--surface,#FFFFFF);border-left:1px solid var(--border,#E6F1FB);box-shadow:-20px 0 50px -24px rgba(4,28,53,0.4);overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--border,#E6F1FB);position:sticky;top:0;background:var(--surface,#FFFFFF);z-index:2;">
+              <p style="font-size:18px;font-weight:700;margin:0;color:var(--text,#042C53);">{{ wrFormTitle }}</p>
+              <button onClick="{{ wrClose }}" aria-label="Cerrar" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:10px;cursor:pointer;color:var(--text,#042C53);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6 18 18M18 6 6 18"></path></svg></button>
+            </div>
+            <div style="padding:22px 24px;display:flex;flex-direction:column;gap:15px;">
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Palabra clave</label>
+                <input type="text" value="{{ wrKeyword }}" onInput="{{ onWrKeyword }}" placeholder="p. ej. horario" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;"></input>
+                <p style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.45));margin:5px 0 0;">El bot responde cuando el mensaje contenga esta palabra (sin distinguir mayúsculas ni acentos).</p>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Categoría</label>
+                <select value="{{ wrCategory }}" onChange="{{ onWrCategory }}" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;cursor:pointer;">
+                  <option value="saludo">Saludo</option>
+                  <option value="citas">Citas</option>
+                  <option value="informacion">Información</option>
+                  <option value="cortesia">Cortesía</option>
+                  <option value="ayuda">Ayuda</option>
+                  <option value="general">General</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--muted,rgba(4,44,83,0.6));">Respuesta del bot</label>
+                <textarea value="{{ wrResponse }}" onInput="{{ onWrResponse }}" rows="6" placeholder="Texto que contestará el bot por WhatsApp" style="width:100%;padding:11px 13px;border:1px solid var(--border,#E6F1FB);border-radius:10px;font-size:14px;background:var(--surface,#FFFFFF);color:var(--text,#042C53);outline:none;resize:vertical;font-family:inherit;line-height:1.5;"></textarea>
+              </div>
+              <sc-if value="{{ wrError }}" hint-placeholder-val="{{ false }}">
+                <p style="font-size:13px;color:var(--error,#D24545);margin:0;">{{ wrError }}</p>
+              </sc-if>
+              <button onClick="{{ wrSubmit }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">{{ wrSubmitLabel }}</button>
+              <p style="font-size:12px;color:var(--faint,rgba(4,44,83,0.45));margin:0;text-align:center;">Las respuestas aplican a todos los tenants (globales). Las reservas de cita siempre tienen prioridad.</p>
+            </div>
+          </aside>
+        </sc-if>
+      </sc-if>
     </main>
   </div>
 
@@ -320,7 +422,9 @@ class Component extends DCLogic {
   state = { dark: false, view: 'dashboard', width: (typeof window !== 'undefined' ? window.innerWidth : 1200), sidebarOpen: false, tenantFilter: 'todos', impersonate: null, profileOpen: false, me: null,
     vertFilter: 'todos',
     tm: null,                                   // tenant abierto en drawer de módulos
-    ntOpen: false, ntName: '', ntSlug: '', ntVertical: 'inventario_pesado', ntPlan: 'basico', ntSaving: false, ntError: '' };
+    ntOpen: false, ntName: '', ntSlug: '', ntVertical: 'inventario_pesado', ntPlan: 'basico', ntSaving: false, ntError: '',
+    // WhatsApp automático (respuestas programadas)
+    wrOpen: false, wrEditId: null, wrKeyword: '', wrCategory: 'general', wrResponse: '', wrSaving: false, wrError: '', wrTest: '' };
 
   applyTheme() {
     const el = this._root; if (!el) return;
@@ -360,6 +464,7 @@ class Component extends DCLogic {
       set(() => A.adminHealth(), (r) => { this.health = r.health; }),
       set(() => A.adminIncidents(), (r) => { this.incidents = r.incidents; }),
       set(() => A.adminVerticals(), (r) => { this.verticalsCat = r.verticals; }),
+      set(() => A.adminWaResponses.list(), (r) => { this.waResponses = r.responses; }),
     ]);
     this.forceUpdate();
   }
@@ -418,13 +523,90 @@ class Component extends DCLogic {
     } catch (e) { this.setState({ ntSaving: false, ntError: e.message || 'No se pudo crear el tenant.' }); }
   }
 
+  // ==== WhatsApp automático (respuestas programadas por palabra clave) ====
+  // Adaptado del bot whatsapp-bot-citas; espejo de src/lib/appointments/auto-responses.ts
+
+  waResponses = [
+    { id: null, keyword: 'hola', category: 'saludo', active: true, scope: 'Global', response: '👋 ¡Hola! Soy el asistente virtual. Puedo agendarte una cita: dime el día y la hora, por ejemplo «mañana a las 4 pm».' },
+    { id: null, keyword: 'buenos dias', category: 'saludo', active: true, scope: 'Global', response: '👋 ¡Buenos días! ¿Te agendo una cita? Dime el día y la hora, por ejemplo «el viernes a las 11 am».' },
+    { id: null, keyword: 'buenas tardes', category: 'saludo', active: true, scope: 'Global', response: '👋 ¡Buenas tardes! ¿Te agendo una cita? Dime el día y la hora, por ejemplo «mañana a las 4 pm».' },
+    { id: null, keyword: 'horario', category: 'informacion', active: true, scope: 'Global', response: '🕐 Nuestro horario de atención es:\nLunes a Viernes: 9:00 - 18:00\nSábados: 10:00 - 14:00\nDomingos: Cerrado' },
+    { id: null, keyword: 'ubicacion', category: 'informacion', active: true, scope: 'Global', response: '📍 Estamos en:\nCalle Principal #123, Colonia Centro\nCiudad de México\n\n¿Necesitas indicaciones?' },
+    { id: null, keyword: 'precio', category: 'informacion', active: true, scope: 'Global', response: '💳 Los precios varían según el servicio. Escríbenos el servicio que te interesa y te cotizamos, o agenda una primera consulta.' },
+    { id: null, keyword: 'cancelar', category: 'citas', active: true, scope: 'Global', response: '❌ Para cancelar o reagendar tu cita, respóndenos con la fecha de tu cita y te ayudamos con el cambio.' },
+    { id: null, keyword: 'confirmo', category: 'citas', active: true, scope: 'Global', response: '✅ ¡Perfecto! Tu cita queda confirmada. Te esperamos.' },
+    { id: null, keyword: 'gracias', category: 'cortesia', active: true, scope: 'Global', response: '😊 ¡De nada! ¿Hay algo más en lo que pueda ayudarte?' },
+    { id: null, keyword: 'ayuda', category: 'ayuda', active: true, scope: 'Global', response: '📋 *Puedo ayudarte con:*\n\n1. Agendar una cita — dime día y hora («mañana a las 4 pm»)\n2. "Horario" — horarios de atención\n3. "Ubicación" — dónde estamos\n4. "Cancelar" — cancelar o reagendar\n5. "Ayuda" — este menú' }
+  ];
+
+  _waNorm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
+  waMatch(message) {
+    const msg = this._waNorm(message);
+    if (!msg) return null;
+    const hits = this.waResponses
+      .filter(r => r.active !== false && r.keyword && msg.includes(this._waNorm(r.keyword)))
+      .sort((a, b) => b.keyword.length - a.keyword.length);
+    return hits[0] || null;
+  }
+
+  async reloadWaResponses() {
+    if (!this.usingApi()) { this.forceUpdate(); return; }
+    try { const r = await window.AplikaAPI.adminWaResponses.list(); this.waResponses = r.responses; this.forceUpdate(); }
+    catch (e) { console.warn('[aplika] respuestas WhatsApp:', e.message); }
+  }
+
+  wrOpenEdit(r) {
+    this.setState({ wrOpen: true, wrEditId: r ? r.id : null,
+      wrKeyword: r ? r.keyword : '', wrCategory: r ? r.category : 'general',
+      wrResponse: r ? r.response : '', wrError: '', wrSaving: false,
+      _wrEditRef: r || null });
+  }
+
+  async wrSave() {
+    if (this.state.wrSaving) return;
+    const keyword = this.state.wrKeyword.trim().toLowerCase();
+    const response = this.state.wrResponse.trim();
+    if (keyword.length < 2) { this.setState({ wrError: 'Escribe la palabra clave (mínimo 2 caracteres).' }); return; }
+    if (response.length < 2) { this.setState({ wrError: 'Escribe la respuesta del bot.' }); return; }
+
+    if (!this.usingApi()) {
+      const ref = this.state._wrEditRef;
+      if (ref) { ref.keyword = keyword; ref.response = response; ref.category = this.state.wrCategory; }
+      else this.waResponses.push({ id: null, keyword, response, category: this.state.wrCategory, active: true, scope: 'Global' });
+      this.setState({ wrOpen: false });
+      return;
+    }
+
+    this.setState({ wrSaving: true, wrError: '' });
+    try {
+      if (this.state.wrEditId) await window.AplikaAPI.adminWaResponses.update(this.state.wrEditId, { keyword, response: response, category: this.state.wrCategory });
+      else await window.AplikaAPI.adminWaResponses.create({ keyword, response: response, category: this.state.wrCategory });
+      await this.reloadWaResponses();
+      this.setState({ wrOpen: false, wrSaving: false });
+    } catch (e) { this.setState({ wrSaving: false, wrError: e.message || 'No se pudo guardar.' }); }
+  }
+
+  async wrToggle(r) {
+    if (!this.usingApi() || !r.id) { r.active = !r.active; this.forceUpdate(); return; }
+    try { await window.AplikaAPI.adminWaResponses.update(r.id, { active: !r.active }); await this.reloadWaResponses(); }
+    catch (e) { alert('No se pudo cambiar el estado: ' + e.message); }
+  }
+
+  async wrDelete(r) {
+    if (!confirm('¿Eliminar la respuesta «' + r.keyword + '»?')) return;
+    if (!this.usingApi() || !r.id) { this.waResponses = this.waResponses.filter(x => x !== r); this.forceUpdate(); return; }
+    try { await window.AplikaAPI.adminWaResponses.remove(r.id); await this.reloadWaResponses(); }
+    catch (e) { alert('No se pudo eliminar: ' + e.message); }
+  }
+
   nav = [
     { key: 'dashboard', label: 'Dashboard global', d: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
     { key: 'tenants', label: 'Tenants', d: 'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M5 21h16M9 7h2M9 11h2M9 15h2M15 21V11h2a2 2 0 0 1 2 2v8' },
     { key: 'planes', label: 'Planes y suscripciones', d: 'M3 7h18v12H3zM3 11h18M7 15h4' },
+    { key: 'whatsapp', label: 'WhatsApp automático', d: 'M4 5h16v11H8l-4 3.5zM8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01' },
     { key: 'monitoreo', label: 'Monitoreo', d: 'M3 12h4l2 6 4-15 2 9h6' }
   ];
-  titles = { dashboard: 'Dashboard global', tenants: 'Tenants', planes: 'Planes y suscripciones', monitoreo: 'Monitoreo' };
+  titles = { dashboard: 'Dashboard global', tenants: 'Tenants', planes: 'Planes y suscripciones', whatsapp: 'WhatsApp automático', monitoreo: 'Monitoreo' };
 
   kpis = [
     { label: 'Tenants activos', value: '142', delta: '▲ 8 este mes', tone: 'up', d: 'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M5 21h14M9 7h2M9 11h2M15 21V11h4v10' },
@@ -591,6 +773,49 @@ class Component extends DCLogic {
       nav: this.nav.map(n => ({ label: n.label, d: n.d, onClick: () => this.setState({ view: n.key, sidebarOpen: false }), bg: v === n.key ? 'var(--sidebar-2,rgba(255,255,255,0.14))' : 'transparent', color: v === n.key ? '#FFFFFF' : 'var(--sidebar-text,rgba(255,255,255,0.82))', weight: v === n.key ? 600 : 500 })),
       viewTitle: this.titles[v],
       isDashboard: v === 'dashboard', isTenants: v === 'tenants', isPlanes: v === 'planes', isMonitoreo: v === 'monitoreo',
+      isWhatsApp: v === 'whatsapp',
+
+      // WhatsApp automático
+      wrRows: this.waResponses.map(r => ({
+        keyword: r.keyword,
+        category: r.category,
+        preview: (r.response || '').replace(/\n/g, ' '),
+        scope: r.scope || 'Global',
+        swBg: r.active ? 'var(--success,#1FA85A)' : 'var(--border,#E6F1FB)',
+        swLeft: r.active ? '17px' : '2px',
+        swLabel: r.active ? 'Activa' : 'Inactiva',
+        swColor: r.active ? 'var(--success,#1FA85A)' : 'var(--faint,rgba(4,44,83,0.45))',
+        onToggle: () => this.wrToggle(r),
+        onEdit: () => this.wrOpenEdit(r),
+        onDelete: () => this.wrDelete(r)
+      })),
+      wrOpen: this.state.wrOpen,
+      wrOpenNew: () => this.wrOpenEdit(null),
+      wrClose: () => this.setState({ wrOpen: false }),
+      wrFormTitle: this.state.wrEditId || this.state._wrEditRef ? 'Editar respuesta' : 'Nueva respuesta',
+      wrKeyword: this.state.wrKeyword,
+      onWrKeyword: (e) => this.setState({ wrKeyword: e.target.value, wrError: '' }),
+      wrCategory: this.state.wrCategory,
+      onWrCategory: (e) => this.setState({ wrCategory: e.target.value }),
+      wrResponse: this.state.wrResponse,
+      onWrResponse: (e) => this.setState({ wrResponse: e.target.value, wrError: '' }),
+      wrError: this.state.wrError,
+      wrSubmitLabel: this.state.wrSaving ? 'Guardando…' : 'Guardar respuesta',
+      wrSubmit: () => this.wrSave(),
+      // Probador
+      wrTest: this.state.wrTest,
+      onWrTest: (e) => this.setState({ wrTest: e.target.value }),
+      ...(() => {
+        const t = this.state.wrTest.trim();
+        if (!t) return { wrTestHas: false, wrTestReply: '', wrTestLabel: '', wrTestBg: 'var(--accent,#378ADD)' };
+        const hit = this.waMatch(t);
+        return {
+          wrTestHas: true,
+          wrTestReply: hit ? hit.response : 'Con gusto te agendo 🙂 Dime el día y la hora, por ejemplo: «el viernes a las 11 am» o «mañana a las 4 pm». Escribe "ayuda" para ver opciones.',
+          wrTestLabel: hit ? 'Respondería (clave: «' + hit.keyword + '»)' : 'Respondería (sin coincidencia — mensaje por defecto)',
+          wrTestBg: hit ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)'
+        };
+      })(),
       kpis: this.kpis.map(k => ({ label: k.label, value: k.value, delta: k.delta, d: k.d, ...this.iconTone(k.tone) })),
       tenantTabs, tenantRows, tenantCount: tList.length + ' de ' + this.tenants.length + ' tenants',
       vertTabs,

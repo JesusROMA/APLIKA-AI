@@ -21,6 +21,7 @@
   const get = (p) => req(p);
   const post = (p, body) => req(p, { method: 'POST', body: JSON.stringify(body || {}) });
   const patch = (p, body) => req(p, { method: 'PATCH', body: JSON.stringify(body || {}) });
+  const del = (p) => req(p, { method: 'DELETE' });
 
   window.AplikaAPI = {
     // Config (¿modo demo?)
@@ -113,6 +114,13 @@
     adminSetTenantModule: (id, moduleKey, enabled) => patch('/api/admin/tenants/' + id + '/modules', { moduleKey, enabled }),
     adminCreateTenant: (payload) => post('/api/admin/tenants', payload),
     adminPlans: () => get('/api/admin/plans'),
+    // Respuestas automáticas de WhatsApp (panel Plataforma → WhatsApp automático)
+    adminWaResponses: {
+      list: () => get('/api/admin/whatsapp-responses'),
+      create: (payload) => post('/api/admin/whatsapp-responses', payload),
+      update: (id, payload) => patch('/api/admin/whatsapp-responses/' + id, payload),
+      remove: (id) => del('/api/admin/whatsapp-responses/' + id),
+    },
     adminHealth: () => get('/api/admin/health'),
     adminIncidents: () => get('/api/admin/incidents'),
     impersonate: (id) => post('/api/admin/tenants/' + id + '/impersonate'),
