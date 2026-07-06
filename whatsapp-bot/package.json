@@ -1,0 +1,13 @@
+{
+  "name": "aplika-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "Contestador automático de WhatsApp para Aplika — sin Twilio (whatsapp-web.js, tu número conectado por QR)",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}

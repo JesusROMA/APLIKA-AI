@@ -3,6 +3,10 @@ node_modules/
 .pnp/
 .pnp.js
 
+# Bot de WhatsApp (sesión local del QR y caché de WhatsApp Web — jamás versionar)
+whatsapp-bot/.wwebjs_auth/
+whatsapp-bot/.wwebjs_cache/
+
 # Next.js
 /.next/
 /out/

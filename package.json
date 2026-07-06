@@ -14,7 +14,9 @@
     "sync": "powershell -ExecutionPolicy Bypass -File scripts/auto-sync.ps1",
     "db:reset": "supabase db reset",
     "db:push": "supabase db push",
-    "db:seed": "supabase db reset --linked=false"
+    "db:seed": "supabase db reset --linked=false",
+    "bot:install": "npm --prefix whatsapp-bot install",
+    "bot": "npm --prefix whatsapp-bot start"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
