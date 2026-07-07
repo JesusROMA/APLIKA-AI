@@ -123,9 +123,26 @@ input,button,textarea{font-family:inherit;}
   .mq-dup{display:none;}
   .faq-body,.faq-chev{transition:none;}
 }
+
+/* ===== Historia: video controlado por scroll ===== */
+.story-ph{justify-content:center;opacity:0;transform:translateY(34px);visibility:hidden;will-change:opacity,transform;transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1),visibility 0s linear .5s;}
+.story-ph.lead-on{opacity:1;transform:none;visibility:visible;transition-delay:0s,0s,0s;}
+.story-ph.pos-low{justify-content:flex-end;padding-bottom:13vh!important;}
+.story-ph.pos-high{justify-content:flex-start;padding-top:15vh!important;}
+.story-ph h2{font-size:clamp(28px,4.6vw,56px);font-weight:700;line-height:1.12;letter-spacing:-0.02em;color:#FFFFFF;margin:0;max-width:900px;text-wrap:balance;text-shadow:0 2px 24px rgba(4,28,53,0.55);}
+.story-ph .story-sub{font-size:clamp(16px,1.9vw,22px);font-weight:500;line-height:1.5;color:rgba(255,255,255,0.85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(4,28,53,0.5);}
+.story-ph.lead-main h2{font-size:clamp(34px,5.6vw,68px);}
+/* Modo reduced-motion: sin scrubbing ni pin; primer frame + frases apiladas con fade simple */
+[data-story].story-reduced{height:auto!important;}
+.story-reduced .story-stick{position:relative!important;height:auto!important;overflow:visible!important;}
+.story-reduced .story-video{position:relative!important;inset:auto!important;width:100%!important;height:52vh!important;display:block;}
+.story-reduced .story-scrim{display:none!important;}
+.story-reduced .story-hint{display:none!important;}
+.story-reduced .story-ph{position:relative!important;inset:auto!important;opacity:1!important;transform:none!important;visibility:visible!important;padding:26px 24px!important;animation:aIntroUp .6s ease both;}
+.story-reduced .story-ph h2{font-size:clamp(21px,2.6vw,32px);text-shadow:none;}
 </style>
 </helmet>
-<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:clip;">
 
 <!-- ===== Intro de carga (se reproduce al recargar) ===== -->
 <div class="a-intro" aria-hidden="true">
@@ -137,6 +154,35 @@ input,button,textarea{font-family:inherit;}
 </div>
 
 <dc-import name="Header" active="inicio" hint-size="100%,72px"></dc-import>
+
+<!-- ================= HISTORIA (video con scrubbing por scroll) =================
+     El contenedor de 450vh da la distancia de scroll; el viewport sticky de
+     100vh sostiene el video (currentTime = progreso, con lerp) y los leads
+     mapeados a los 3 actos del video (marca → papel → plataforma). -->
+<section data-story ref="{{ setStory }}" data-screen-label="Historia" style="position:relative;height:450vh;background:#0C447C;">
+  <div class="story-stick" style="position:sticky;top:0;height:100vh;overflow:hidden;">
+    <video class="story-video" src="/videos/aplika-hero.mp4" poster="/videos/aplika-hero-poster.jpg" preload="auto" muted="muted" playsinline="playsinline" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+    <!-- Scrim navy suave para legibilidad del texto -->
+    <div class="story-scrim" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,28,53,0.42) 0%,rgba(4,28,53,0.16) 45%,rgba(4,28,53,0.5) 100%);pointer-events:none;"></div>
+    <!-- Leads por acto (la clase .lead-on la alterna JS según el progreso;
+         la transición 0.5s cubic-bezier(.22,1,.36,1) vive en CSS) -->
+    <sc-for list="{{ storyPhrases }}" as="ph" hint-placeholder-count="5">
+      <div class="story-ph {{ ph.posClass }}" data-story-ph="{{ ph.i }}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px;text-align:center;pointer-events:none;">
+        <h2>{{ ph.headline }}</h2>
+        <sc-if value="{{ ph.hasSub }}" hint-placeholder-val="{{ false }}">
+          <p class="story-sub">{{ ph.subline }}</p>
+        </sc-if>
+        <sc-if value="{{ ph.isCta }}" hint-placeholder-val="{{ false }}">
+          <a href="Agenda-demo.dc.html" style="pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;box-shadow:0 18px 40px -14px rgba(2,18,38,0.6);transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s;" style-hover="background:#4F9AE6;transform:translateY(-2px);">Agenda tu demo gratis<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </sc-if>
+      </div>
+    </sc-for>
+    <!-- Pista de scroll -->
+    <div class="story-hint" style="position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;">
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.18em;color:rgba(255,255,255,0.55);">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:bounceY 1.8s ease-in-out infinite;"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
+    </div>
+  </div>
+</section>
 
 <!-- ================= HERO (oscuro) ================= -->
 <section data-screen-label="Hero" style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
@@ -524,6 +570,110 @@ class Component extends DCLogic {
     clearInterval(this._inv);
     if (this._raf) cancelAnimationFrame(this._raf);
     if (this._statRaf) cancelAnimationFrame(this._statRaf);
+    if (this._storyIO) this._storyIO.disconnect();
+    if (this._storyStop) this._storyStop();
+  }
+
+  // ===== Historia: video controlado por scroll =====
+  // CONFIG EDITABLE — leads mapeados a los 3 actos del video (15.04s):
+  //   Acto 1 · Marca (fichas 3D):   0–3.8s  → progreso 0.00–0.25
+  //   Acto 2 · Papel (escritorio):  4.2–6.5s → progreso 0.28–0.43
+  //   Acto 3 · Plataforma (laptop): 6.5–15s  → progreso 0.43–1.00
+  // Cambia textos/ventanas sin tocar la lógica. pos: 'pos-low' | 'pos-high'
+  // según el espacio negativo del acto. cta:true añade el botón de demo.
+  storyPhrases = [
+    { id: 'marca', headline: 'Tu negocio, digitalizado.', subline: 'Vende, cobra, factura y atiende clientes con IA — todo en un solo lugar.', start: 0.00, end: 0.24, pos: 'pos-low lead-main' },
+    { id: 'papel-1', headline: 'Pedidos en papelitos. Inventario en la cabeza. Clientes esperando respuesta.', start: 0.27, end: 0.35, pos: 'pos-high' },
+    { id: 'papel-2', headline: 'Así opera hoy tu negocio. Así se pierden ventas.', start: 0.37, end: 0.46, pos: 'pos-high' },
+    { id: 'plataforma', headline: 'Aplika lo convierte en una sola plataforma.', start: 0.50, end: 0.68, pos: 'pos-high' },
+    { id: 'cta', headline: 'Lista en días. Sin saber de sistemas.', start: 0.72, end: 1.00, pos: 'pos-high', cta: true }
+  ];
+
+  setStory(el) {
+    if (!el || this._storyInit) return;
+    this._storyInit = true;
+    const video = el.querySelector('.story-video');
+    const phEls = el.querySelectorAll('[data-story-ph]');
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Fallback SOLO en móvil real (iOS/Android scrubbean mal currentTime).
+    // Un escritorio con pantalla táctil SÍ scrubbea: no usar solo pointer:coarse.
+    const isMobileUA = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
+    const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const mobile = isMobileUA || (coarse && window.innerWidth < 768);
+
+    // El video NUNCA se reproduce solo en escritorio: pausado y controlado
+    // únicamente vía currentTime (scrub).
+    if (video) {
+      video.muted = true;
+      video.playsInline = true;
+      video.autoplay = false;
+      video.removeAttribute('autoplay');
+      try { video.pause(); } catch (e) {}
+    }
+
+    // Reduced motion: sin scrubbing ni pin — primer frame + frases apiladas (CSS)
+    if (reduce) { el.classList.add('story-reduced'); return; }
+
+    let duration = 0;
+    if (video) {
+      const onMeta = () => {
+        duration = video.duration || 0;
+        if (!mobile) { try { video.pause(); video.currentTime = 0; } catch (e) {} }
+      };
+      if (video.readyState >= 1) onMeta();
+      else video.addEventListener('loadedmetadata', onMeta);
+      if (mobile) {
+        // Móvil: versión ligera en loop de fondo; frases siguen ligadas al scroll
+        video.src = '/videos/aplika-hero-mobile.mp4';
+        video.loop = true;
+      }
+    }
+
+    let raf = null, cur = 0, lastSet = -1;
+    const leadState = new Array(phEls.length).fill(false);
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const rect = el.getBoundingClientRect();
+      const total = el.offsetHeight - window.innerHeight;
+      const p = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 0;
+
+      // Scrub suavizado: interpola hacia el tiempo objetivo (lerp) para que
+      // los saltos de rueda no brinquen frames. Máx. 1 asignación por frame.
+      if (!mobile && video && duration) {
+        const target = p * Math.max(duration - 0.05, 0);
+        cur += (target - cur) * 0.12;
+        if (Math.abs(target - cur) < 0.004) cur = target;
+        if (Math.abs(cur - lastSet) > 0.008) { try { video.currentTime = cur; } catch (e) {} lastSet = cur; }
+      }
+
+      // Leads: activo dentro de su ventana [start, end); la transición de
+      // 0.5s (opacity + translateY con easing) vive en CSS (.lead-on).
+      for (let i = 0; i < phEls.length; i++) {
+        const cfg = this.storyPhrases[i];
+        if (!cfg) continue;
+        const active = p >= cfg.start && (cfg.end >= 0.99 ? p <= 1 : p < cfg.end);
+        if (active !== leadState[i]) {
+          leadState[i] = active;
+          phEls[i].classList.toggle('lead-on', active);
+        }
+      }
+    };
+
+    // Solo trabaja mientras la sección está en viewport
+    this._storyIO = new IntersectionObserver((entries) => {
+      entries.forEach((e2) => {
+        if (e2.isIntersecting) {
+          if (!raf) tick();
+          if (mobile && video) video.play().catch(() => {});
+          else if (video) { try { video.pause(); } catch (e) {} } // desktop: jamás play()
+        } else {
+          if (raf) { cancelAnimationFrame(raf); raf = null; }
+          if (video) { try { video.pause(); } catch (e) {} }
+        }
+      });
+    });
+    this._storyIO.observe(el);
+    this._storyStop = () => { if (raf) { cancelAnimationFrame(raf); raf = null; } };
   }
 
   // Cuenta progresiva de los KPIs del hero (easeOutCubic)
@@ -566,7 +716,8 @@ class Component extends DCLogic {
   setupReveal(el) {
     if (!el || this._revealInit) return;
     this._revealInit = true;
-    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION');
+    // La sección de historia (data-story) maneja su propia animación por scroll
+    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION' && !c.hasAttribute('data-story'));
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof IntersectionObserver === 'undefined') {
       secs.forEach((s) => s.classList.add('a-reveal', 'a-in'));
@@ -661,6 +812,18 @@ class Component extends DCLogic {
     const t = this.testimonials[this.state.slide];
     return {
       setReveal: (el) => this.setupReveal(el),
+
+      // Historia (video por scroll)
+      setStory: (el) => this.setStory(el),
+      storyPhrases: this.storyPhrases.map((p, i) => ({
+        headline: p.headline,
+        subline: p.subline || '',
+        hasSub: !!p.subline,
+        posClass: p.pos || '',
+        i: String(i),
+        isCta: !!p.cta
+      })),
+
       showFloats: this.state.width > 720,
       showWhatsApp: true,
       logos: this.logos,

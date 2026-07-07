@@ -47,3 +47,7 @@ coverage/
 
 # Docker
 *.env.docker
+
+# Videos fuente pesados (las versiones web comprimidas viven en public/videos/)
+/*.mp4
+/_archive/
