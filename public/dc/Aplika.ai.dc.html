@@ -148,11 +148,12 @@ input,button,textarea{font-family:inherit;}
 .ind-card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:28px;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);}
 .ind-card:hover{background:var(--blue-100);border-color:var(--blue-200);transform:translateY(-2px);}
 /* ===== Industrias: video de fondo + tarjetas glass ===== */
-.ind-sec{position:relative;overflow:hidden;background:var(--navy);}
-.ind-scrim{position:absolute;inset:0;pointer-events:none;}
-/* Video sobredimensionado (116%): deja holgura arriba/abajo para el parallax
-   sin descubrir el fondo al desplazarlo. La traslación la escribe JS (setIndVideo). */
-.ind-video{position:absolute;left:0;top:-8%;width:100%;height:116%;object-fit:cover;pointer-events:none;will-change:transform;}
+/* Fondo en reposo (tras terminar el video): navy con textura de puntos (clase
+   dotted-navy en el elemento). El video lo cubre mientras se reproduce. */
+.ind-sec{position:relative;overflow:hidden;}
+/* Video intro (una sola pasada) + scrim; ambos se desvanecen al terminar. */
+.ind-video,.ind-scrim{position:absolute;inset:0;pointer-events:none;transition:opacity var(--dur-slow) var(--ease);}
+.ind-video{width:100%;height:100%;object-fit:cover;}
 /* Scrim ligero: deja ver el video (más nítido); el texto resalta por su
    propia sombra y las tarjetas de vidrio ahumado, no por oscurecer el video. */
 .ind-scrim{background:linear-gradient(180deg,rgba(var(--dark),0.5) 0%,rgba(var(--dark),0.3) 45%,rgba(var(--dark),0.62) 100%);}
@@ -167,6 +168,18 @@ input,button,textarea{font-family:inherit;}
 .ind-card--glass .icon-tile{background:var(--w-10);border:1px solid var(--w-16);color:var(--white);}
 .ind-card--glass .card-title{color:var(--white);}
 .ind-card--glass .card-body{color:var(--w-85);}
+/* Reveal por fases (lo activa JS con .ind-js; sin JS todo queda visible).
+   .ind-started → aparece el título mientras corre el video.
+   .ind-ended   → el video se desvanece y aparecen tarjetas + "Ver todas". */
+.ind-sec.ind-js .ind-head{opacity:0;transform:translateY(16px);transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease);}
+.ind-sec.ind-js .ind-cards>*,.ind-sec.ind-js .ind-late{opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease);}
+.ind-sec.ind-started .ind-head{opacity:1;transform:none;}
+.ind-sec.ind-ended .ind-video,.ind-sec.ind-ended .ind-scrim{opacity:0;}
+.ind-sec.ind-ended .ind-cards>*,.ind-sec.ind-ended .ind-late{opacity:1;transform:none;pointer-events:auto;}
+.ind-sec.ind-ended .ind-cards>*:nth-child(1){transition-delay:.05s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(2){transition-delay:.12s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(3){transition-delay:.19s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(4){transition-delay:.26s}
 @media (prefers-reduced-motion:reduce){.ind-video{display:none;}}
 .card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
 .card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
@@ -510,21 +523,23 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= INDUSTRIAS preview ================= -->
-<section id="industrias" data-screen-label="Industrias" class="ind-sec">
-  <!-- Video de fondo (ambiente en loop). Si el archivo falta, queda el navy de .ind-sec -->
-  <video class="ind-video" ref="{{ setIndVideo }}" src="/videos/inventario.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+<section id="industrias" data-screen-label="Industrias" class="ind-sec dotted-navy" data-no-reveal>
+  <!-- Video intro: se reproduce UNA vez al entrar la sección; al terminar se
+       desvanece y se revelan las tarjetas (lógica de fases en setIndVideo).
+       Sin loop/autoplay: el play() lo dispara JS al entrar en viewport. -->
+  <video class="ind-video" ref="{{ setIndVideo }}" src="/videos/inventario.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
   <div class="ind-scrim" aria-hidden="true"></div>
   <div class="ind-fade ind-fade--top" aria-hidden="true"></div>
   <div class="ind-fade ind-fade--bottom" aria-hidden="true"></div>
   <div class="u-wrap sec" style="position:relative;z-index:2;">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
-      <div style="max-width:560px;">
+      <div class="ind-head" style="max-width:560px;">
         <p class="eyebrow" style="color:var(--blue-300);">Industrias</p>
         <h2 class="h2-sec h2-sec--light">Pensado para negocios con inventario grande</h2>
       </div>
-      <a href="Industrias.dc.html" class="link-more" style="color:var(--blue-300);">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="Industrias.dc.html" class="link-more ind-late" style="color:var(--blue-300);">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
-    <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--sp-3);">
+    <div class="ind-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--sp-3);">
       <sc-for list="{{ industries }}" as="item" hint-placeholder-count="4">
         <a href="Industrias.dc.html" class="ind-card ind-card--glass">
           <span class="icon-tile icon-tile--lg" style="width:48px;height:48px;margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
@@ -664,54 +679,45 @@ class Component extends DCLogic {
     if (this._storyIO) this._storyIO.disconnect();
     if (this._storyStop) this._storyStop();
     if (this._indIO) this._indIO.disconnect();
-    if (this._indStop) this._indStop();
-    if (this._indPlay) document.removeEventListener('visibilitychange', this._indPlay);
+    clearTimeout(this._indFallback);
   }
 
-  // ===== Industrias: video de fondo siempre activo + parallax al scroll =====
-  // (1) Chrome pausa los videos autoplay fuera de pantalla y no siempre los
-  //     reanuda; reforzamos play() al cargar, al volver a ser visible la
-  //     pestaña y al reingresar al viewport, para que nunca se quede pausado.
-  // (2) Parallax: el video (116% de alto) se traslada suavemente según la
-  //     posición de la sección en el viewport, para que se sienta conectado al
-  //     scroll y no como un bloque estático. El rAF solo corre en viewport.
+  // ===== Industrias: video intro de una sola pasada + reveal por fases =====
+  // Al entrar la sección al viewport: aparece el título y el video se reproduce
+  // UNA vez. Al terminar (ended), el video se desvanece y aparecen las tarjetas.
+  // Salvaguardas: reduced-motion / autoplay bloqueado / error / video muy largo
+  // → se revela todo para no dejar contenido oculto.
   setIndVideo(el) {
     if (!el || this._indInit) return;
     this._indInit = true;
-    const sec = el.closest('.ind-sec') || el.parentElement;
+    const sec = el.closest('.ind-sec');
+    if (!sec) return;
+    sec.classList.add('ind-js'); // activa el reveal por fases; sin JS todo visible
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    el.muted = true; el.playsInline = true; el.loop = true;
-    const tryPlay = () => {
-      if (document.visibilityState !== 'visible') return;
-      const p = el.play();
-      if (p && p.catch) p.catch(() => {});
-    };
-    this._indPlay = tryPlay;
-    tryPlay();
-    ['loadeddata', 'canplay'].forEach((ev) => el.addEventListener(ev, tryPlay));
-    document.addEventListener('visibilitychange', tryPlay);
+    el.muted = true; el.playsInline = true; el.loop = false;
 
-    let raf = null;
-    const MAX = 26; // px de desplazamiento máximo del parallax (< holgura del 8%)
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
-      const rect = sec.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-      // 0 cuando la sección entra por abajo, 1 cuando sale por arriba
-      const prog = (vh - rect.top) / (vh + rect.height);
-      const shift = (Math.min(Math.max(prog, 0), 1) - 0.5) * 2 * MAX;
-      el.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)';
+    const showTitle = () => sec.classList.add('ind-started');
+    const revealCards = () => { clearTimeout(this._indFallback); sec.classList.add('ind-ended'); };
+
+    if (reduce) { showTitle(); revealCards(); return; }
+
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      showTitle();
+      const p = el.play();
+      if (p && p.catch) p.catch(() => revealCards()); // autoplay bloqueado → revela
+      // Red de seguridad: si 'ended' no dispara (video largo o roto), revela a los 22s
+      this._indFallback = setTimeout(revealCards, 22000);
     };
+    el.addEventListener('ended', revealCards);
+    el.addEventListener('error', () => { showTitle(); revealCards(); });
+
     this._indIO = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          tryPlay();
-          if (!reduce && !raf) tick();
-        } else if (raf) { cancelAnimationFrame(raf); raf = null; }
-      });
-    }, { threshold: 0.01 });
+      entries.forEach((e) => { if (e.isIntersecting) { start(); this._indIO.unobserve(sec); } });
+    }, { threshold: 0.35 });
     this._indIO.observe(sec);
-    this._indStop = () => { if (raf) { cancelAnimationFrame(raf); raf = null; } };
   }
 
   // ===== Historia: video controlado por scroll =====
@@ -864,7 +870,7 @@ class Component extends DCLogic {
     if (!el || this._revealInit) return;
     this._revealInit = true;
     // La sección de historia (data-story) maneja su propia animación por scroll
-    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION' && !c.hasAttribute('data-story'));
+    const secs = Array.prototype.filter.call(el.children, (c) => c.tagName === 'SECTION' && !c.hasAttribute('data-story') && !c.hasAttribute('data-no-reveal'));
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof IntersectionObserver === 'undefined') {
       secs.forEach((s) => s.classList.add('a-reveal', 'a-in'));
