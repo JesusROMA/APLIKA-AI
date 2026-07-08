@@ -34,8 +34,7 @@
 
   /* rgba más usados (blanco sobre navy) */
   --w-85:rgba(255,255,255,0.85); --w-74:rgba(255,255,255,0.74);
-  --w-66:rgba(255,255,255,0.66); --w-60:rgba(255,255,255,0.6);
-  --w-55:rgba(255,255,255,0.55);
+  --w-66:rgba(255,255,255,0.66); --w-55:rgba(255,255,255,0.55);
   --w-22:rgba(255,255,255,0.22); --w-16:rgba(255,255,255,0.16);
   --w-10:rgba(255,255,255,0.1);  --w-08:rgba(255,255,255,0.08);
   /* rgba de tinta (navy sobre blanco) */
@@ -61,8 +60,7 @@
   --lh-tight:1.1;   /* titulares (1.02–1.15 → por rol) */
   --lh-snug:1.45;   /* labels/stats */
   --lh-body:1.55;   /* cuerpo (absorbe 1.5/1.6) */
-  --track-tight:-0.02em; --track-label:0.02em; --track-wide:0.18em;
-  --track-hint:0.2em;    /* DESLIZA unificado */
+  --track-tight:-0.02em; --track-label:0.02em; --track-wide:0.18em; /* DESLIZA unificado */
 
   /* ===== Espaciado (base 8px) ===== */
   --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:40px;
@@ -125,7 +123,7 @@ input,button,textarea{font-family:inherit;}
 .btn--navy:hover{background:var(--navy-hover);}
 .link-more{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-body-sm);font-weight:600;color:var(--blue);text-decoration:none;transition:gap var(--dur-fast) var(--ease);}
 .link-more:hover{gap:11px;}
-.scroll-hint{display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;letter-spacing:var(--track-hint);color:var(--w-60);}
+.scroll-hint{display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;letter-spacing:var(--track-wide);color:var(--w-55);}
 .scroll-hint svg{animation:hintY 2s ease-in-out infinite;}
 .dotted-navy{background-color:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;}
 .demo-card{background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-1);}
@@ -281,7 +279,7 @@ input,button,textarea{font-family:inherit;}
 .story-reduced .story-ph h2,.story-reduced .story-ph .story-sub{opacity:1!important;transform:none!important;transition:none!important;}
 </style>
 </helmet>
-<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:clip;">
+<div ref="{{ setReveal }}" style="font-family:var(--font);color:var(--ink);background:var(--white);overflow-x:clip;">
 
 <!-- ===== Intro de carga (se reproduce al recargar) ===== -->
 <div class="a-intro" aria-hidden="true">
