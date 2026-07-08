@@ -147,39 +147,37 @@ input,button,textarea{font-family:inherit;}
 .mq-pill{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-sm);color:var(--ink-45);font-size:var(--fs-small);font-weight:600;}
 .ind-card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:28px;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);}
 .ind-card:hover{background:var(--blue-100);border-color:var(--blue-200);transform:translateY(-2px);}
-/* ===== Industrias: video de fondo + tarjetas glass ===== */
-/* Fondo en reposo (tras terminar el video): navy con textura de puntos (clase
-   dotted-navy en el elemento). El video lo cubre mientras se reproduce. */
-.ind-sec{position:relative;overflow:hidden;}
-/* Video intro (una sola pasada) + scrim; ambos se desvanecen al terminar. */
-.ind-video,.ind-scrim{position:absolute;inset:0;pointer-events:none;transition:opacity var(--dur-slow) var(--ease);}
-.ind-video{width:100%;height:100%;object-fit:cover;}
-/* Scrim ligero: deja ver el video (más nítido); el texto resalta por su
-   propia sombra y las tarjetas de vidrio ahumado, no por oscurecer el video. */
+/* ===== Industrias: video intro (una pasada) sobre contenido claro =====
+   Fondo en reposo BLANCO. El video es una "portada" oscura que se reproduce
+   una vez y se DISUELVE (fade + leve scale) para revelar el contenido claro:
+   título que recolorea de blanco a oscuro + tarjetas claras. */
+.ind-sec{position:relative;overflow:hidden;background:var(--white);}
+/* Portada: video + scrim + fundidos de borde. Se disuelven juntos al terminar. */
+.ind-video,.ind-scrim{position:absolute;inset:0;pointer-events:none;transition:opacity .85s var(--ease);}
+.ind-video{width:100%;height:100%;object-fit:cover;transition:opacity .85s var(--ease),transform .85s var(--ease);}
 .ind-scrim{background:linear-gradient(180deg,rgba(var(--dark),0.5) 0%,rgba(var(--dark),0.3) 45%,rgba(var(--dark),0.62) 100%);}
-/* Fundido de bordes: el video se disuelve en las secciones vecinas (arriba
-   --surface, abajo --blue-100) en vez de un corte rectangular duro. */
-.ind-fade{position:absolute;left:0;right:0;height:clamp(64px,9vw,130px);pointer-events:none;z-index:1;}
+.ind-fade{position:absolute;left:0;right:0;height:clamp(64px,9vw,130px);pointer-events:none;z-index:1;transition:opacity .85s var(--ease);}
 .ind-fade--top{top:0;background:linear-gradient(to bottom,var(--surface),transparent);}
 .ind-fade--bottom{bottom:0;background:linear-gradient(to top,var(--blue-100),transparent);}
-.ind-sec .h2-sec,.ind-sec .eyebrow,.ind-sec .link-more{text-shadow:0 2px 18px rgba(var(--dark),0.6);}
-.ind-card--glass{background:rgba(var(--dark),0.34);border-color:var(--w-16);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);}
-.ind-card--glass:hover{background:rgba(var(--dark),0.46);border-color:var(--w-22);transform:translateY(-4px);}
-.ind-card--glass .icon-tile{background:var(--w-10);border:1px solid var(--w-16);color:var(--white);}
-.ind-card--glass .card-title{color:var(--white);}
-.ind-card--glass .card-body{color:var(--w-85);}
+/* Título: blanco sobre el video (fase 1) → oscuro sobre blanco (fase 2).
+   La recoloración se retrasa un poco para no quedar gris sobre gris a mitad. */
+.ind-sec .h2-sec{color:var(--white);text-shadow:0 2px 18px rgba(var(--dark),0.6);transition:color .55s var(--ease) .2s,text-shadow .55s var(--ease) .2s;}
+.ind-sec .eyebrow{color:var(--blue-300);text-shadow:0 1px 10px rgba(var(--dark),0.5);transition:color .55s var(--ease) .2s,text-shadow .55s var(--ease) .2s;}
+.ind-sec.ind-ended .h2-sec{color:var(--ink);text-shadow:none;}
+.ind-sec.ind-ended .eyebrow{color:var(--blue);text-shadow:none;}
+.ind-sec.ind-ended .ind-video{opacity:0;transform:scale(1.04);}
+.ind-sec.ind-ended .ind-scrim,.ind-sec.ind-ended .ind-fade{opacity:0;}
 /* Reveal por fases (lo activa JS con .ind-js; sin JS todo queda visible).
    .ind-started → aparece el título mientras corre el video.
-   .ind-ended   → el video se desvanece y aparecen tarjetas + "Ver todas". */
-.ind-sec.ind-js .ind-head{opacity:0;transform:translateY(16px);transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease);}
-.ind-sec.ind-js .ind-cards>*,.ind-sec.ind-js .ind-late{opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease);}
+   .ind-ended   → el video se disuelve y aparecen tarjetas + "Ver todas". */
+.ind-sec.ind-js .ind-head{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.ind-sec.ind-js .ind-cards>*,.ind-sec.ind-js .ind-late{opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity .6s var(--ease),transform .6s var(--ease);}
 .ind-sec.ind-started .ind-head{opacity:1;transform:none;}
-.ind-sec.ind-ended .ind-video,.ind-sec.ind-ended .ind-scrim{opacity:0;}
 .ind-sec.ind-ended .ind-cards>*,.ind-sec.ind-ended .ind-late{opacity:1;transform:none;pointer-events:auto;}
-.ind-sec.ind-ended .ind-cards>*:nth-child(1){transition-delay:.05s}
-.ind-sec.ind-ended .ind-cards>*:nth-child(2){transition-delay:.12s}
-.ind-sec.ind-ended .ind-cards>*:nth-child(3){transition-delay:.19s}
-.ind-sec.ind-ended .ind-cards>*:nth-child(4){transition-delay:.26s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(1){transition-delay:.2s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(2){transition-delay:.29s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(3){transition-delay:.38s}
+.ind-sec.ind-ended .ind-cards>*:nth-child(4){transition-delay:.47s}
 @media (prefers-reduced-motion:reduce){.ind-video{display:none;}}
 .card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
 .card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
@@ -523,7 +521,7 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= INDUSTRIAS preview ================= -->
-<section id="industrias" data-screen-label="Industrias" class="ind-sec dotted-navy" data-no-reveal>
+<section id="industrias" data-screen-label="Industrias" class="ind-sec" data-no-reveal>
   <!-- Video intro: se reproduce UNA vez al entrar la sección; al terminar se
        desvanece y se revelan las tarjetas (lógica de fases en setIndVideo).
        Sin loop/autoplay: el play() lo dispara JS al entrar en viewport. -->
@@ -534,14 +532,14 @@ input,button,textarea{font-family:inherit;}
   <div class="u-wrap sec" style="position:relative;z-index:2;">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
       <div class="ind-head" style="max-width:560px;">
-        <p class="eyebrow" style="color:var(--blue-300);">Industrias</p>
-        <h2 class="h2-sec h2-sec--light">Pensado para negocios con inventario grande</h2>
+        <p class="eyebrow">Industrias</p>
+        <h2 class="h2-sec">Pensado para negocios con inventario grande</h2>
       </div>
-      <a href="Industrias.dc.html" class="link-more ind-late" style="color:var(--blue-300);">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="Industrias.dc.html" class="link-more ind-late">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
     <div class="ind-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--sp-3);">
       <sc-for list="{{ industries }}" as="item" hint-placeholder-count="4">
-        <a href="Industrias.dc.html" class="ind-card ind-card--glass">
+        <a href="Industrias.dc.html" class="ind-card">
           <span class="icon-tile icon-tile--lg" style="width:48px;height:48px;margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
           <h3 class="card-title">{{ item.title }}</h3>
           <p class="card-body">{{ item.desc }}</p>
