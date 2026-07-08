@@ -229,12 +229,15 @@ input,button,textarea{font-family:inherit;}
 .a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
 
 /* ===== Cómo funciona: flujo ===== */
-.cf-flow{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;}
+.cf-flow{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;}
 .cf-node{position:relative;flex:1 1 220px;max-width:258px;background:var(--white);border-radius:var(--r-lg);padding:28px 22px;text-align:center;}
 .cf-ic{position:relative;width:62px;height:62px;margin:0 auto 16px;border-radius:var(--r-lg);background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--navy);}
 .cf-num{position:absolute;top:-8px;right:-8px;width:25px;height:25px;border-radius:50%;background:var(--navy);color:var(--white);font-size:var(--fs-caption);font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid var(--blue-100);}
-.cf-arrow{position:absolute;right:-25px;top:46px;color:var(--blue-300);opacity:0;}
-@media(max-width:900px){.cf-arrow{display:none;}}
+/* Flecha centrada en el hueco (gap 28px) entre tarjetas y alineada al centro
+   del icono (28px padding + 31px medio icono = 59px). translate: 50% de su
+   propio ancho la lleva al borde de la tarjeta, +14px al centro del hueco. */
+.cf-arrow{position:absolute;right:0;top:59px;transform:translate(calc(50% + 14px),-50%);color:var(--blue-300);opacity:0;pointer-events:none;}
+@media(max-width:1000px){.cf-arrow{display:none;}}
 .a-reveal .cf-node{opacity:0;transform:translateY(22px) scale(.96);}
 .a-reveal.a-in .cf-node{opacity:1;transform:none;transition:opacity var(--dur-slow) ease,transform var(--dur-slow) var(--ease-spring);}
 .a-reveal.a-in .cf-node:nth-child(1){transition-delay:.05s}.a-reveal.a-in .cf-node:nth-child(2){transition-delay:.2s}
@@ -566,7 +569,7 @@ input,button,textarea{font-family:inherit;}
           <h3 class="card-title">{{ item.title }}</h3>
           <p class="card-body">{{ item.desc }}</p>
           <sc-if value="{{ item.showArrow }}" hint-placeholder-val="{{ true }}">
-            <span class="cf-arrow"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+            <span class="cf-arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
           </sc-if>
         </div>
       </sc-for>
