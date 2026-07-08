@@ -12,65 +12,199 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+:root{
+  /* ===== Paleta (hex existentes) ===== */
+  --navy:#0C447C;            /* marca / fondos oscuros */
+  --navy-hover:#0A3A6B;
+  --ink:#042C53;             /* texto principal */
+  --blue:#378ADD;            /* acento / CTA */
+  --blue-hover:#4F9AE6;
+  --blue-bright:#4FA0E8;     /* acento marca (logo, dots) */
+  --blue-300:#9CC6F0;
+  --blue-200:#B5D4F4;
+  --blue-100:#E6F1FB;        /* superficie azul clara / bordes suaves */
+  --blue-logo:#6FB3EC;       /* ".ai" del logo */
+  --surface:#F5F8FC;         /* fondo de paneles claros */
+  --line:#EEF3F9;            /* borde hairline / skeleton */
+  --border:#D8E6F5;          /* borde visible (inputs, slider) */
+  --white:#FFFFFF;
+  --green:#1FA85A;  --green-bg:#E4F6EC;
+  --amber:#B9682B;  --amber-bg:#FBEEDD;
+  --whatsapp:#25D366; --whatsapp-hover:#1FB855;
+
+  /* rgba más usados (blanco sobre navy) */
+  --w-85:rgba(255,255,255,0.85); --w-74:rgba(255,255,255,0.74);
+  --w-66:rgba(255,255,255,0.66); --w-60:rgba(255,255,255,0.6);
+  --w-55:rgba(255,255,255,0.55);
+  --w-22:rgba(255,255,255,0.22); --w-16:rgba(255,255,255,0.16);
+  --w-10:rgba(255,255,255,0.1);  --w-08:rgba(255,255,255,0.08);
+  /* rgba de tinta (navy sobre blanco) */
+  --ink-66:rgba(4,44,83,0.66);   /* cuerpo atenuado */
+  --ink-55:rgba(4,44,83,0.55);   /* muted */
+  --ink-45:rgba(4,44,83,0.45);   /* faint */
+  /* oscuro para scrims/sombras */
+  --dark:4,28,53;                /* usar rgba(var(--dark),x) */
+
+  /* ===== Tipografía (consolidada, clamp) ===== */
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+  --fs-display:clamp(56px,7vw,112px);   /* Historia lead-main */
+  --fs-h1:clamp(38px,6vw,68px);         /* Hero */
+  --fs-title:clamp(30px,4vw,52px);      /* CTA final, Historia h2, números Stats */
+  --fs-h2:clamp(26px,3.4vw,40px);       /* H2 de sección (único) */
+  --fs-h3:clamp(22px,2.6vw,30px);       /* subtítulos / quote */
+  --fs-card-title:18px;                 /* títulos de tarjeta */
+  --fs-lead:clamp(17px,1.9vw,21px);     /* párrafo lead */
+  --fs-body:16px;                       /* botones, FAQ pregunta, UI */
+  --fs-body-sm:15px;                    /* cuerpo de tarjetas */
+  --fs-small:14px;                      /* meta, roles, labels */
+  --fs-caption:12px;                    /* micro-labels, badges */
+  --lh-tight:1.1;   /* titulares (1.02–1.15 → por rol) */
+  --lh-snug:1.45;   /* labels/stats */
+  --lh-body:1.55;   /* cuerpo (absorbe 1.5/1.6) */
+  --track-tight:-0.02em; --track-label:0.02em; --track-wide:0.18em;
+  --track-hint:0.2em;    /* DESLIZA unificado */
+
+  /* ===== Espaciado (base 8px) ===== */
+  --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:40px;
+  --sp-6:48px; --sp-8:64px; --sp-10:80px; --sp-12:96px;
+  --sec-y:clamp(56px,8vw,100px);        /* padding vertical estándar de sección */
+  --sec-y-lg:clamp(60px,9vw,110px);     /* secciones destacadas (Plataforma, CTA) */
+  --sec-x:24px;
+
+  /* ===== Radios ===== */
+  --r-xs:4px;    /* barras, skeletons (absorbe 5px) */
+  --r-sm:8px;    /* icon-tiles pequeños (absorbe 7/9/10px) */
+  --r-md:12px;   /* chips, KPIs, filas, botones (absorbe 11/13/14px) */
+  --r-lg:18px;   /* tarjetas (absorbe 16/17/20px) */
+  --r-xl:24px;   /* frames/banners (absorbe 28px) */
+  --r-full:999px;
+
+  /* ===== Sombras ===== */
+  --shadow-1:0 18px 40px -24px rgba(12,68,124,0.3);   /* tarjeta */
+  --shadow-2:0 20px 40px -18px rgba(2,18,38,0.5);     /* flotante */
+  --shadow-3:0 40px 80px -36px rgba(2,18,38,0.7);     /* panel héroe */
+  --shadow-btn:0 14px 28px -12px rgba(55,138,221,0.7);/* hover CTA */
+
+  /* ===== Timing ===== */
+  --ease:cubic-bezier(.22,1,.36,1);         /* estándar */
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --dur-fast:.2s;    /* hovers */
+  --dur-base:.4s;    /* acordeón, chat (absorbe .3/.35) */
+  --dur-slow:.55s;   /* leads/stagger (absorbe .5/.6) */
+  --dur-reveal:.7s;  /* scroll-reveal */
+
+  /* ===== Layout ===== */
+  --container:1180px;
+  --container-narrow:880px;   /* Testimonios, CTA, FAQ */
+}
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{margin:0;background:#FFFFFF;}
+body{margin:0;background:var(--white);}
 input,button,textarea{font-family:inherit;}
-::selection{background:#B5D4F4;color:#042C53;}
-@keyframes spin{to{transform:rotate(360deg);}}
+::selection{background:var(--blue-200);color:var(--ink);}
 @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
 @keyframes bounceY{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
 @keyframes hintY{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
 
+/* ===== Utilidades del contrato (AUDIT §3.1 / §5) ===== */
+.u-wrap{width:100%;max-width:var(--container);margin:0 auto;padding-left:var(--sec-x);padding-right:var(--sec-x);}
+.u-wrap--narrow{max-width:var(--container-narrow);}
+.sec{padding-top:var(--sec-y);padding-bottom:var(--sec-y);}
+.sec--lg{padding-top:var(--sec-y-lg);padding-bottom:var(--sec-y-lg);}
+.h2-sec{font-size:var(--fs-h2);font-weight:600;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--ink);margin:0;text-wrap:balance;}
+.h2-sec--light{color:var(--white);}
+.lead-sec{font-size:var(--fs-lead);line-height:var(--lh-body);color:var(--ink-66);margin:0;max-width:52ch;}
+.lead-sec--light{color:var(--w-74);}
+.eyebrow{font-size:var(--fs-small);font-weight:600;color:var(--blue);letter-spacing:var(--track-label);margin:0 0 14px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:var(--fs-body);font-weight:600;line-height:1;padding:16px 32px;border:1px solid transparent;border-radius:var(--r-md);text-decoration:none;cursor:pointer;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease);}
+.btn--primary{background:var(--blue);color:var(--white);}
+.btn--primary:hover{background:var(--blue-hover);transform:translateY(-2px);box-shadow:var(--shadow-btn);}
+.btn--ghost{background:var(--w-08);color:var(--white);border-color:var(--w-22);}
+.btn--ghost:hover{background:var(--w-16);}
+.btn--navy{background:var(--navy);color:var(--white);}
+.btn--navy:hover{background:var(--navy-hover);}
+.link-more{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-body-sm);font-weight:600;color:var(--blue);text-decoration:none;transition:gap var(--dur-fast) var(--ease);}
+.link-more:hover{gap:11px;}
+.scroll-hint{display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;letter-spacing:var(--track-hint);color:var(--w-60);}
+.scroll-hint svg{animation:hintY 2s ease-in-out infinite;}
+.dotted-navy{background-color:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;}
+.demo-card{background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-1);}
+.badge-dark{display:inline-flex;align-items:center;gap:8px;background:var(--w-10);border:1px solid var(--w-16);border-radius:var(--r-full);padding:7px 14px;font-size:var(--fs-small);font-weight:600;color:var(--blue-300);}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;padding:4px 9px;border-radius:var(--r-full);}
+.pill--ok{color:var(--green);background:var(--green-bg);}
+.pill--warn{color:var(--amber);background:var(--amber-bg);}
+.icon-tile{display:inline-flex;align-items:center;justify-content:center;flex:none;background:var(--blue-100);border-radius:var(--r-sm);color:var(--navy);}
+.icon-tile--lg{border-radius:var(--r-md);}
+.kpi{background:var(--surface);border-radius:var(--r-md);padding:13px;}
+.kpi--hl{background:var(--blue-100);}
+.kpi-label{font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0 0 6px;}
+.kpi--hl .kpi-label{color:var(--navy);}
+.kpi-value{font-size:var(--fs-card-title);font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;}
+.bar{flex:1;background:var(--blue-200);border-radius:var(--r-xs) var(--r-xs) 0 0;}
+.bar--hl{background:var(--blue);}
+.sk-bar{display:block;background:var(--blue-100);border-radius:var(--r-xs);}
+.sk-bar--accent{background:var(--blue);}
+.sk-product{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;}
+.inv-row{display:flex;align-items:center;gap:13px;background:var(--white);border:1px solid var(--line);border-radius:var(--r-md);padding:13px;}
+.inv-row--warn{border-color:var(--amber-bg);}
+.float-card{display:flex;align-items:center;gap:10px;border-radius:var(--r-md);padding:12px 15px;box-shadow:var(--shadow-2);}
+.mq-pill{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-sm);color:var(--ink-45);font-size:var(--fs-small);font-weight:600;}
+.ind-card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:28px;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);}
+.ind-card:hover{background:var(--blue-100);border-color:var(--blue-200);transform:translateY(-2px);}
+.card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
+.card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
+.slider-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:var(--white);border:1px solid var(--border);border-radius:50%;cursor:pointer;color:var(--navy);transition:background var(--dur-fast) var(--ease);}
+.slider-btn:hover{background:var(--blue-100);}
+
 /* ===== Intro de carga: 4 cuadros + aplika.ai + lead ===== */
-.a-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.06) 1.4px,transparent 1.4px);background-size:26px 26px;animation:aIntroOut .7s ease 2s forwards;}
+.a-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;animation:aIntroOut var(--dur-reveal) ease 2s forwards;}
 .a-intro-inner{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;}
 .a-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:86px;height:86px;}
-.a-grid .s{border-radius:12px;opacity:0;transform:scale(.2) rotate(-25deg);animation:aIntroPop .62s cubic-bezier(.34,1.56,.64,1) forwards;}
-.a-grid .s1{background:#FFFFFF;animation-delay:.05s;}
-.a-grid .s2{background:#B5D4F4;animation-delay:.18s;}
-.a-grid .s3{background:#4FA0E8;animation-delay:.31s;}
-.a-grid .s4{background:#FFFFFF;animation-delay:.44s;}
-.a-word{font-size:32px;font-weight:700;letter-spacing:-0.01em;color:#FFFFFF;margin:4px 0 0;opacity:0;animation:aIntroUp .6s ease .72s forwards;}
-.a-word span{color:#6FB3EC;}
-.a-lead{font-size:15px;line-height:1.5;color:rgba(255,255,255,0.72);margin:0;max-width:300px;opacity:0;animation:aIntroUp .6s ease .95s forwards;}
+.a-grid .s{border-radius:var(--r-md);opacity:0;transform:scale(.2) rotate(-25deg);animation:aIntroPop .62s var(--ease-spring) forwards;}
+.a-grid .s1{background:var(--white);animation-delay:.05s;}
+.a-grid .s2{background:var(--blue-200);animation-delay:.18s;}
+.a-grid .s3{background:var(--blue-bright);animation-delay:.31s;}
+.a-grid .s4{background:var(--white);animation-delay:.44s;}
+.a-word{font-size:32px;font-weight:700;letter-spacing:-0.01em;color:var(--white);margin:4px 0 0;opacity:0;animation:aIntroUp var(--dur-slow) ease .72s forwards;}
+.a-word span{color:var(--blue-logo);}
+.a-lead{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--w-74);margin:0;max-width:300px;opacity:0;animation:aIntroUp var(--dur-slow) ease .95s forwards;}
 @keyframes aIntroPop{0%{opacity:0;transform:scale(.2) rotate(-25deg);}60%{opacity:1;transform:scale(1.12) rotate(5deg);}100%{opacity:1;transform:scale(1) rotate(0);}}
 @keyframes aIntroUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 @keyframes aIntroOut{to{opacity:0;visibility:hidden;}}
 
 /* ===== Scroll reveal de secciones ===== */
-.a-reveal{opacity:0;transform:translateY(48px) scale(.965);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);will-change:opacity,transform;}
+.a-reveal{opacity:0;transform:translateY(48px) scale(.965);transition:opacity var(--dur-reveal) var(--ease),transform var(--dur-reveal) var(--ease);will-change:opacity,transform;}
 .a-reveal.a-in{opacity:1;transform:none;}
 @media (prefers-reduced-motion:reduce){.a-intro{display:none;animation:none;}.a-reveal{opacity:1;transform:none;transition:none;}}
 
 /* ===== Hero: construcción del dashboard al cargar ===== */
-.hbars .hb{transform-origin:bottom;animation:hbGrow .7s cubic-bezier(.22,.61,.36,1) both;}
+.hbars .hb{transform-origin:bottom;animation:hbGrow var(--dur-reveal) var(--ease) both;}
 .hbars .hb:nth-child(1){animation-delay:2.05s}.hbars .hb:nth-child(2){animation-delay:2.13s}
 .hbars .hb:nth-child(3){animation-delay:2.21s}.hbars .hb:nth-child(4){animation-delay:2.29s}
 .hbars .hb:nth-child(5){animation-delay:2.37s}.hbars .hb:nth-child(6){animation-delay:2.45s}
 .hbars .hb:nth-child(7){animation-delay:2.53s}
 @keyframes hbGrow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
-.hkpi{opacity:0;transform:translateY(10px);animation:aIntroUp .6s ease both;}
+.hkpi{opacity:0;transform:translateY(10px);animation:aIntroUp var(--dur-slow) ease both;}
 .hkpi:nth-child(1){animation-delay:2s}.hkpi:nth-child(2){animation-delay:2.12s}.hkpi:nth-child(3){animation-delay:2.24s}
 
 /* ===== Demo en vivo (inventario) ===== */
 @keyframes livePulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 @keyframes liveGlow{0%,100%{box-shadow:0 0 0 0 rgba(185,104,43,0);}50%{box-shadow:0 0 0 4px rgba(185,104,43,0.16);}}
 .live-dot{animation:livePulse 1.4s ease-in-out infinite;}
-.live-row{animation:liveGlow 2.2s ease-in-out infinite;border-radius:10px;}
-.live-bar{transition:width .6s cubic-bezier(.22,.61,.36,1);}
-.tab-pop{animation:chatIn .4s ease both;}
+.live-row{animation:liveGlow 2.2s ease-in-out infinite;border-radius:var(--r-sm);}
+.live-bar{transition:width var(--dur-slow) var(--ease);}
+.tab-pop{animation:chatIn var(--dur-base) ease both;}
 
 /* ===== Chat del agente IA (conversación en vivo) ===== */
 @keyframes chatIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:none;}}
-.chat-msg{animation:chatIn .35s ease both;}
+.chat-msg{animation:chatIn var(--dur-base) ease both;}
 @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-4px);opacity:1;}}
-.t-dot{width:6px;height:6px;border-radius:50%;background:#9CC6F0;display:inline-block;animation:typingDot 1s infinite;}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--blue-300);display:inline-block;animation:typingDot 1s infinite;}
 .t-dot:nth-child(2){animation-delay:.15s}.t-dot:nth-child(3){animation-delay:.3s}
 
 /* ===== Stagger genérico de tarjetas al revelar ===== */
 .a-reveal .a-stag>*{opacity:0;transform:translateY(28px);}
-.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity var(--dur-slow) ease,transform var(--dur-slow) var(--ease);}
 .a-reveal.a-in .a-stag>*:nth-child(1){transition-delay:.04s}.a-reveal.a-in .a-stag>*:nth-child(2){transition-delay:.1s}
 .a-reveal.a-in .a-stag>*:nth-child(3){transition-delay:.16s}.a-reveal.a-in .a-stag>*:nth-child(4){transition-delay:.22s}
 .a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
@@ -78,21 +212,21 @@ input,button,textarea{font-family:inherit;}
 
 /* ===== Cómo funciona: flujo ===== */
 .cf-flow{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;}
-.cf-node{position:relative;flex:1 1 220px;max-width:258px;background:#FFFFFF;border-radius:18px;padding:28px 22px;text-align:center;}
-.cf-ic{position:relative;width:62px;height:62px;margin:0 auto 16px;border-radius:17px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;color:#0C447C;}
-.cf-num{position:absolute;top:-8px;right:-8px;width:25px;height:25px;border-radius:50%;background:#0C447C;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #E6F1FB;}
-.cf-arrow{position:absolute;right:-25px;top:46px;color:#9CC6F0;opacity:0;}
+.cf-node{position:relative;flex:1 1 220px;max-width:258px;background:var(--white);border-radius:var(--r-lg);padding:28px 22px;text-align:center;}
+.cf-ic{position:relative;width:62px;height:62px;margin:0 auto 16px;border-radius:var(--r-lg);background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--navy);}
+.cf-num{position:absolute;top:-8px;right:-8px;width:25px;height:25px;border-radius:50%;background:var(--navy);color:var(--white);font-size:var(--fs-caption);font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid var(--blue-100);}
+.cf-arrow{position:absolute;right:-25px;top:46px;color:var(--blue-300);opacity:0;}
 @media(max-width:900px){.cf-arrow{display:none;}}
 .a-reveal .cf-node{opacity:0;transform:translateY(22px) scale(.96);}
-.a-reveal.a-in .cf-node{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.56,.64,1);}
+.a-reveal.a-in .cf-node{opacity:1;transform:none;transition:opacity var(--dur-slow) ease,transform var(--dur-slow) var(--ease-spring);}
 .a-reveal.a-in .cf-node:nth-child(1){transition-delay:.05s}.a-reveal.a-in .cf-node:nth-child(2){transition-delay:.2s}
 .a-reveal.a-in .cf-node:nth-child(3){transition-delay:.35s}.a-reveal.a-in .cf-node:nth-child(4){transition-delay:.5s}
-.a-reveal.a-in .cf-arrow{opacity:1;transition:opacity .5s ease .55s;}
+.a-reveal.a-in .cf-arrow{opacity:1;transition:opacity var(--dur-slow) ease .55s;}
 
 /* ===== Hero: cuadros redondeados flotando (azules de marca) ===== */
 .hero-sq{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.hsq-wrap{position:absolute;pointer-events:auto;cursor:pointer;animation:floatSq 4.5s cubic-bezier(.45,0,.55,1) infinite;will-change:transform;}
-.hsq-in{display:block;width:100%;height:100%;border-radius:24px;transform:rotate(var(--rot,0deg));transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease,filter .35s ease;will-change:transform;}
+.hsq-wrap{position:absolute;pointer-events:auto;cursor:pointer;animation:floatSq 4.5s var(--ease) infinite;will-change:transform;}
+.hsq-in{display:block;width:100%;height:100%;border-radius:var(--r-xl);transform:rotate(var(--rot,0deg));transition:transform var(--dur-base) var(--ease),box-shadow var(--dur-base) ease,filter var(--dur-base) ease;will-change:transform;}
 .hsq-wrap:hover{animation-play-state:paused;z-index:3;}
 .hsq-wrap:hover .hsq-in{transform:rotate(var(--rot,0deg)) scale(1.55);filter:brightness(1.8);box-shadow:0 0 0 1.5px rgba(255,255,255,0.3),0 16px 40px -8px rgba(79,160,232,0.55);}
 @keyframes floatSq{0%,100%{transform:translateY(0);}50%{transform:translateY(-26px);}}
@@ -104,14 +238,14 @@ input,button,textarea{font-family:inherit;}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
 /* ===== FAQ: acordeón suave + chevron ===== */
-.faq-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.22,1,.36,1);}
+.faq-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--dur-base) var(--ease);}
 .faq-body.open{grid-template-rows:1fr;}
 .faq-body>div{overflow:hidden;}
-.faq-chev{transition:transform .3s cubic-bezier(.22,1,.36,1);}
+.faq-chev{transition:transform var(--dur-base) var(--ease);}
 
 /* ===== Micro-hover: elevación sutil ===== */
-.cf-node{transition:box-shadow .2s cubic-bezier(.22,1,.36,1);}
-.cf-node:hover{box-shadow:0 22px 44px -24px rgba(12,68,124,0.32);}
+.cf-node{transition:box-shadow var(--dur-fast) var(--ease);}
+.cf-node:hover{box-shadow:var(--shadow-1);}
 
 @media (prefers-reduced-motion:reduce){
   .hbars .hb,.hkpi,.chat-msg,.tab-pop{animation:none;opacity:1;transform:none;}
@@ -126,36 +260,24 @@ input,button,textarea{font-family:inherit;}
 }
 
 /* ===== Historia: video controlado por scroll ===== */
-.story-ph{justify-content:center;opacity:0;transform:translateY(34px);visibility:hidden;will-change:opacity,transform;transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1),visibility 0s linear .5s;}
+.story-ph{justify-content:center;opacity:0;transform:translateY(34px);visibility:hidden;will-change:opacity,transform;transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease),visibility 0s linear var(--dur-slow);}
 .story-ph.lead-on{opacity:1;transform:none;visibility:visible;transition-delay:0s,0s,0s;}
 .story-ph.pos-low{justify-content:flex-end;padding-bottom:13vh!important;}
 .story-ph.pos-high{justify-content:flex-start;padding-top:15vh!important;}
-.story-ph h2{font-size:clamp(28px,4.6vw,56px);font-weight:700;line-height:1.12;letter-spacing:-0.02em;color:#FFFFFF;margin:0;max-width:900px;text-wrap:balance;text-shadow:0 2px 24px rgba(4,28,53,0.55);}
-.story-ph .story-sub{font-size:clamp(16px,1.9vw,22px);font-weight:500;line-height:1.5;color:rgba(255,255,255,0.85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(4,28,53,0.5);}
-/* Acto 1 (lead-main): tipografía display + bloque anclado al tercio inferior.
-   La opacidad del lead y de DESLIZA va ligada al progreso del scroll vía
-   --hero-fade (la escribe JS en la sección); la entrada escalonada vive en
-   los hijos: headline → subtítulo (+100ms) → DESLIZA (+200ms). */
-.story-ph.lead-main{opacity:var(--hero-fade,1);transform:none;visibility:visible;transition:none;isolation:isolate;min-height:100svh;gap:clamp(20px,2.5vh,32px)!important;padding-bottom:clamp(96px,14vh,180px)!important;}
-.story-ph.lead-main::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(0,0,0,0.35),transparent 60%);pointer-events:none;}
-.story-ph.lead-main h2{font-size:clamp(56px,7vw,112px);line-height:1.02;letter-spacing:-0.03em;}
-.story-ph.lead-main .story-sub{font-size:clamp(18px,1.4vw,24px);line-height:1.5;letter-spacing:normal;max-width:44ch;color:rgba(255,255,255,0.85);}
-.story-ph.lead-main h2,.story-ph.lead-main .story-sub{opacity:0;transform:translateY(24px);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1);}
-.story-ph.lead-main.lead-on h2{opacity:1;transform:none;}
-.story-ph.lead-main.lead-on .story-sub{opacity:1;transform:none;transition-delay:.1s;}
+.story-ph h2{font-size:var(--fs-title);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0;max-width:900px;text-wrap:balance;text-shadow:0 2px 24px rgba(var(--dark),0.55);}
+.story-ph .story-sub{font-size:var(--fs-lead);font-weight:500;line-height:var(--lh-body);color:var(--w-85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(var(--dark),0.5);}
+/* DESLIZA: entrada propia al cargar (tras la intro .a-intro de 2s) y fade-out
+   ligado al progreso del scroll vía --hero-fade (la escribe JS en la sección). */
 .story-hint{opacity:var(--hero-fade,1);}
-.story-hint>span{opacity:0;transform:translateY(24px);transition:opacity .55s cubic-bezier(.22,1,.36,1) .2s,transform .55s cubic-bezier(.22,1,.36,1) .2s;}
-.story-ph.lead-main.lead-on~.story-hint>span{opacity:1;transform:none;}
+.story-hint>span{animation:aIntroUp var(--dur-slow) var(--ease) 2.25s both;}
 /* Modo reduced-motion: sin scrubbing ni pin; primer frame + frases apiladas con fade simple */
 [data-story].story-reduced{height:auto!important;}
 .story-reduced .story-stick{position:relative!important;height:auto!important;overflow:visible!important;}
 .story-reduced .story-video{position:relative!important;inset:auto!important;width:100%!important;height:52vh!important;display:block;}
 .story-reduced .story-scrim{display:none!important;}
 .story-reduced .story-hint{display:none!important;}
-.story-reduced .story-ph{position:relative!important;inset:auto!important;opacity:1!important;transform:none!important;visibility:visible!important;padding:26px 24px!important;animation:aIntroUp .6s ease both;}
+.story-reduced .story-ph{position:relative!important;inset:auto!important;opacity:1!important;transform:none!important;visibility:visible!important;padding:26px 24px!important;animation:aIntroUp var(--dur-slow) ease both;}
 .story-reduced .story-ph h2{font-size:clamp(21px,2.6vw,32px);text-shadow:none;}
-.story-reduced .story-ph.lead-main{min-height:0;}
-.story-reduced .story-ph.lead-main::before{display:none;}
 .story-reduced .story-ph h2,.story-reduced .story-ph .story-sub{opacity:1!important;transform:none!important;transition:none!important;}
 </style>
 </helmet>
@@ -175,34 +297,34 @@ input,button,textarea{font-family:inherit;}
 <!-- ================= HISTORIA (video con scrubbing por scroll) =================
      El contenedor de 450vh da la distancia de scroll; el viewport sticky de
      100vh sostiene el video (currentTime = progreso, con lerp) y los leads
-     mapeados a los 3 actos del video (marca → papel → plataforma). -->
-<section data-story ref="{{ setStory }}" data-screen-label="Historia" style="position:relative;height:450vh;background:#0C447C;">
+     mapeados a los actos del video (papel → plataforma). -->
+<section data-story ref="{{ setStory }}" data-screen-label="Historia" style="position:relative;height:450vh;background:var(--navy);">
   <div class="story-stick" style="position:sticky;top:0;height:100vh;overflow:hidden;">
     <video class="story-video" src="/videos/aplika-hero.mp4" poster="/videos/aplika-hero-poster.jpg" preload="auto" muted="muted" playsinline="playsinline" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
-    <!-- Scrim navy suave para legibilidad del texto -->
-    <div class="story-scrim" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,28,53,0.42) 0%,rgba(4,28,53,0.16) 45%,rgba(4,28,53,0.5) 100%);pointer-events:none;"></div>
+    <!-- Scrim navy suave para legibilidad del texto (gradiente intencional, AUDIT §5) -->
+    <div class="story-scrim" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--dark),0.42) 0%,rgba(var(--dark),0.16) 45%,rgba(var(--dark),0.5) 100%);pointer-events:none;"></div>
     <!-- Leads por acto (la clase .lead-on la alterna JS según el progreso;
-         la transición 0.5s cubic-bezier(.22,1,.36,1) vive en CSS) -->
-    <sc-for list="{{ storyPhrases }}" as="ph" hint-placeholder-count="5">
-      <div class="story-ph {{ ph.posClass }}" data-story-ph="{{ ph.i }}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px;text-align:center;pointer-events:none;">
+         la transición var(--dur-slow) var(--ease) vive en CSS) -->
+    <sc-for list="{{ storyPhrases }}" as="ph" hint-placeholder-count="4">
+      <div class="story-ph {{ ph.posClass }}" data-story-ph="{{ ph.i }}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:20px;padding:var(--sp-3);text-align:center;pointer-events:none;">
         <h2>{{ ph.headline }}</h2>
         <sc-if value="{{ ph.hasSub }}" hint-placeholder-val="{{ false }}">
           <p class="story-sub">{{ ph.subline }}</p>
         </sc-if>
         <sc-if value="{{ ph.isCta }}" hint-placeholder-val="{{ false }}">
-          <a href="Agenda-demo.dc.html" style="pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;box-shadow:0 18px 40px -14px rgba(2,18,38,0.6);transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s;" style-hover="background:#4F9AE6;transform:translateY(-2px);">Agenda tu demo gratis<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="Agenda-demo.dc.html" class="btn btn--primary" style="pointer-events:auto;box-shadow:var(--shadow-2);">Agenda tu demo gratis<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
         </sc-if>
       </div>
     </sc-for>
     <!-- Pista de scroll -->
     <div class="story-hint" style="position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;">
-      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.2em;color:rgba(255,255,255,0.6);">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:hintY 2s ease-in-out infinite;"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
+      <span class="scroll-hint">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
     </div>
   </div>
 </section>
 
 <!-- ================= HERO (oscuro) ================= -->
-<section data-screen-label="Hero" style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
+<section data-screen-label="Hero" class="dotted-navy" style="position:relative;overflow:hidden;">
   <div style="position:absolute;top:-90px;right:-70px;width:300px;height:300px;border-radius:60px;background:rgba(55,138,221,0.22);transform:rotate(18deg);"></div>
   <div style="position:absolute;bottom:-70px;left:-60px;width:220px;height:220px;border-radius:48px;background:rgba(181,212,244,0.1);transform:rotate(12deg);"></div>
   <!-- Cuadros redondeados flotando (6-8, baja opacidad, float desfasado) -->
@@ -216,67 +338,67 @@ input,button,textarea{font-family:inherit;}
     <span class="hsq-wrap" style="top:18%;left:88%;width:72px;height:72px;animation-duration:5.4s;animation-delay:.6s;"><span class="hsq-in" style="--rot:-10deg;background:rgba(55,138,221,0.11);"></span></span>
     <span class="hsq-wrap" style="top:82%;left:92%;width:42px;height:42px;animation-duration:4.6s;animation-delay:2s;"><span class="hsq-in" style="--rot:12deg;background:rgba(255,255,255,0.08);"></span></span>
   </div>
-  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(116px,14vw,150px) 24px clamp(20px,3vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,56px);">
+  <div class="u-wrap" style="position:relative;padding-top:clamp(116px,14vw,150px);padding-bottom:clamp(20px,3vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,56px);">
     <div style="flex:1 1 420px;min-width:300px;">
-      <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 15px;font-size:13.5px;font-weight:600;color:#9CC6F0;margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:50%;background:#4FA0E8;"></span>Ventas · Inventario · CRM · Agentes de IA</span>
-      <h1 style="font-size:clamp(38px,6vw,68px);font-weight:700;line-height:1.02;letter-spacing:-0.025em;color:#FFFFFF;margin:0 0 22px;text-wrap:balance;">Tu negocio, digitalizado:<br><span style="color:#4FA0E8;">ventas, inventario y CRM con IA</span></h1>
-      <p style="font-size:clamp(17px,1.9vw,21px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 34px;max-width:520px;">Aplika es el producto que reúne ventas, inventario, CRM, agentes de IA y automatizaciones en una sola plataforma. Hecho para pymes con procesos manuales e inventario grande.</p>
+      <span class="badge-dark" style="margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--blue-bright);"></span>Ventas · Inventario · CRM · Agentes de IA</span>
+      <h1 style="font-size:var(--fs-h1);font-weight:700;line-height:1.02;letter-spacing:-0.025em;color:var(--white);margin:0 0 22px;text-wrap:balance;">Tu negocio, digitalizado:<br><span style="color:var(--blue-bright);">ventas, inventario y CRM con IA</span></h1>
+      <p class="lead-sec lead-sec--light" style="margin-bottom:34px;">Aplika es el producto que reúne ventas, inventario, CRM, agentes de IA y automatizaciones en una sola plataforma. Hecho para pymes con procesos manuales e inventario grande.</p>
       <div style="display:flex;flex-wrap:wrap;gap:13px;margin-bottom:24px;">
-        <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 30px;border-radius:13px;text-decoration:none;line-height:1;transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s cubic-bezier(.22,1,.36,1),box-shadow .2s;" style-hover="background:#4F9AE6;transform:translateY(-2px);box-shadow:0 14px 28px -12px rgba(55,138,221,0.7);">Agenda una demo<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-        <a href="Servicios.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,0.08);color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 30px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);text-decoration:none;line-height:1;" style-hover="background:rgba(255,255,255,0.16);">Ver servicios</a>
+        <a href="Agenda-demo.dc.html" class="btn btn--primary">Agenda una demo<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        <a href="Servicios.dc.html" class="btn btn--ghost">Ver servicios</a>
       </div>
-      <p style="font-size:14px;color:rgba(255,255,255,0.55);margin:0;">Sin instalaciones · Listo en días · Soporte en México</p>
+      <p style="font-size:var(--fs-small);color:var(--w-55);margin:0;">Sin instalaciones · Listo en días · Soporte en México</p>
     </div>
 
     <div style="flex:1 1 420px;min-width:300px;position:relative;">
-      <div style="background:#FFFFFF;border-radius:20px;box-shadow:0 40px 80px -36px rgba(2,18,38,0.7);overflow:hidden;">
-        <div style="height:42px;background:#F5F8FC;border-bottom:1px solid #E6F1FB;display:flex;align-items:center;gap:7px;padding:0 16px;">
-          <span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span><span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span><span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span>
-          <span style="margin-left:10px;font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);">aplika · panel</span>
+      <div style="background:var(--white);border-radius:var(--r-lg);box-shadow:var(--shadow-3);overflow:hidden;">
+        <div style="height:42px;background:var(--surface);border-bottom:1px solid var(--blue-100);display:flex;align-items:center;gap:7px;padding:0 16px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--border);"></span><span style="width:10px;height:10px;border-radius:50%;background:var(--border);"></span><span style="width:10px;height:10px;border-radius:50%;background:var(--border);"></span>
+          <span style="margin-left:10px;font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);">aplika · panel</span>
         </div>
         <div style="padding:20px;">
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
-            <div class="hkpi" style="background:#E6F1FB;border-radius:12px;padding:13px;"><p style="font-size:11px;color:#0C447C;margin:0 0 6px;font-weight:600;">Ventas hoy</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">{{ heroVentas }}</p></div>
-            <div class="hkpi" style="background:#F5F8FC;border-radius:12px;padding:13px;"><p style="font-size:11px;color:rgba(4,44,83,0.55);margin:0 0 6px;font-weight:600;">Pedidos</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">{{ heroPedidos }}</p></div>
-            <div class="hkpi" style="background:#F5F8FC;border-radius:12px;padding:13px;"><p style="font-size:11px;color:rgba(4,44,83,0.55);margin:0 0 6px;font-weight:600;">Inventario</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">{{ heroInv }}</p></div>
+            <div class="hkpi kpi kpi--hl"><p class="kpi-label">Ventas hoy</p><p class="kpi-value">{{ heroVentas }}</p></div>
+            <div class="hkpi kpi"><p class="kpi-label">Pedidos</p><p class="kpi-value">{{ heroPedidos }}</p></div>
+            <div class="hkpi kpi"><p class="kpi-label">Inventario</p><p class="kpi-value">{{ heroInv }}</p></div>
           </div>
-          <div style="background:#F5F8FC;border-radius:12px;padding:16px;">
-            <p style="font-size:12px;font-weight:600;color:rgba(4,44,83,0.6);margin:0 0 14px;">Ventas de la semana</p>
+          <div style="background:var(--surface);border-radius:var(--r-md);padding:16px;">
+            <p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-66);margin:0 0 14px;">Ventas de la semana</p>
             <div class="hbars" style="display:flex;align-items:flex-end;gap:9px;height:74px;">
-              <span class="hb" style="flex:1;height:44%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:62%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:50%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:80%;background:#B5D4F4;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:68%;background:#378ADD;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:100%;background:#378ADD;border-radius:5px 5px 0 0;"></span><span class="hb" style="flex:1;height:86%;background:#378ADD;border-radius:5px 5px 0 0;"></span>
+              <span class="hb bar" style="height:44%;"></span><span class="hb bar" style="height:62%;"></span><span class="hb bar" style="height:50%;"></span><span class="hb bar" style="height:80%;"></span><span class="hb bar bar--hl" style="height:68%;"></span><span class="hb bar bar--hl" style="height:100%;"></span><span class="hb bar bar--hl" style="height:86%;"></span>
             </div>
           </div>
         </div>
       </div>
       <sc-if value="{{ showFloats }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute;top:-22px;right:-14px;display:flex;align-items:center;gap:10px;background:#FFFFFF;border-radius:14px;padding:12px 15px;box-shadow:0 20px 40px -18px rgba(2,18,38,0.5);animation:floatY 4s ease-in-out infinite;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#E6F1FB;border-radius:10px;color:#0C447C;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 11H6zM9 8V6a3 3 0 0 1 6 0v2"></path></svg></span>
-          <div><p style="font-size:13px;font-weight:700;color:#042C53;margin:0;">Nuevo pedido</p><p style="font-size:12px;color:rgba(4,44,83,0.55);margin:1px 0 0;">$1,240 · WhatsApp</p></div>
+        <div class="float-card" style="position:absolute;top:-22px;right:-14px;background:var(--white);animation:floatY 4s ease-in-out infinite;">
+          <span class="icon-tile" style="width:34px;height:34px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 11H6zM9 8V6a3 3 0 0 1 6 0v2"></path></svg></span>
+          <div><p style="font-size:var(--fs-small);font-weight:700;color:var(--ink);margin:0;">Nuevo pedido</p><p style="font-size:var(--fs-caption);color:var(--ink-55);margin:1px 0 0;">$1,240 · WhatsApp</p></div>
         </div>
-        <div style="position:absolute;bottom:-20px;left:-16px;display:flex;align-items:center;gap:10px;background:#0C447C;border-radius:14px;padding:12px 15px;box-shadow:0 20px 40px -18px rgba(2,18,38,0.5);animation:bounceY 4.6s ease-in-out infinite;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:10px;color:#9CC6F0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5z"></path></svg></span>
-          <div><p style="font-size:13px;font-weight:700;color:#FFFFFF;margin:0;">IA respondió</p><p style="font-size:12px;color:rgba(255,255,255,0.6);margin:1px 0 0;">en 4 segundos</p></div>
+        <div class="float-card" style="position:absolute;bottom:-20px;left:-16px;background:var(--navy);animation:bounceY 4.6s ease-in-out infinite;">
+          <span class="icon-tile" style="width:34px;height:34px;background:rgba(255,255,255,0.12);color:var(--blue-300);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5z"></path></svg></span>
+          <div><p style="font-size:var(--fs-small);font-weight:700;color:var(--white);margin:0;">IA respondió</p><p style="font-size:var(--fs-caption);color:var(--w-55);margin:1px 0 0;">en 4 segundos</p></div>
         </div>
       </sc-if>
     </div>
   </div>
   <div style="position:relative;display:flex;justify-content:center;padding-bottom:14px;margin-top:-6px;">
-    <span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.18em;color:rgba(255,255,255,0.5);">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:bounceY 1.8s ease-in-out infinite;"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
+    <span class="scroll-hint">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6-6 6"></path></svg></span>
   </div>
 </section>
 
 <!-- ================= LOGOS / confianza ================= -->
-<section style="background:#FFFFFF;border-bottom:1px solid #EEF3F9;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:36px 24px;">
-    <p style="text-align:center;font-size:13.5px;font-weight:600;color:rgba(4,44,83,0.45);margin:0 0 22px;">Negocios de toda la república ya digitalizan con aplika.ai</p>
+<section style="background:var(--white);border-bottom:1px solid var(--line);">
+  <div class="u-wrap" style="padding-top:var(--sp-4);padding-bottom:var(--sp-4);">
+    <p style="text-align:center;font-size:var(--fs-small);font-weight:600;color:var(--ink-45);margin:0 0 var(--sp-3);">Negocios de toda la república ya digitalizan con aplika.ai</p>
     <div class="mq">
       <div class="mq-track">
         <sc-for list="{{ logos }}" as="logo" hint-placeholder-count="5">
-          <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:#F5F8FC;border:1px dashed #C9DCF0;border-radius:10px;color:rgba(4,44,83,0.4);font-size:14px;font-weight:600;">{{ logo }}</span>
+          <span class="mq-pill">{{ logo }}</span>
         </sc-for>
         <span class="mq-dup" style="display:contents;">
           <sc-for list="{{ logos }}" as="logo" hint-placeholder-count="5">
-            <span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:#F5F8FC;border:1px dashed #C9DCF0;border-radius:10px;color:rgba(4,44,83,0.4);font-size:14px;font-weight:600;">{{ logo }}</span>
+            <span aria-hidden="true" class="mq-pill">{{ logo }}</span>
           </sc-for>
         </span>
       </div>
@@ -285,73 +407,73 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= FEATURE TABS (interactivo) ================= -->
-<section id="servicios" data-screen-label="Plataforma" style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(60px,9vw,110px) 24px;">
+<section id="servicios" data-screen-label="Plataforma" style="background:var(--white);">
+  <div class="u-wrap sec--lg">
     <div style="text-align:center;max-width:680px;margin:0 auto clamp(36px,5vw,52px);">
-      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Un solo producto</p>
-      <h2 style="font-size:clamp(28px,3.6vw,44px);font-weight:600;line-height:1.13;letter-spacing:-0.02em;color:#042C53;margin:0;text-wrap:balance;">Todo lo que tu pyme necesita, en un producto</h2>
+      <p class="eyebrow">Un solo producto</p>
+      <h2 class="h2-sec">Todo lo que tu pyme necesita, en un producto</h2>
     </div>
     <div style="display:flex;justify-content:center;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:clamp(28px,4vw,42px);">
       <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
-        <button onClick="{{ tab.onClick }}" style="flex:none;border:1px solid {{ tab.border }};cursor:pointer;font-size:15px;font-weight:600;padding:11px 20px;border-radius:999px;white-space:nowrap;transition:all .2s;background:{{ tab.bg }};color:{{ tab.color }};">{{ tab.label }}</button>
+        <button onClick="{{ tab.onClick }}" style="flex:none;border:1px solid {{ tab.border }};cursor:pointer;font-size:var(--fs-body-sm);font-weight:600;padding:11px 20px;border-radius:var(--r-full);white-space:nowrap;transition:background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);background:{{ tab.bg }};color:{{ tab.color }};">{{ tab.label }}</button>
       </sc-for>
     </div>
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,4vw,56px);background:#F5F8FC;border:1px solid #EAF1FA;border-radius:24px;padding:clamp(28px,4vw,48px);">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,4vw,56px);background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-xl);padding:clamp(28px,4vw,48px);">
       <div style="flex:1 1 320px;min-width:280px;">
-        <h3 style="font-size:clamp(22px,2.6vw,30px);font-weight:600;line-height:1.18;color:#042C53;margin:0 0 16px;text-wrap:balance;">{{ tabTitle }}</h3>
-        <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0 0 24px;">{{ tabDesc }}</p>
+        <h3 style="font-size:var(--fs-h3);font-weight:600;line-height:1.18;color:var(--ink);margin:0 0 16px;text-wrap:balance;">{{ tabTitle }}</h3>
+        <p class="lead-sec" style="margin:0 0 24px;">{{ tabDesc }}</p>
         <div style="display:flex;flex-direction:column;gap:13px;">
           <sc-for list="{{ tabBullets }}" as="b" hint-placeholder-count="3">
-            <div style="display:flex;gap:11px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#E6F1FB;border-radius:7px;color:#378ADD;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:15.5px;color:#042C53;">{{ b }}</span></div>
+            <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">{{ b }}</span></div>
           </sc-for>
         </div>
-        <a href="Servicios.dc.html" style="display:inline-flex;align-items:center;gap:7px;margin-top:26px;font-size:15.5px;font-weight:600;color:#378ADD;text-decoration:none;" style-hover="gap:11px;">Conoce la plataforma<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        <a href="Servicios.dc.html" class="link-more" style="margin-top:26px;">Conoce la plataforma<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>
       <div style="flex:1 1 360px;min-width:280px;">
         <sc-if value="{{ isTabVenta }}" hint-placeholder-val="{{ true }}">
-          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
-            <p style="font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);margin:0 0 14px;">Tienda en línea</p>
+          <div class="tab-pop demo-card">
+            <p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0 0 14px;">Tienda en línea</p>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:1;background:#E6F1FB;"></div><div style="padding:8px;"><span style="display:block;height:7px;width:80%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:46%;background:#378ADD;border-radius:4px;"></span></div></div>
-              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:1;background:#E6F1FB;"></div><div style="padding:8px;"><span style="display:block;height:7px;width:70%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:50%;background:#378ADD;border-radius:4px;"></span></div></div>
-              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:1;background:#E6F1FB;"></div><div style="padding:8px;"><span style="display:block;height:7px;width:78%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:42%;background:#378ADD;border-radius:4px;"></span></div></div>
+              <div class="sk-product"><div style="aspect-ratio:1;background:var(--blue-100);"></div><div style="padding:8px;"><span class="sk-bar" style="height:7px;width:80%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:46%;"></span></div></div>
+              <div class="sk-product"><div style="aspect-ratio:1;background:var(--blue-100);"></div><div style="padding:8px;"><span class="sk-bar" style="height:7px;width:70%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:50%;"></span></div></div>
+              <div class="sk-product"><div style="aspect-ratio:1;background:var(--blue-100);"></div><div style="padding:8px;"><span class="sk-bar" style="height:7px;width:78%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:42%;"></span></div></div>
             </div>
           </div>
         </sc-if>
         <sc-if value="{{ isTabInventario }}" hint-placeholder-val="{{ false }}">
-          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);margin:0;">Inventario en tiempo real</p><span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#1FA85A;background:#E4F6EC;padding:4px 9px;border-radius:20px;"><span class="live-dot" style="width:6px;height:6px;border-radius:50%;background:#1FA85A;"></span>En vivo</span></div>
+          <div class="tab-pop demo-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0;">Inventario en tiempo real</p><span class="pill pill--ok"><span class="live-dot" style="width:6px;height:6px;border-radius:50%;background:var(--green);"></span>En vivo</span></div>
             <!-- Fila destacada que cambia con cada "venta" -->
             <div class="live-row" style="display:flex;align-items:center;gap:11px;padding:8px;margin:-4px -8px 4px;">
-              <span style="flex:none;width:32px;height:32px;background:#E6F1FB;border-radius:8px;"></span>
+              <span style="flex:none;width:32px;height:32px;background:var(--blue-100);border-radius:var(--r-sm);"></span>
               <div style="flex:1;min-width:0;">
-                <span style="display:block;font-size:12px;font-weight:600;color:#042C53;margin-bottom:5px;">Balata cerámica D-1184</span>
-                <span style="display:block;height:7px;background:#EEF3F9;border-radius:4px;overflow:hidden;"><span class="live-bar" style="display:block;height:100%;width:{{ invPct }};background:{{ invBarColor }};border-radius:4px;"></span></span>
+                <span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);margin-bottom:5px;">Balata cerámica D-1184</span>
+                <span style="display:block;height:7px;background:var(--line);border-radius:var(--r-xs);overflow:hidden;"><span class="live-bar" style="display:block;height:100%;width:{{ invPct }};background:{{ invBarColor }};border-radius:var(--r-xs);"></span></span>
               </div>
-              <span style="flex:none;min-width:34px;text-align:center;font-size:12px;font-weight:700;color:{{ invBadgeFg }};background:{{ invBadgeBg }};padding:4px 9px;border-radius:20px;font-variant-numeric:tabular-nums;">{{ invStock }}</span>
+              <span style="flex:none;min-width:34px;text-align:center;font-size:var(--fs-caption);font-weight:700;color:{{ invBadgeFg }};background:{{ invBadgeBg }};padding:4px 9px;border-radius:var(--r-full);font-variant-numeric:tabular-nums;">{{ invStock }}</span>
             </div>
-            <p style="font-size:11px;font-weight:600;color:{{ invMsgColor }};margin:0 0 13px;">{{ invMsg }}</p>
+            <p style="font-size:var(--fs-caption);font-weight:600;color:{{ invMsgColor }};margin:0 0 13px;">{{ invMsg }}</p>
             <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;width:32px;height:32px;background:#E6F1FB;border-radius:8px;"></span><div style="flex:1;"><span style="display:block;height:8px;width:52%;background:#E6F1FB;border-radius:4px;"></span></div><span style="font-size:12px;font-weight:600;color:#B9682B;background:#FBEEDD;padding:4px 9px;border-radius:20px;">8</span></div>
-              <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;width:32px;height:32px;background:#E6F1FB;border-radius:8px;"></span><div style="flex:1;"><span style="display:block;height:8px;width:68%;background:#E6F1FB;border-radius:4px;"></span></div><span style="font-size:12px;font-weight:600;color:#1FA85A;background:#E4F6EC;padding:4px 9px;border-radius:20px;">76</span></div>
+              <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;width:32px;height:32px;background:var(--blue-100);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:8px;width:52%;"></span></div><span class="pill pill--warn">8</span></div>
+              <div style="display:flex;align-items:center;gap:11px;"><span style="flex:none;width:32px;height:32px;background:var(--blue-100);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:8px;width:68%;"></span></div><span class="pill pill--ok">76</span></div>
             </div>
           </div>
         </sc-if>
         <sc-if value="{{ isTabDashboard }}" hint-placeholder-val="{{ false }}">
-          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
+          <div class="tab-pop demo-card">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-              <div style="background:#E6F1FB;border-radius:11px;padding:13px;"><p style="font-size:11px;color:#0C447C;margin:0 0 5px;font-weight:600;">Ingresos</p><p style="font-size:18px;font-weight:700;color:#042C53;margin:0;">$94,500</p></div>
-              <div style="background:#F5F8FC;border-radius:11px;padding:13px;"><p style="font-size:11px;color:rgba(4,44,83,0.55);margin:0 0 5px;font-weight:600;">Ticket prom.</p><p style="font-size:18px;font-weight:700;color:#042C53;margin:0;">$640</p></div>
+              <div class="kpi kpi--hl"><p class="kpi-label">Ingresos</p><p class="kpi-value">$94,500</p></div>
+              <div class="kpi"><p class="kpi-label">Ticket prom.</p><p class="kpi-value">$640</p></div>
             </div>
-            <div style="background:#F5F8FC;border-radius:11px;padding:14px;"><div style="display:flex;align-items:flex-end;gap:7px;height:64px;"><span style="flex:1;height:40%;background:#B5D4F4;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:66%;background:#B5D4F4;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:54%;background:#B5D4F4;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:88%;background:#378ADD;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:72%;background:#378ADD;border-radius:4px 4px 0 0;"></span><span style="flex:1;height:100%;background:#378ADD;border-radius:4px 4px 0 0;"></span></div></div>
+            <div style="background:var(--surface);border-radius:var(--r-md);padding:14px;"><div style="display:flex;align-items:flex-end;gap:7px;height:64px;"><span class="bar" style="height:40%;"></span><span class="bar" style="height:66%;"></span><span class="bar" style="height:54%;"></span><span class="bar bar--hl" style="height:88%;"></span><span class="bar bar--hl" style="height:72%;"></span><span class="bar bar--hl" style="height:100%;"></span></div></div>
           </div>
         </sc-if>
         <sc-if value="{{ isTabBusqueda }}" hint-placeholder-val="{{ false }}">
-          <div class="tab-pop" style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:16px;padding:18px;box-shadow:0 18px 40px -24px rgba(12,68,124,0.3);">
-            <div style="display:flex;align-items:center;gap:8px;background:#F5F8FC;border:1px solid #E6F1FB;border-radius:999px;padding:9px 14px;margin-bottom:14px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(4,44,83,0.45)" stroke-width="2" stroke-linecap="round"><path d="M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16"></path></svg><span style="font-size:13px;color:rgba(4,44,83,0.5);">balata cerámica Versa 2019</span></div>
+          <div class="tab-pop demo-card">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-full);padding:9px 14px;margin-bottom:14px;color:var(--ink-45);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16"></path></svg><span style="font-size:var(--fs-small);color:var(--ink-55);">balata cerámica Versa 2019</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:4/3;background:#E6F1FB;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9CC6F0" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span style="display:block;height:7px;width:70%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:40%;background:#378ADD;border-radius:4px;"></span></div></div>
-              <div style="border:1px solid #EEF3F9;border-radius:11px;overflow:hidden;"><div style="aspect-ratio:4/3;background:#E6F1FB;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9CC6F0" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span style="display:block;height:7px;width:62%;background:#E6F1FB;border-radius:4px;margin-bottom:5px;"></span><span style="display:block;height:9px;width:46%;background:#378ADD;border-radius:4px;"></span></div></div>
+              <div class="sk-product"><div style="aspect-ratio:4/3;background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--blue-300);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span class="sk-bar" style="height:7px;width:70%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:40%;"></span></div></div>
+              <div class="sk-product"><div style="aspect-ratio:4/3;background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--blue-300);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span class="sk-bar" style="height:7px;width:62%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:46%;"></span></div></div>
             </div>
           </div>
         </sc-if>
@@ -361,36 +483,36 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= STATS band ================= -->
-<section data-anim="stats" style="background:#0C447C;">
-  <div class="a-stag" style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(48px,7vw,80px) 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px 24px;">
+<section data-anim="stats" style="background:var(--navy);">
+  <div class="u-wrap sec a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-4) var(--sp-3);">
     <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
       <div style="text-align:center;">
-        <p style="font-size:clamp(34px,4.4vw,52px);font-weight:800;line-height:1;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 10px;">{{ s.value }}</p>
-        <p style="font-size:15px;line-height:1.45;color:rgba(255,255,255,0.66);margin:0;">{{ s.label }}</p>
+        <p style="font-size:var(--fs-title);font-weight:800;line-height:1;letter-spacing:var(--track-tight);color:var(--white);margin:0 0 10px;">{{ s.value }}</p>
+        <p style="font-size:var(--fs-body-sm);line-height:var(--lh-snug);color:var(--w-66);margin:0;">{{ s.label }}</p>
       </div>
     </sc-for>
   </div>
 </section>
 
 <!-- ================= FEATURE ROW 1 ================= -->
-<section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,64px);">
+<section style="background:var(--white);">
+  <div class="u-wrap sec" style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,64px);">
     <div style="flex:1 1 360px;min-width:300px;">
-      <span style="display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;background:#E6F1FB;border-radius:14px;color:#0C447C;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2"></path></svg></span>
-      <h2 style="font-size:clamp(26px,3.2vw,38px);font-weight:600;line-height:1.15;letter-spacing:-0.01em;color:#042C53;margin:0 0 16px;text-wrap:balance;">Sabe qué tienes y qué se agota, en tiempo real</h2>
-      <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0 0 24px;max-width:480px;">Olvídate de contar a mano. Tu inventario se actualiza con cada venta y te avisa antes de quedarte sin producto, para que nunca pierdas una venta.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:24px;">
-        <div><p style="font-size:24px;font-weight:700;color:#378ADD;margin:0;">−12 hrs</p><p style="font-size:14px;color:rgba(4,44,83,0.55);margin:3px 0 0;">por semana en conteos</p></div>
-        <div><p style="font-size:24px;font-weight:700;color:#378ADD;margin:0;">0</p><p style="font-size:14px;color:rgba(4,44,83,0.55);margin:3px 0 0;">ventas perdidas por faltantes</p></div>
+      <span class="icon-tile icon-tile--lg" style="width:50px;height:50px;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2"></path></svg></span>
+      <h2 class="h2-sec" style="margin:0 0 var(--sp-2);">Sabe qué tienes y qué se agota, en tiempo real</h2>
+      <p class="lead-sec" style="margin:0 0 var(--sp-3);">Olvídate de contar a mano. Tu inventario se actualiza con cada venta y te avisa antes de quedarte sin producto, para que nunca pierdas una venta.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--sp-3);">
+        <div><p style="font-size:24px;font-weight:700;color:var(--blue);margin:0;">−12 hrs</p><p style="font-size:var(--fs-small);color:var(--ink-55);margin:3px 0 0;">por semana en conteos</p></div>
+        <div><p style="font-size:24px;font-weight:700;color:var(--blue);margin:0;">0</p><p style="font-size:var(--fs-small);color:var(--ink-55);margin:3px 0 0;">ventas perdidas por faltantes</p></div>
       </div>
     </div>
     <div style="flex:1 1 380px;min-width:300px;">
-      <div style="background:#F5F8FC;border:1px solid #EAF1FA;border-radius:20px;padding:22px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><p style="font-size:13px;font-weight:600;color:#042C53;margin:0;">Productos</p><span style="font-size:12px;font-weight:600;color:#B9682B;background:#FBEEDD;padding:5px 11px;border-radius:20px;">Reordenar 3</span></div>
+      <div style="background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-2);"><p style="font-size:var(--fs-small);font-weight:600;color:var(--ink);margin:0;">Productos</p><span class="pill pill--warn">Reordenar 3</span></div>
         <div style="display:flex;flex-direction:column;gap:11px;">
-          <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #EEF3F9;border-radius:12px;padding:13px;"><span style="flex:none;width:38px;height:38px;background:#E6F1FB;border-radius:9px;"></span><div style="flex:1;"><span style="display:block;height:9px;width:55%;background:#E6F1FB;border-radius:5px;margin-bottom:6px;"></span><span style="display:block;height:8px;width:32%;background:#F0F5FB;border-radius:5px;"></span></div><span style="font-size:13px;font-weight:700;color:#1FA85A;">142</span></div>
-          <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #FBEEDD;border-radius:12px;padding:13px;"><span style="flex:none;width:38px;height:38px;background:#FBEEDD;border-radius:9px;"></span><div style="flex:1;"><span style="display:block;height:9px;width:48%;background:#E6F1FB;border-radius:5px;margin-bottom:6px;"></span><span style="display:block;height:8px;width:40%;background:#F0F5FB;border-radius:5px;"></span></div><span style="font-size:13px;font-weight:700;color:#B9682B;">6</span></div>
-          <div style="display:flex;align-items:center;gap:13px;background:#FFFFFF;border:1px solid #EEF3F9;border-radius:12px;padding:13px;"><span style="flex:none;width:38px;height:38px;background:#E6F1FB;border-radius:9px;"></span><div style="flex:1;"><span style="display:block;height:9px;width:62%;background:#E6F1FB;border-radius:5px;margin-bottom:6px;"></span><span style="display:block;height:8px;width:30%;background:#F0F5FB;border-radius:5px;"></span></div><span style="font-size:13px;font-weight:700;color:#1FA85A;">88</span></div>
+          <div class="inv-row"><span style="flex:none;width:38px;height:38px;background:var(--blue-100);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:9px;width:55%;margin-bottom:6px;"></span><span class="sk-bar" style="height:8px;width:32%;background:var(--line);"></span></div><span style="font-size:var(--fs-small);font-weight:700;color:var(--green);">142</span></div>
+          <div class="inv-row inv-row--warn"><span style="flex:none;width:38px;height:38px;background:var(--amber-bg);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:9px;width:48%;margin-bottom:6px;"></span><span class="sk-bar" style="height:8px;width:40%;background:var(--line);"></span></div><span style="font-size:var(--fs-small);font-weight:700;color:var(--amber);">6</span></div>
+          <div class="inv-row"><span style="flex:none;width:38px;height:38px;background:var(--blue-100);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:9px;width:62%;margin-bottom:6px;"></span><span class="sk-bar" style="height:8px;width:30%;background:var(--line);"></span></div><span style="font-size:var(--fs-small);font-weight:700;color:var(--green);">88</span></div>
         </div>
       </div>
     </div>
@@ -398,33 +520,33 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= AGENTES DE IA ================= -->
-<section data-screen-label="Agentes de IA" style="background:#F5F8FC;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
-    <div style="background:#0C447C;border-radius:28px;padding:clamp(32px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,5vw,56px);overflow:hidden;position:relative;">
+<section data-screen-label="Agentes de IA" style="background:var(--surface);">
+  <div class="u-wrap sec">
+    <div style="background:var(--navy);border-radius:var(--r-xl);padding:clamp(32px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,5vw,56px);overflow:hidden;position:relative;">
       <div style="position:absolute;top:-60px;right:-40px;width:200px;height:200px;border-radius:48px;background:rgba(55,138,221,0.2);transform:rotate(20deg);"></div>
       <div style="flex:1 1 360px;min-width:280px;position:relative;">
-        <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:#9CC6F0;margin-bottom:20px;">Agentes de IA</span>
-        <h2 style="font-size:clamp(27px,3.4vw,42px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#FFFFFF;margin:0 0 16px;text-wrap:balance;">Agentes de IA que atienden y automatizan por ti</h2>
-        <p style="font-size:17px;line-height:1.6;color:rgba(255,255,255,0.76);margin:0 0 28px;max-width:460px;">Incluidos en Aplika: responden mensajes, agendan citas, capturan pedidos y automatizan tareas a cualquier hora, para que no se te escape ninguna venta.</p>
+        <span class="badge-dark" style="margin-bottom:20px;">Agentes de IA</span>
+        <h2 class="h2-sec h2-sec--light" style="margin:0 0 16px;">Agentes de IA que atienden y automatizan por ti</h2>
+        <p class="lead-sec lead-sec--light" style="margin:0 0 28px;">Incluidos en Aplika: responden mensajes, agendan citas, capturan pedidos y automatizan tareas a cualquier hora, para que no se te escape ninguna venta.</p>
         <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:30px;">
           <sc-for list="{{ aiItems }}" as="item" hint-placeholder-count="3">
-            <div style="display:flex;gap:14px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:12px;color:#9CC6F0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span><div><p style="font-size:16px;font-weight:600;color:#FFFFFF;margin:0 0 2px;">{{ item.title }}</p><p style="font-size:14px;line-height:1.45;color:rgba(255,255,255,0.66);margin:0;">{{ item.desc }}</p></div></div>
+            <div style="display:flex;gap:14px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:var(--w-10);border:1px solid var(--w-16);border-radius:var(--r-md);color:var(--blue-300);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span><div><p style="font-size:var(--fs-body);font-weight:600;color:var(--white);margin:0 0 2px;">{{ item.title }}</p><p style="font-size:var(--fs-small);line-height:var(--lh-snug);color:var(--w-66);margin:0;">{{ item.desc }}</p></div></div>
           </sc-for>
         </div>
-        <a href="Servicios.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;text-decoration:none;" style-hover="background:#4F9AE6;">Conoce los agentes de IA<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        <a href="Servicios.dc.html" class="btn btn--primary">Conoce los agentes de IA<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>
       <div style="flex:1 1 320px;min-width:280px;position:relative;">
-        <div style="background:#FFFFFF;border-radius:20px;padding:20px;box-shadow:0 30px 60px -30px rgba(0,0,0,0.55);max-width:360px;margin:0 auto;">
-          <div style="display:flex;align-items:center;gap:11px;padding-bottom:16px;border-bottom:1px solid #EAF1FA;margin-bottom:16px;">
-            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#0C447C;border-radius:11px;"><span style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:16px;height:16px;"><span style="background:#FFFFFF;border-radius:2px;"></span><span style="background:#B5D4F4;border-radius:2px;"></span><span style="background:#4FA0E8;border-radius:2px;"></span><span style="background:#FFFFFF;border-radius:2px;"></span></span></span>
-            <div><p style="font-size:14px;font-weight:600;color:#042C53;margin:0;">Asistente aplika</p><p style="font-size:12px;color:#1FA85A;margin:1px 0 0;display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;background:#1FA85A;border-radius:50%;"></span>En línea</p></div>
+        <div style="background:var(--white);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow-2);max-width:360px;margin:0 auto;">
+          <div style="display:flex;align-items:center;gap:11px;padding-bottom:16px;border-bottom:1px solid var(--blue-100);margin-bottom:16px;">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--navy);border-radius:var(--r-md);"><span style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:16px;height:16px;"><span style="background:var(--white);border-radius:2px;"></span><span style="background:var(--blue-200);border-radius:2px;"></span><span style="background:var(--blue-bright);border-radius:2px;"></span><span style="background:var(--white);border-radius:2px;"></span></span></span>
+            <div><p style="font-size:var(--fs-small);font-weight:600;color:var(--ink);margin:0;">Asistente aplika</p><p style="font-size:var(--fs-caption);color:var(--green);margin:1px 0 0;display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;background:var(--green);border-radius:50%;"></span>En línea</p></div>
           </div>
           <div style="display:flex;flex-direction:column;gap:11px;min-height:196px;">
             <sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="4">
-              <div class="chat-msg" style="align-self:{{ m.align }};max-width:82%;background:{{ m.bg }};color:{{ m.color }};font-size:14px;line-height:1.45;padding:11px 14px;border-radius:{{ m.radius }};">{{ m.text }}</div>
+              <div class="chat-msg" style="align-self:{{ m.align }};max-width:82%;background:{{ m.bg }};color:{{ m.color }};font-size:var(--fs-small);line-height:var(--lh-snug);padding:11px 14px;border-radius:{{ m.radius }};">{{ m.text }}</div>
             </sc-for>
             <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
-              <div class="chat-msg" style="align-self:flex-end;display:inline-flex;align-items:center;gap:4px;background:#378ADD;padding:14px 16px;border-radius:14px 14px 4px 14px;"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
+              <div class="chat-msg" style="align-self:flex-end;display:inline-flex;align-items:center;gap:4px;background:var(--blue);padding:14px 16px;border-radius:14px 14px 4px 14px;"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
             </sc-if>
           </div>
         </div>
@@ -434,21 +556,21 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= INDUSTRIAS preview ================= -->
-<section id="industrias" data-screen-label="Industrias" style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+<section id="industrias" data-screen-label="Industrias" style="background:var(--white);">
+  <div class="u-wrap sec">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
       <div style="max-width:560px;">
-        <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Industrias</p>
-        <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;text-wrap:balance;">Pensado para negocios con inventario grande</h2>
+        <p class="eyebrow">Industrias</p>
+        <h2 class="h2-sec">Pensado para negocios con inventario grande</h2>
       </div>
-      <a href="Industrias.dc.html" style="display:inline-flex;align-items:center;gap:7px;font-size:15.5px;font-weight:600;color:#378ADD;text-decoration:none;" style-hover="gap:11px;">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="Industrias.dc.html" class="link-more">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
     <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
       <sc-for list="{{ industries }}" as="item" hint-placeholder-count="4">
-        <a href="Industrias.dc.html" style="display:block;text-decoration:none;background:#F5F8FC;border:1px solid #EAF1FA;border-radius:18px;padding:28px;transition:all .2s;" style-hover="background:#E6F1FB;border-color:#B5D4F4;transform:translateY(-3px);">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:#FFFFFF;border:1px solid #E6F1FB;border-radius:13px;color:#378ADD;margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
-          <h3 style="font-size:18px;font-weight:600;color:#042C53;margin:0 0 8px;">{{ item.title }}</h3>
-          <p style="font-size:15px;line-height:1.55;color:rgba(4,44,83,0.62);margin:0;">{{ item.desc }}</p>
+        <a href="Industrias.dc.html" class="ind-card">
+          <span class="icon-tile icon-tile--lg" style="width:48px;height:48px;background:var(--white);border:1px solid var(--blue-100);color:var(--blue);margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
+          <h3 class="card-title">{{ item.title }}</h3>
+          <p class="card-body">{{ item.desc }}</p>
         </a>
       </sc-for>
     </div>
@@ -456,11 +578,11 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= CÓMO FUNCIONA preview ================= -->
-<section id="como-funciona" data-screen-label="Cómo funciona" style="background:#E6F1FB;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+<section id="como-funciona" data-screen-label="Cómo funciona" style="background:var(--blue-100);">
+  <div class="u-wrap sec">
     <div style="text-align:center;max-width:620px;margin:0 auto clamp(34px,4vw,50px);">
-      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Cómo funciona</p>
-      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;text-wrap:balance;">De la idea a vender en línea, en cuatro pasos</h2>
+      <p class="eyebrow">Cómo funciona</p>
+      <h2 class="h2-sec">De la idea a vender en línea, en cuatro pasos</h2>
     </div>
     <div class="cf-flow">
       <sc-for list="{{ flowSteps }}" as="item" hint-placeholder-count="4">
@@ -469,48 +591,48 @@ input,button,textarea{font-family:inherit;}
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg>
             <span class="cf-num">{{ item.num }}</span>
           </div>
-          <h3 style="font-size:18px;font-weight:600;color:#042C53;margin:0 0 8px;">{{ item.title }}</h3>
-          <p style="font-size:14.5px;line-height:1.55;color:rgba(4,44,83,0.62);margin:0;">{{ item.desc }}</p>
+          <h3 class="card-title">{{ item.title }}</h3>
+          <p class="card-body">{{ item.desc }}</p>
           <sc-if value="{{ item.showArrow }}" hint-placeholder-val="{{ true }}">
             <span class="cf-arrow"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
           </sc-if>
         </div>
       </sc-for>
     </div>
-    <div style="text-align:center;margin-top:34px;"><a href="Como-funciona.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#0C447C;color:#FFFFFF;font-size:16px;font-weight:600;padding:14px 28px;border-radius:12px;text-decoration:none;" style-hover="background:#0A3A6B;">Ver el proceso completo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+    <div style="text-align:center;margin-top:34px;"><a href="Como-funciona.dc.html" class="btn btn--navy">Ver el proceso completo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
   </div>
 </section>
 
 <!-- ================= TESTIMONIOS (slider) ================= -->
-<section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:880px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;text-align:center;">
-    <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 30px;">Lo que dicen nuestros clientes</p>
-    <p style="font-size:clamp(22px,3vw,32px);font-weight:500;line-height:1.35;letter-spacing:-0.01em;color:#042C53;margin:0 0 32px;text-wrap:balance;min-height:2.7em;">“{{ tQuote }}”</p>
+<section style="background:var(--white);">
+  <div class="u-wrap u-wrap--narrow sec" style="text-align:center;">
+    <p class="eyebrow" style="margin-bottom:30px;">Lo que dicen nuestros clientes</p>
+    <p style="font-size:var(--fs-h3);font-weight:500;line-height:1.35;letter-spacing:-0.01em;color:var(--ink);margin:0 0 var(--sp-4);text-wrap:balance;min-height:2.7em;">“{{ tQuote }}”</p>
     <div style="display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:30px;">
-      <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:#E6F1FB;color:#0C447C;border-radius:50%;font-size:18px;font-weight:700;">{{ tIni }}</span>
-      <div style="text-align:left;"><p style="font-size:16px;font-weight:600;color:#042C53;margin:0;">{{ tName }}</p><p style="font-size:14px;color:rgba(4,44,83,0.55);margin:2px 0 0;">{{ tRole }}</p></div>
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:var(--blue-100);color:var(--navy);border-radius:50%;font-size:var(--fs-card-title);font-weight:700;">{{ tIni }}</span>
+      <div style="text-align:left;"><p style="font-size:var(--fs-body);font-weight:600;color:var(--ink);margin:0;">{{ tName }}</p><p style="font-size:var(--fs-small);color:var(--ink-55);margin:2px 0 0;">{{ tRole }}</p></div>
     </div>
     <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
-      <button onClick="{{ prevT }}" aria-label="Anterior" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:#FFFFFF;border:1px solid #D8E6F5;border-radius:50%;cursor:pointer;color:#0C447C;" style-hover="background:#E6F1FB;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
-      <div style="display:flex;gap:8px;">
+      <button onClick="{{ prevT }}" aria-label="Anterior" class="slider-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <div style="display:flex;gap:var(--sp-1);">
         <sc-for list="{{ dots }}" as="d" hint-placeholder-count="3">
-          <button onClick="{{ d.go }}" aria-label="Testimonio" style="width:9px;height:9px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:all .2s;background:{{ d.bg }};"></button>
+          <button onClick="{{ d.go }}" aria-label="Testimonio" style="width:9px;height:9px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:background var(--dur-fast) var(--ease);background:{{ d.bg }};"></button>
         </sc-for>
       </div>
-      <button onClick="{{ nextT }}" aria-label="Siguiente" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:#FFFFFF;border:1px solid #D8E6F5;border-radius:50%;cursor:pointer;color:#0C447C;" style-hover="background:#E6F1FB;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+      <button onClick="{{ nextT }}" aria-label="Siguiente" class="slider-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
     </div>
   </div>
 </section>
 
 <!-- ================= FAQ ================= -->
-<section style="background:#F5F8FC;">
-  <div style="width:100%;max-width:820px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
-    <div style="margin-bottom:clamp(28px,4vw,42px);"><p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Preguntas frecuentes</p><h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;">Resolvemos tus dudas</h2></div>
+<section style="background:var(--surface);">
+  <div class="u-wrap u-wrap--narrow sec">
+    <div style="margin-bottom:clamp(28px,4vw,42px);"><p class="eyebrow">Preguntas frecuentes</p><h2 class="h2-sec">Resolvemos tus dudas</h2></div>
     <div style="display:flex;flex-direction:column;gap:12px;">
       <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="6">
-        <div style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:14px;overflow:hidden;">
-          <button onClick="{{ item.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;background:transparent;border:none;cursor:pointer;padding:20px 22px;font-size:16px;font-weight:600;color:#042C53;line-height:1.4;"><span>{{ item.q }}</span><span class="faq-chev" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#E6F1FB;border-radius:8px;color:#0C447C;transform:{{ item.chev }};"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></button>
-          <div class="{{ item.bodyClass }}"><div><p style="font-size:15px;line-height:1.6;color:rgba(4,44,83,0.66);margin:0;padding:0 22px 22px;">{{ item.a }}</p></div></div>
+        <div style="background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);overflow:hidden;">
+          <button onClick="{{ item.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;background:transparent;border:none;cursor:pointer;padding:20px 22px;font-size:var(--fs-body);font-weight:600;color:var(--ink);line-height:var(--lh-snug);"><span>{{ item.q }}</span><span class="faq-chev" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--blue-100);border-radius:var(--r-sm);color:var(--navy);transform:{{ item.chev }};"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></button>
+          <div class="{{ item.bodyClass }}"><div><p class="card-body" style="max-width:60ch;padding:0 22px 22px;">{{ item.a }}</p></div></div>
         </div>
       </sc-for>
     </div>
@@ -518,13 +640,13 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= CTA FINAL ================= -->
-<section data-screen-label="CTA" style="background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;">
-  <div style="width:100%;max-width:880px;margin:0 auto;padding:clamp(60px,9vw,110px) 24px;text-align:center;">
-    <h2 style="font-size:clamp(30px,4vw,52px);font-weight:700;line-height:1.08;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 18px;text-wrap:balance;">¿Listo para digitalizar tu negocio?</h2>
-    <p style="font-size:clamp(17px,1.8vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 34px;max-width:520px;margin-left:auto;margin-right:auto;">Agenda una demo gratis. Te mostramos cómo se vería tu negocio funcionando con aplika.ai.</p>
+<section data-screen-label="CTA" class="dotted-navy">
+  <div class="u-wrap u-wrap--narrow sec--lg" style="text-align:center;">
+    <h2 style="font-size:var(--fs-title);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0 0 18px;text-wrap:balance;">¿Listo para digitalizar tu negocio?</h2>
+    <p class="lead-sec lead-sec--light" style="margin:0 auto 34px;">Agenda una demo gratis. Te mostramos cómo se vería tu negocio funcionando con aplika.ai.</p>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:13px;">
-      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s cubic-bezier(.22,1,.36,1),box-shadow .2s;" style-hover="background:#4F9AE6;transform:translateY(-2px);box-shadow:0 14px 28px -12px rgba(55,138,221,0.7);">Agenda una demo</a>
-      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,0.08);color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);text-decoration:none;" style-hover="background:rgba(255,255,255,0.16);">Hablar con ventas</a>
+      <a href="Agenda-demo.dc.html" class="btn btn--primary">Agenda una demo</a>
+      <a href="Agenda-demo.dc.html" class="btn btn--ghost">Hablar con ventas</a>
     </div>
   </div>
 </section>
@@ -533,8 +655,8 @@ input,button,textarea{font-family:inherit;}
 
 <!-- WhatsApp flotante -->
 <sc-if value="{{ showWhatsApp }}" hint-placeholder-val="{{ true }}">
-  <a href="Agenda-demo.dc.html" aria-label="Escríbenos por WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#25D366;border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:#1FB855;">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg>
+  <a href="Agenda-demo.dc.html" aria-label="Escríbenos por WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;color:var(--white);background:var(--whatsapp);border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:var(--whatsapp-hover);">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg>
   </a>
 </sc-if>
 
@@ -599,7 +721,6 @@ class Component extends DCLogic {
   // Cambia textos/ventanas sin tocar la lógica. pos: 'pos-low' | 'pos-high'
   // según el espacio negativo del acto. cta:true añade el botón de demo.
   storyPhrases = [
-    { id: 'marca', headline: 'Tu negocio, digitalizado.', subline: 'Vende, cobra, factura y atiende clientes con IA — todo en un solo lugar.', start: 0.00, end: 0.24, pos: 'pos-low lead-main' },
     { id: 'papel-1', headline: 'Pedidos en papelitos. Inventario en la cabeza. Clientes esperando respuesta.', start: 0.27, end: 0.35, pos: 'pos-high' },
     { id: 'papel-2', headline: 'Así opera hoy tu negocio. Así se pierden ventas.', start: 0.37, end: 0.46, pos: 'pos-high' },
     { id: 'plataforma', headline: 'Aplika lo convierte en una sola plataforma.', start: 0.50, end: 0.68, pos: 'pos-high' },
@@ -860,7 +981,6 @@ class Component extends DCLogic {
         value: s.plain != null ? s.plain : (s.pre + Math.round(this.state.statCur[i]) + s.suf)
       })),
       industries: this.industries,
-      steps: this.steps,
       aiItems: this.aiItems,
 
       // Hero: contadores
