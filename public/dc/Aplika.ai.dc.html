@@ -20,6 +20,7 @@ input,button,textarea{font-family:inherit;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
 @keyframes bounceY{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+@keyframes hintY{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
 
 /* ===== Intro de carga: 4 cuadros + aplika.ai + lead ===== */
 .a-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.06) 1.4px,transparent 1.4px);background-size:26px 26px;animation:aIntroOut .7s ease 2s forwards;}
@@ -131,7 +132,20 @@ input,button,textarea{font-family:inherit;}
 .story-ph.pos-high{justify-content:flex-start;padding-top:15vh!important;}
 .story-ph h2{font-size:clamp(28px,4.6vw,56px);font-weight:700;line-height:1.12;letter-spacing:-0.02em;color:#FFFFFF;margin:0;max-width:900px;text-wrap:balance;text-shadow:0 2px 24px rgba(4,28,53,0.55);}
 .story-ph .story-sub{font-size:clamp(16px,1.9vw,22px);font-weight:500;line-height:1.5;color:rgba(255,255,255,0.85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(4,28,53,0.5);}
-.story-ph.lead-main h2{font-size:clamp(34px,5.6vw,68px);}
+/* Acto 1 (lead-main): tipografía display + bloque anclado al tercio inferior.
+   La opacidad del lead y de DESLIZA va ligada al progreso del scroll vía
+   --hero-fade (la escribe JS en la sección); la entrada escalonada vive en
+   los hijos: headline → subtítulo (+100ms) → DESLIZA (+200ms). */
+.story-ph.lead-main{opacity:var(--hero-fade,1);transform:none;visibility:visible;transition:none;isolation:isolate;min-height:100svh;gap:clamp(20px,2.5vh,32px)!important;padding-bottom:clamp(96px,14vh,180px)!important;}
+.story-ph.lead-main::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(0,0,0,0.35),transparent 60%);pointer-events:none;}
+.story-ph.lead-main h2{font-size:clamp(56px,7vw,112px);line-height:1.02;letter-spacing:-0.03em;}
+.story-ph.lead-main .story-sub{font-size:clamp(18px,1.4vw,24px);line-height:1.5;letter-spacing:normal;max-width:44ch;color:rgba(255,255,255,0.85);}
+.story-ph.lead-main h2,.story-ph.lead-main .story-sub{opacity:0;transform:translateY(24px);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1);}
+.story-ph.lead-main.lead-on h2{opacity:1;transform:none;}
+.story-ph.lead-main.lead-on .story-sub{opacity:1;transform:none;transition-delay:.1s;}
+.story-hint{opacity:var(--hero-fade,1);}
+.story-hint>span{opacity:0;transform:translateY(24px);transition:opacity .55s cubic-bezier(.22,1,.36,1) .2s,transform .55s cubic-bezier(.22,1,.36,1) .2s;}
+.story-ph.lead-main.lead-on~.story-hint>span{opacity:1;transform:none;}
 /* Modo reduced-motion: sin scrubbing ni pin; primer frame + frases apiladas con fade simple */
 [data-story].story-reduced{height:auto!important;}
 .story-reduced .story-stick{position:relative!important;height:auto!important;overflow:visible!important;}
@@ -140,6 +154,9 @@ input,button,textarea{font-family:inherit;}
 .story-reduced .story-hint{display:none!important;}
 .story-reduced .story-ph{position:relative!important;inset:auto!important;opacity:1!important;transform:none!important;visibility:visible!important;padding:26px 24px!important;animation:aIntroUp .6s ease both;}
 .story-reduced .story-ph h2{font-size:clamp(21px,2.6vw,32px);text-shadow:none;}
+.story-reduced .story-ph.lead-main{min-height:0;}
+.story-reduced .story-ph.lead-main::before{display:none;}
+.story-reduced .story-ph h2,.story-reduced .story-ph .story-sub{opacity:1!important;transform:none!important;transition:none!important;}
 </style>
 </helmet>
 <div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:clip;">
@@ -179,7 +196,7 @@ input,button,textarea{font-family:inherit;}
     </sc-for>
     <!-- Pista de scroll -->
     <div class="story-hint" style="position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;">
-      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.18em;color:rgba(255,255,255,0.55);">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:bounceY 1.8s ease-in-out infinite;"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.2em;color:rgba(255,255,255,0.6);">DESLIZA<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:hintY 2s ease-in-out infinite;"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
     </div>
   </div>
 </section>
@@ -629,13 +646,24 @@ class Component extends DCLogic {
       }
     }
 
-    let raf = null, cur = 0, lastSet = -1;
+    let raf = null, cur = 0, lastSet = -1, lastFade = -1;
+    // Retiene la 1a entrada de los leads hasta que la intro (.a-intro, 2s) despeja,
+    // para que el stagger headline → sub → DESLIZA sea visible al cargar.
+    const bootAt = Date.now() + 2050;
     const leadState = new Array(phEls.length).fill(false);
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const rect = el.getBoundingClientRect();
       const total = el.offsetHeight - window.innerHeight;
       const p = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 0;
+
+      // Acto 1: fade-out del lead y de DESLIZA ligado al progreso
+      // (--hero-fade 1→0 en el primer tramo del scroll; lo consume el CSS).
+      const fade = Math.max(0, Math.min(1, 1 - p / 0.12));
+      if (Math.abs(fade - lastFade) > 0.005) {
+        el.style.setProperty('--hero-fade', fade.toFixed(3));
+        lastFade = fade;
+      }
 
       // Scrub suavizado: interpola hacia el tiempo objetivo (lerp) para que
       // los saltos de rueda no brinquen frames. Máx. 1 asignación por frame.
@@ -651,7 +679,7 @@ class Component extends DCLogic {
       for (let i = 0; i < phEls.length; i++) {
         const cfg = this.storyPhrases[i];
         if (!cfg) continue;
-        const active = p >= cfg.start && (cfg.end >= 0.99 ? p <= 1 : p < cfg.end);
+        const active = Date.now() >= bootAt && p >= cfg.start && (cfg.end >= 0.99 ? p <= 1 : p < cfg.end);
         if (active !== leadState[i]) {
           leadState[i] = active;
           phEls[i].classList.toggle('lead-on', active);
