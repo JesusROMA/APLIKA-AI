@@ -119,6 +119,7 @@ input,button,textarea{font-family:inherit;}
 .btn--ghost:hover{background:var(--w-16);}
 .btn--navy{background:var(--navy);color:var(--white);}
 .btn--navy:hover{background:var(--navy-hover);}
+.btn--lg{font-size:var(--fs-card-title);padding:var(--sp-2) var(--sp-5);}
 .link-more{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-body-sm);font-weight:600;color:var(--blue);text-decoration:none;transition:gap var(--dur-fast) var(--ease);}
 .link-more:hover{gap:11px;}
 .scroll-hint{display:inline-flex;flex-direction:column;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;letter-spacing:var(--track-wide);color:var(--w-55);}
@@ -235,12 +236,15 @@ input,button,textarea{font-family:inherit;}
 }
 
 /* ===== Historia: video controlado por scroll ===== */
-.story-ph{justify-content:center;opacity:0;transform:translateY(34px);visibility:hidden;will-change:opacity,transform;transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease),visibility 0s linear var(--dur-slow);}
+.story-ph{justify-content:center;opacity:0;transform:translateY(44px);visibility:hidden;will-change:opacity,transform;transition:opacity var(--dur-reveal) var(--ease),transform var(--dur-reveal) var(--ease),visibility 0s linear var(--dur-reveal);}
 .story-ph.lead-on{opacity:1;transform:none;visibility:visible;transition-delay:0s,0s,0s;}
+/* Salida direccional: el lead ya rebasado sale hacia ARRIBA (no regresa por
+   donde entró) — el scroll se siente continuo en ambos sentidos. */
+.story-ph.lead-past{transform:translateY(-44px);}
 .story-ph.pos-low{justify-content:flex-end;padding-bottom:13vh!important;}
-.story-ph.pos-high{justify-content:flex-start;padding-top:15vh!important;}
-.story-ph h1,.story-ph h2{font-size:var(--fs-title);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0;max-width:900px;text-wrap:balance;text-shadow:0 2px 24px rgba(var(--dark),0.55);}
-.story-ph .story-sub{font-size:var(--fs-lead);font-weight:500;line-height:var(--lh-body);color:var(--w-85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(var(--dark),0.5);}
+.story-ph.pos-high{justify-content:flex-start;padding-top:clamp(120px,18vh,200px)!important;}
+.story-ph h1,.story-ph h2{font-size:var(--fs-h1);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0;max-width:1060px;text-wrap:balance;text-shadow:0 2px 24px rgba(var(--dark),0.55);}
+.story-ph .story-sub{font-size:var(--fs-h3);font-weight:500;line-height:var(--lh-body);color:var(--w-85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(var(--dark),0.5);}
 /* Acto 1 (lead-main): tipografía display + bloque anclado al tercio inferior.
    La opacidad del lead y de DESLIZA va ligada al progreso del scroll vía
    --hero-fade (la escribe JS en la sección); la entrada escalonada vive en
@@ -294,7 +298,7 @@ input,button,textarea{font-family:inherit;}
     <!-- Leads por acto (la clase .lead-on la alterna JS según el progreso;
          la transición var(--dur-slow) var(--ease) vive en CSS) -->
     <sc-for list="{{ storyPhrases }}" as="ph" hint-placeholder-count="5">
-      <div class="story-ph {{ ph.posClass }}" data-story-ph="{{ ph.i }}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:20px;padding:var(--sp-3);text-align:center;pointer-events:none;">
+      <div class="story-ph {{ ph.posClass }}" data-story-ph="{{ ph.i }}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:clamp(20px,3vh,32px);padding:var(--sp-3);text-align:center;pointer-events:none;">
         <sc-if value="{{ ph.isMain }}" hint-placeholder-val="{{ false }}">
           <h1>{{ ph.headline }}</h1>
         </sc-if>
@@ -305,7 +309,7 @@ input,button,textarea{font-family:inherit;}
           <p class="story-sub">{{ ph.subline }}</p>
         </sc-if>
         <sc-if value="{{ ph.isCta }}" hint-placeholder-val="{{ false }}">
-          <a href="Agenda-demo.dc.html" class="btn btn--primary" style="pointer-events:auto;box-shadow:var(--shadow-2);">Agenda tu demo gratis<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="Agenda-demo.dc.html" class="btn btn--primary btn--lg" style="pointer-events:auto;box-shadow:var(--shadow-2);">Agenda tu demo gratis<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
         </sc-if>
       </div>
     </sc-for>
@@ -647,7 +651,7 @@ class Component extends DCLogic {
     { id: 'papel-1', headline: 'Pedidos en papelitos. Inventario en la cabeza. Clientes esperando respuesta.', start: 0.27, end: 0.35, pos: 'pos-high' },
     { id: 'papel-2', headline: 'Así opera hoy tu negocio. Así se pierden ventas.', start: 0.37, end: 0.46, pos: 'pos-high' },
     { id: 'plataforma', headline: 'Aplika lo convierte en una sola plataforma.', start: 0.50, end: 0.68, pos: 'pos-high' },
-    { id: 'cta', headline: 'Lista en días. Sin saber de sistemas.', start: 0.72, end: 1.00, pos: 'pos-high', cta: true }
+    { id: 'cta', headline: 'Lista en un par de semanas.', subline: 'Sin saber de sistemas', start: 0.72, end: 1.00, pos: 'pos-high', cta: true }
   ];
 
   setStory(el) {
@@ -695,6 +699,7 @@ class Component extends DCLogic {
     // para que el stagger headline → sub → DESLIZA sea visible al cargar.
     const bootAt = Date.now() + 2050;
     const leadState = new Array(phEls.length).fill(false);
+    const pastState = new Array(phEls.length).fill(false);
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const rect = el.getBoundingClientRect();
@@ -713,9 +718,9 @@ class Component extends DCLogic {
       // los saltos de rueda no brinquen frames. Máx. 1 asignación por frame.
       if (!mobile && video && duration) {
         const target = p * Math.max(duration - 0.05, 0);
-        cur += (target - cur) * 0.12;
+        cur += (target - cur) * 0.09;
         if (Math.abs(target - cur) < 0.004) cur = target;
-        if (Math.abs(cur - lastSet) > 0.008) { try { video.currentTime = cur; } catch (e) {} lastSet = cur; }
+        if (Math.abs(cur - lastSet) > 0.006) { try { video.currentTime = cur; } catch (e) {} lastSet = cur; }
       }
 
       // Leads: activo dentro de su ventana [start, end); la transición de
@@ -727,6 +732,13 @@ class Component extends DCLogic {
         if (active !== leadState[i]) {
           leadState[i] = active;
           phEls[i].classList.toggle('lead-on', active);
+        }
+        // Rebasado → sale hacia arriba (.lead-past); el acto 1 (main) se
+        // exceptúa: su salida ya la gobierna --hero-fade.
+        const past = !cfg.main && !active && cfg.end < 0.99 && p >= cfg.end;
+        if (past !== pastState[i]) {
+          pastState[i] = past;
+          phEls[i].classList.toggle('lead-past', past);
         }
       }
     };
