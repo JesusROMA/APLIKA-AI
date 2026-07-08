@@ -147,6 +147,17 @@ input,button,textarea{font-family:inherit;}
 .mq-pill{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:46px;padding:0 18px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-sm);color:var(--ink-45);font-size:var(--fs-small);font-weight:600;}
 .ind-card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:28px;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);}
 .ind-card:hover{background:var(--blue-100);border-color:var(--blue-200);transform:translateY(-2px);}
+/* ===== Industrias: video de fondo + tarjetas glass ===== */
+.ind-sec{position:relative;overflow:hidden;background:var(--navy);}
+.ind-video,.ind-scrim{position:absolute;inset:0;pointer-events:none;}
+.ind-video{width:100%;height:100%;object-fit:cover;}
+.ind-scrim{background:linear-gradient(180deg,rgba(var(--dark),0.74) 0%,rgba(var(--dark),0.58) 45%,rgba(var(--dark),0.8) 100%);}
+.ind-card--glass{background:var(--w-10);border-color:var(--w-16);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);}
+.ind-card--glass:hover{background:var(--w-16);border-color:var(--w-22);transform:translateY(-4px);}
+.ind-card--glass .icon-tile{background:var(--w-10);border:1px solid var(--w-16);color:var(--white);}
+.ind-card--glass .card-title{color:var(--white);}
+.ind-card--glass .card-body{color:var(--w-74);}
+@media (prefers-reduced-motion:reduce){.ind-video{display:none;}}
 .card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
 .card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
 .slider-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:var(--white);border:1px solid var(--border);border-radius:50%;cursor:pointer;color:var(--navy);transition:background var(--dur-fast) var(--ease);}
@@ -491,19 +502,22 @@ input,button,textarea{font-family:inherit;}
 </section>
 
 <!-- ================= INDUSTRIAS preview ================= -->
-<section id="industrias" data-screen-label="Industrias" style="background:var(--white);">
-  <div class="u-wrap sec">
+<section id="industrias" data-screen-label="Industrias" class="ind-sec">
+  <!-- Video de fondo (ambiente en loop). Si el archivo falta, queda el navy de .ind-sec -->
+  <video class="ind-video" src="/videos/inventario.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <div class="ind-scrim" aria-hidden="true"></div>
+  <div class="u-wrap sec" style="position:relative;">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
       <div style="max-width:560px;">
-        <p class="eyebrow">Industrias</p>
-        <h2 class="h2-sec">Pensado para negocios con inventario grande</h2>
+        <p class="eyebrow" style="color:var(--blue-300);">Industrias</p>
+        <h2 class="h2-sec h2-sec--light">Pensado para negocios con inventario grande</h2>
       </div>
-      <a href="Industrias.dc.html" class="link-more">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="Industrias.dc.html" class="link-more" style="color:var(--blue-300);">Ver todas<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
-    <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+    <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--sp-3);">
       <sc-for list="{{ industries }}" as="item" hint-placeholder-count="4">
-        <a href="Industrias.dc.html" class="ind-card">
-          <span class="icon-tile icon-tile--lg" style="width:48px;height:48px;background:var(--white);border:1px solid var(--blue-100);color:var(--blue);margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
+        <a href="Industrias.dc.html" class="ind-card ind-card--glass">
+          <span class="icon-tile icon-tile--lg" style="width:48px;height:48px;margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
           <h3 class="card-title">{{ item.title }}</h3>
           <p class="card-body">{{ item.desc }}</p>
         </a>
