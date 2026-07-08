@@ -149,11 +149,18 @@ input,button,textarea{font-family:inherit;}
 .ind-card:hover{background:var(--blue-100);border-color:var(--blue-200);transform:translateY(-2px);}
 /* ===== Industrias: video de fondo + tarjetas glass ===== */
 .ind-sec{position:relative;overflow:hidden;background:var(--navy);}
-.ind-video,.ind-scrim{position:absolute;inset:0;pointer-events:none;}
-.ind-video{width:100%;height:100%;object-fit:cover;}
+.ind-scrim{position:absolute;inset:0;pointer-events:none;}
+/* Video sobredimensionado (116%): deja holgura arriba/abajo para el parallax
+   sin descubrir el fondo al desplazarlo. La traslación la escribe JS (setIndVideo). */
+.ind-video{position:absolute;left:0;top:-8%;width:100%;height:116%;object-fit:cover;pointer-events:none;will-change:transform;}
 /* Scrim ligero: deja ver el video (más nítido); el texto resalta por su
    propia sombra y las tarjetas de vidrio ahumado, no por oscurecer el video. */
 .ind-scrim{background:linear-gradient(180deg,rgba(var(--dark),0.5) 0%,rgba(var(--dark),0.3) 45%,rgba(var(--dark),0.62) 100%);}
+/* Fundido de bordes: el video se disuelve en las secciones vecinas (arriba
+   --surface, abajo --blue-100) en vez de un corte rectangular duro. */
+.ind-fade{position:absolute;left:0;right:0;height:clamp(64px,9vw,130px);pointer-events:none;z-index:1;}
+.ind-fade--top{top:0;background:linear-gradient(to bottom,var(--surface),transparent);}
+.ind-fade--bottom{bottom:0;background:linear-gradient(to top,var(--blue-100),transparent);}
 .ind-sec .h2-sec,.ind-sec .eyebrow,.ind-sec .link-more{text-shadow:0 2px 18px rgba(var(--dark),0.6);}
 .ind-card--glass{background:rgba(var(--dark),0.34);border-color:var(--w-16);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);}
 .ind-card--glass:hover{background:rgba(var(--dark),0.46);border-color:var(--w-22);transform:translateY(-4px);}
@@ -507,7 +514,9 @@ input,button,textarea{font-family:inherit;}
   <!-- Video de fondo (ambiente en loop). Si el archivo falta, queda el navy de .ind-sec -->
   <video class="ind-video" ref="{{ setIndVideo }}" src="/videos/inventario.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
   <div class="ind-scrim" aria-hidden="true"></div>
-  <div class="u-wrap sec" style="position:relative;">
+  <div class="ind-fade ind-fade--top" aria-hidden="true"></div>
+  <div class="ind-fade ind-fade--bottom" aria-hidden="true"></div>
+  <div class="u-wrap sec" style="position:relative;z-index:2;">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
       <div style="max-width:560px;">
         <p class="eyebrow" style="color:var(--blue-300);">Industrias</p>
@@ -655,16 +664,22 @@ class Component extends DCLogic {
     if (this._storyIO) this._storyIO.disconnect();
     if (this._storyStop) this._storyStop();
     if (this._indIO) this._indIO.disconnect();
+    if (this._indStop) this._indStop();
     if (this._indPlay) document.removeEventListener('visibilitychange', this._indPlay);
   }
 
-  // ===== Industrias: video de fondo siempre reproduciéndose =====
-  // Chrome pausa los videos autoplay fuera de pantalla y no siempre los
-  // reanuda; reforzamos play() al cargar, al volver a ser visible la pestaña
-  // y al reingresar al viewport, para que nunca se quede pausado.
+  // ===== Industrias: video de fondo siempre activo + parallax al scroll =====
+  // (1) Chrome pausa los videos autoplay fuera de pantalla y no siempre los
+  //     reanuda; reforzamos play() al cargar, al volver a ser visible la
+  //     pestaña y al reingresar al viewport, para que nunca se quede pausado.
+  // (2) Parallax: el video (116% de alto) se traslada suavemente según la
+  //     posición de la sección en el viewport, para que se sienta conectado al
+  //     scroll y no como un bloque estático. El rAF solo corre en viewport.
   setIndVideo(el) {
     if (!el || this._indInit) return;
     this._indInit = true;
+    const sec = el.closest('.ind-sec') || el.parentElement;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     el.muted = true; el.playsInline = true; el.loop = true;
     const tryPlay = () => {
       if (document.visibilityState !== 'visible') return;
@@ -675,10 +690,28 @@ class Component extends DCLogic {
     tryPlay();
     ['loadeddata', 'canplay'].forEach((ev) => el.addEventListener(ev, tryPlay));
     document.addEventListener('visibilitychange', tryPlay);
+
+    let raf = null;
+    const MAX = 26; // px de desplazamiento máximo del parallax (< holgura del 8%)
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // 0 cuando la sección entra por abajo, 1 cuando sale por arriba
+      const prog = (vh - rect.top) / (vh + rect.height);
+      const shift = (Math.min(Math.max(prog, 0), 1) - 0.5) * 2 * MAX;
+      el.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)';
+    };
     this._indIO = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) tryPlay(); });
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          tryPlay();
+          if (!reduce && !raf) tick();
+        } else if (raf) { cancelAnimationFrame(raf); raf = null; }
+      });
     }, { threshold: 0.01 });
-    this._indIO.observe(el);
+    this._indIO.observe(sec);
+    this._indStop = () => { if (raf) { cancelAnimationFrame(raf); raf = null; } };
   }
 
   // ===== Historia: video controlado por scroll =====
