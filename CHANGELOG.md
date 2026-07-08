@@ -42,3 +42,25 @@ Refactor integral de `public/dc/Aplika.ai.dc.html` en 3 fases: auditoría (AUDIT
 - **Decisiones de producto abiertas**: `font-weight:800` del número de Stats (único w800 del archivo), 24 px de los mini-stats de Feature Row 1 (candidato a token `--fs-stat-sm`), fusionar `.ind-card` con `.cf-node` en una tarjeta base, modificador `.icon-tile--white`, parcial único para la flecha SVG repetida 7×, token `--sec-head-mb` para el margen de cabecera de sección repetido, `tabular-nums` en los números animados de Stats.
 - **Contenido placeholder**: array `logos` ('Su negocio', 'Tu marca', 'Cliente 3'…); Testimonios y Logos sin heading propio (la jerarquía de headings salta esas bandas).
 - **Excepciones intencionales conservadas** (documentadas en AUDIT §5, no son deuda): rgba decorativas de blobs y rampa de los `hsq`, glow de `liveGlow`/`.hsq-in`, máscara `#000` del marquee, sombra y colores WhatsApp, tipografías por rol del h1/quote/panel (1.02/1.35/1.18), radios 50 % y decorativos 48/60 px, burbuja del chat 14/4 px (espeja el JS), duraciones decorativas (marquee 30 s, floatSq 4.5 s, etc.), coreografía completa de delays, y los valores estructurales de la Historia (gap/bottom 20 px, max-width 900/640 px, 13vh/15vh, 52vh reduced) y el padding especial del Hero.
+
+## Corrección de alcance del hero — 2026-07-07 (misma noche)
+
+La instrucción "elimina el bloque 'Tu negocio, digitalizado.'" aplicaba a la **sección Hero oscuro** (h1 + panel demo), no al acto 1 del video de la Historia. Corregido en ambos sentidos:
+
+### Restaurado
+- Acto 1 `marca` de la Historia: headline "Tu negocio, digitalizado." + subtítulo, con su tipografía display (`--fs-display`, de nuevo en uso), entrada escalonada (headline → sub +100ms → DESLIZA +200ms sobre `bootAt`), gradiente de legibilidad y fade ligado al scroll (`--hero-fade`).
+- El headline del acto 1 se renderiza ahora como **h1** (el único de la página, rol que antes tenía el hero oscuro) vía flags `isMain`/`notMain` en la plantilla `sc-for`/`sc-if`.
+
+### Eliminado
+- Sección completa "HERO (oscuro)" (~63 líneas de HTML): badge, h1, lead, CTAs, panel de dashboard con KPIs animados, tarjetas flotantes, cuadros `hsq` y su DESLIZA. La página fluye Historia → Logos.
+- CSS huérfano: `.hbars/.hb` + `hbGrow`, `.hkpi`, `.hero-sq/.hsq-*` + `floatSq`, `@keyframes floatY`/`bounceY`, `.float-card` y sus referencias en `prefers-reduced-motion`.
+- JS huérfano: `countUp()`, estado `hv/hp/hi`, bindings `heroVentas/heroPedidos/heroInv`, `showFloats` y timers `_countTO`/`_raf`.
+- Se conservan `.kpi/.bar/.badge-dark/.icon-tile` (usados por Plataforma y Agentes de IA).
+
+### Pendientes anteriores que esta corrección resuelve o anula
+- `--fs-display` sin uso → vuelve a usarse (acto 1).
+- `.story-ph.pos-low`, `.story-sub` y `sc-if hasSub` sin consumidores → vuelven a tener datos (acto `marca`).
+- Comentarios de `setStory` "desfasados" → vuelven a ser exactos (3 actos, stagger y fade).
+- Excepciones intencionales ligadas al hero oscuro (blobs, rampa `hsq`, `floatSq`, su padding especial) → ya no existen.
+
+Verificado (Playwright, 1440/1024/390): h1 único restaurado (≤2 líneas en todos los anchos), DESLIZA con entrada escalonada y fade, hero oscuro ausente, actos 2–4 y CTA del video intactos, sin overflow horizontal ni errores de página.
