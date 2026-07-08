@@ -151,12 +151,15 @@ input,button,textarea{font-family:inherit;}
 .ind-sec{position:relative;overflow:hidden;background:var(--navy);}
 .ind-video,.ind-scrim{position:absolute;inset:0;pointer-events:none;}
 .ind-video{width:100%;height:100%;object-fit:cover;}
-.ind-scrim{background:linear-gradient(180deg,rgba(var(--dark),0.74) 0%,rgba(var(--dark),0.58) 45%,rgba(var(--dark),0.8) 100%);}
-.ind-card--glass{background:var(--w-10);border-color:var(--w-16);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);}
-.ind-card--glass:hover{background:var(--w-16);border-color:var(--w-22);transform:translateY(-4px);}
+/* Scrim ligero: deja ver el video (más nítido); el texto resalta por su
+   propia sombra y las tarjetas de vidrio ahumado, no por oscurecer el video. */
+.ind-scrim{background:linear-gradient(180deg,rgba(var(--dark),0.5) 0%,rgba(var(--dark),0.3) 45%,rgba(var(--dark),0.62) 100%);}
+.ind-sec .h2-sec,.ind-sec .eyebrow,.ind-sec .link-more{text-shadow:0 2px 18px rgba(var(--dark),0.6);}
+.ind-card--glass{background:rgba(var(--dark),0.34);border-color:var(--w-16);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);}
+.ind-card--glass:hover{background:rgba(var(--dark),0.46);border-color:var(--w-22);transform:translateY(-4px);}
 .ind-card--glass .icon-tile{background:var(--w-10);border:1px solid var(--w-16);color:var(--white);}
 .ind-card--glass .card-title{color:var(--white);}
-.ind-card--glass .card-body{color:var(--w-74);}
+.ind-card--glass .card-body{color:var(--w-85);}
 @media (prefers-reduced-motion:reduce){.ind-video{display:none;}}
 .card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
 .card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
@@ -256,8 +259,6 @@ input,button,textarea{font-family:inherit;}
 .story-ph.pos-high{justify-content:flex-start;padding-top:clamp(120px,18vh,200px)!important;}
 .story-ph h1,.story-ph h2{font-size:var(--fs-h1);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0;max-width:1060px;text-wrap:balance;text-shadow:0 2px 24px rgba(var(--dark),0.55);}
 .story-ph .story-sub{font-size:var(--fs-h3);font-weight:500;line-height:var(--lh-body);color:var(--w-85);margin:0;max-width:640px;text-wrap:balance;text-shadow:0 2px 16px rgba(var(--dark),0.5);}
-/* Acto punchline (plataforma): escala display */
-.story-ph.lead-big h2{font-size:var(--fs-display);}
 /* Acto 1 (lead-main): tipografía display + bloque anclado al tercio inferior.
    La opacidad del lead y de DESLIZA va ligada al progreso del scroll vía
    --hero-fade (la escribe JS en la sección); la entrada escalonada vive en
@@ -504,7 +505,7 @@ input,button,textarea{font-family:inherit;}
 <!-- ================= INDUSTRIAS preview ================= -->
 <section id="industrias" data-screen-label="Industrias" class="ind-sec">
   <!-- Video de fondo (ambiente en loop). Si el archivo falta, queda el navy de .ind-sec -->
-  <video class="ind-video" src="/videos/inventario.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <video class="ind-video" ref="{{ setIndVideo }}" src="/videos/inventario.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
   <div class="ind-scrim" aria-hidden="true"></div>
   <div class="u-wrap sec" style="position:relative;">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:clamp(30px,4vw,46px);">
@@ -653,6 +654,31 @@ class Component extends DCLogic {
     if (this._statRaf) cancelAnimationFrame(this._statRaf);
     if (this._storyIO) this._storyIO.disconnect();
     if (this._storyStop) this._storyStop();
+    if (this._indIO) this._indIO.disconnect();
+    if (this._indPlay) document.removeEventListener('visibilitychange', this._indPlay);
+  }
+
+  // ===== Industrias: video de fondo siempre reproduciéndose =====
+  // Chrome pausa los videos autoplay fuera de pantalla y no siempre los
+  // reanuda; reforzamos play() al cargar, al volver a ser visible la pestaña
+  // y al reingresar al viewport, para que nunca se quede pausado.
+  setIndVideo(el) {
+    if (!el || this._indInit) return;
+    this._indInit = true;
+    el.muted = true; el.playsInline = true; el.loop = true;
+    const tryPlay = () => {
+      if (document.visibilityState !== 'visible') return;
+      const p = el.play();
+      if (p && p.catch) p.catch(() => {});
+    };
+    this._indPlay = tryPlay;
+    tryPlay();
+    ['loadeddata', 'canplay'].forEach((ev) => el.addEventListener(ev, tryPlay));
+    document.addEventListener('visibilitychange', tryPlay);
+    this._indIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) tryPlay(); });
+    }, { threshold: 0.01 });
+    this._indIO.observe(el);
   }
 
   // ===== Historia: video controlado por scroll =====
@@ -666,7 +692,7 @@ class Component extends DCLogic {
     { id: 'marca', headline: 'Tu negocio, digitalizado.', subline: 'Vende, cobra, factura y atiende clientes con IA — todo en un solo lugar.', start: 0.00, end: 0.24, pos: 'pos-low lead-main', main: true },
     { id: 'papel-1', headline: 'Operación en papelitos. Las cuentas en la cabeza. Clientes esperando respuesta.', start: 0.27, end: 0.35, pos: 'pos-high' },
     { id: 'papel-2', headline: 'Así funciona hoy tu negocio. Así se pierden ventas.', start: 0.37, end: 0.46, pos: 'pos-high' },
-    { id: 'plataforma', headline: 'Aplika lo convierte en una sola plataforma.', start: 0.50, end: 0.68, pos: 'pos-high lead-big' },
+    { id: 'plataforma', headline: 'Aplika lo convierte en una sola plataforma.', start: 0.50, end: 0.68, pos: 'pos-high' },
     { id: 'cta', headline: 'Lista en un par de semanas.', subline: 'Sin saber de sistemas', start: 0.72, end: 1.00, pos: 'pos-high', cta: true }
   ];
 
@@ -900,6 +926,9 @@ class Component extends DCLogic {
     const t = this.testimonials[this.state.slide];
     return {
       setReveal: (el) => this.setupReveal(el),
+
+      // Industrias (video de fondo siempre activo)
+      setIndVideo: (el) => this.setIndVideo(el),
 
       // Historia (video por scroll)
       setStory: (el) => this.setStory(el),
