@@ -1,0 +1,48 @@
+{
+  "scenarios": [
+    {
+      "id": "refaccionaria",
+      "label": "Refaccionaria",
+      "icon": "wrench",
+      "messages": [
+        { "role": "user", "text": "Hola, ¿tienen balatas para Versa 2019?", "delay": 700 },
+        { "role": "agent", "text": "¡Sí! Tengo 3 opciones en stock. ¿Cerámicas o semimetálicas?", "delay": 1300 },
+        { "role": "user", "text": "Cerámicas, apártamelas.", "delay": 900 },
+        { "role": "agent", "text": "Listo, pedido #1042 apartado. Te mando la cotización por WhatsApp. 🔧", "delay": 1400 }
+      ]
+    },
+    {
+      "id": "clinica",
+      "label": "Clínica",
+      "icon": "calendar",
+      "messages": [
+        { "role": "user", "text": "Buenas, quiero agendar una consulta de psicología.", "delay": 700 },
+        { "role": "agent", "text": "Claro. Tengo el jueves 3:00 pm o el viernes 11:00 am. ¿Cuál te acomoda?", "delay": 1400 },
+        { "role": "user", "text": "El jueves a las 3.", "delay": 800 },
+        { "role": "agent", "text": "Cita confirmada para el jueves 3:00 pm. Te envío un recordatorio un día antes. 🗓️", "delay": 1400 }
+      ]
+    },
+    {
+      "id": "ferreteria",
+      "label": "Ferretería",
+      "icon": "box",
+      "messages": [
+        { "role": "user", "text": "Necesito cotizar 20 sacos de cemento y 5 L de pintura blanca.", "delay": 700 },
+        { "role": "agent", "text": "Va. ¿Los sacos de 50 kg? Tengo pintura blanca mate y satinada.", "delay": 1400 },
+        { "role": "user", "text": "Sí, de 50 kg. Mate está bien.", "delay": 900 },
+        { "role": "agent", "text": "Cotización PD-2087 por $4,320 lista. ¿La aparto o la mando por correo? 📦", "delay": 1400 }
+      ]
+    },
+    {
+      "id": "servicios",
+      "label": "Servicios",
+      "icon": "bell",
+      "messages": [
+        { "role": "user", "text": "¿Me pasas el estatus del pago de Grupo Robles?", "delay": 700 },
+        { "role": "agent", "text": "Su factura F-1180 vence hoy y sigue pendiente. ¿Le mando un recordatorio?", "delay": 1400 },
+        { "role": "user", "text": "Sí, por favor.", "delay": 800 },
+        { "role": "agent", "text": "Recordatorio enviado a Grupo Robles con el link de pago. Te aviso cuando liquide. 🔔", "delay": 1400 }
+      ]
+    }
+  ]
+}
