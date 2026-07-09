@@ -132,7 +132,6 @@ button{font-family:inherit;}
 class Component extends DCLogic {
   state = { annual: false, openFaq: 0 };
 
-  componentDidMount() { this._io = null; }
   componentWillUnmount() { if (this._io) this._io.disconnect(); }
   setupReveal(el) {
     if (!el || this._revealInit) return;
@@ -141,12 +140,12 @@ class Component extends DCLogic {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
     secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
-    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); if (this._io) this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
   }
 
   plans = [
-    { name: 'Básico', tagline: 'Para empezar a vender en línea y ordenar tu inventario.', m: 990, a: 790, productos: '500 productos', pedidos: '1,000 pedidos/mes', usuarios: '3 usuarios', cta: 'Agenda una demo', href: 'Agenda-demo.dc.html', highlight: false, features: ['Tienda en línea', 'Control de inventario', 'CRM de ventas', 'Búsqueda con imágenes', 'Soporte por correo'] },
+    { name: 'Básico', tagline: 'Para empezar a vender en línea y ordenar tu inventario.', m: 990, a: 790, productos: '500 productos', pedidos: '1,000 pedidos/mes', usuarios: '3 usuarios', cta: 'Agenda una demo', href: 'Agenda-demo.dc.html', highlight: false, features: ['Tienda en línea', 'Control de inventario', 'CRM de ventas', 'Agenda y citas', 'Soporte por correo'] },
     { name: 'Pro', tagline: 'Para negocios que quieren vender más con IA y automatizar.', m: 2490, a: 1990, productos: '5,000 productos', pedidos: '10,000 pedidos/mes', usuarios: '10 usuarios', cta: 'Agenda una demo', href: 'Agenda-demo.dc.html', highlight: true, features: ['Todo lo de Básico', 'Agentes de IA en WhatsApp', 'Automatizaciones', 'Pagos en línea (Stripe)', 'Facturación CFDI 4.0', 'Dashboard interactivo', 'Soporte prioritario'] },
     { name: 'Enterprise', tagline: 'Para distribuidoras y mayoristas con operación grande.', custom: true, productos: 'Productos ilimitados', pedidos: 'Pedidos ilimitados', usuarios: 'Usuarios ilimitados', cta: 'Hablar con ventas', href: 'Agenda-demo.dc.html', highlight: false, features: ['Todo lo de Pro', 'Multi-almacén', 'Integraciones a la medida', 'Gerente de cuenta dedicado', 'SLA y soporte 24/7'] }
   ];
