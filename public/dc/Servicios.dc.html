@@ -73,42 +73,9 @@ button{font-family:inherit;}
   </div>
 </section>
 
-<!-- ===== AGENTES DE IA ===== -->
-<section style="background:#F5F8FC;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(40px,6vw,80px) 24px clamp(56px,8vw,100px);">
-    <div style="background:#0C447C;border-radius:28px;padding:clamp(32px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,5vw,56px);overflow:hidden;position:relative;">
-      <div style="position:absolute;top:-60px;right:-40px;width:200px;height:200px;border-radius:48px;background:rgba(55,138,221,0.2);transform:rotate(20deg);"></div>
-      <div style="flex:1 1 360px;min-width:280px;position:relative;">
-        <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:#9CC6F0;margin-bottom:20px;">Agentes de IA</span>
-        <h2 style="font-size:clamp(27px,3.4vw,42px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#FFFFFF;margin:0 0 16px;text-wrap:balance;">Atención que nunca cierra</h2>
-        <p style="font-size:17px;line-height:1.6;color:rgba(255,255,255,0.76);margin:0 0 28px;max-width:460px;">El asistente de aplika.ai habla como tu negocio, conoce tu catálogo y resuelve a tus clientes al instante.</p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <sc-for list="{{ aiItems }}" as="item" hint-placeholder-count="3">
-            <div style="display:flex;gap:14px;align-items:center;"><span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);border-radius:12px;color:#9CC6F0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span><div><p style="font-size:16px;font-weight:600;color:#FFFFFF;margin:0 0 2px;">{{ item.title }}</p><p style="font-size:14px;line-height:1.45;color:rgba(255,255,255,0.66);margin:0;">{{ item.desc }}</p></div></div>
-          </sc-for>
-        </div>
-      </div>
-      <div style="flex:1 1 320px;min-width:280px;position:relative;">
-        <div style="background:#FFFFFF;border-radius:20px;padding:20px;box-shadow:0 30px 60px -30px rgba(0,0,0,0.55);max-width:360px;margin:0 auto;">
-          <div style="display:flex;align-items:center;gap:11px;padding-bottom:16px;border-bottom:1px solid #EAF1FA;margin-bottom:16px;">
-            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#0C447C;border-radius:11px;"><span style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:16px;height:16px;"><span style="background:#FFFFFF;border-radius:2px;"></span><span style="background:#B5D4F4;border-radius:2px;"></span><span style="background:#4FA0E8;border-radius:2px;"></span><span style="background:#FFFFFF;border-radius:2px;"></span></span></span>
-            <div><p style="font-size:14px;font-weight:600;color:#042C53;margin:0;">Asistente aplika</p><p style="font-size:12px;color:#1FA85A;margin:1px 0 0;display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;background:#1FA85A;border-radius:50%;"></span>En línea</p></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:11px;">
-            <div style="align-self:flex-start;max-width:80%;background:#F0F5FB;color:#042C53;font-size:14px;line-height:1.45;padding:11px 14px;border-radius:14px 14px 14px 4px;">¿A qué hora abren mañana?</div>
-            <div style="align-self:flex-end;max-width:82%;background:#378ADD;color:#FFFFFF;font-size:14px;line-height:1.45;padding:11px 14px;border-radius:14px 14px 4px 14px;">Abrimos 9:00 a.m. ¿Te agendo para recoger tu pedido?</div>
-            <div style="align-self:flex-start;max-width:80%;background:#F0F5FB;color:#042C53;font-size:14px;line-height:1.45;padding:11px 14px;border-radius:14px 14px 14px 4px;">Sí, a las 10.</div>
-            <div style="align-self:flex-end;max-width:82%;background:#378ADD;color:#FFFFFF;font-size:14px;line-height:1.45;padding:11px 14px;border-radius:14px 14px 4px 14px;">Agendado para mañana 10:00 a.m. ✅</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== CTA ===== -->
 <section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:0 24px clamp(56px,8vw,100px);">
+  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
     <div style="background:#E6F1FB;border-radius:24px;padding:clamp(36px,5vw,60px);text-align:center;">
       <h2 style="font-size:clamp(26px,3.2vw,40px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#042C53;margin:0 0 14px;text-wrap:balance;">¿Cuál de estos módulos necesita tu negocio?</h2>
       <p style="font-size:17px;line-height:1.55;color:rgba(4,44,83,0.64);margin:0 0 28px;max-width:480px;margin-left:auto;margin-right:auto;">Te ayudamos a definirlo en una demo gratis, sin compromiso.</p>
@@ -125,7 +92,6 @@ button{font-family:inherit;}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{}">
 class Component extends DCLogic {
-  componentDidMount() { this._io = null; }
   componentWillUnmount() { if (this._io) this._io.disconnect(); }
   setupReveal(el) {
     if (!el || this._revealInit) return;
@@ -134,7 +100,7 @@ class Component extends DCLogic {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
     secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
-    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); if (this._io) this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
   }
   services = [
@@ -147,13 +113,8 @@ class Component extends DCLogic {
     { title: 'Dashboard interactivo', desc: 'Ventas, pedidos e inventario en una sola pantalla fácil de leer.', d: 'M3.5 3.5V20.5H20.5M7.5 16.5V13M12 16.5V9M16.5 16.5V6.5', bullets: ['Ventas del día y semana', 'Pedidos por surtir', 'Tendencias claras'] },
     { title: 'Búsqueda con imágenes', desc: 'Tus clientes encuentran la pieza correcta por foto, marca o código.', d: 'M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16M8 11.5 10 13.5 14 9', bullets: ['Buscar por foto', 'Filtros por marca', 'Resultados con precio'] }
   ];
-  aiItems = [
-    { title: 'Responde mensajes', desc: 'Atiende WhatsApp y redes al instante, de día y de noche.', d: 'M4 5H20V16H8L4 19.5ZM8 9H16M8 12H13' },
-    { title: 'Agenda citas', desc: 'Coordina visitas y entregas sin llamadas de ida y vuelta.', d: 'M4 5H20V20H4ZM4 9H20M8 3.5V6.5M16 3.5V6.5M8.5 13H11M14 16.5H16' },
-    { title: 'Captura pedidos', desc: 'Toma el pedido completo y lo deja listo para surtir.', d: 'M8.5 4H15.5V6.5H8.5ZM7 5.2H5.5V20.5H18.5V5.2H17M9 11H15M9 14.5H15M9 17.5H12.5' }
-  ];
   renderVals() {
-    return { setReveal: (el) => this.setupReveal(el), services: this.services, aiItems: this.aiItems };
+    return { setReveal: (el) => this.setupReveal(el), services: this.services };
   }
 }
 </script>
