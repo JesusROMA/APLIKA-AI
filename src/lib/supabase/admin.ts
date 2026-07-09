@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { env } from '@/lib/env';
 
 /**
@@ -8,8 +8,14 @@ import { env } from '@/lib/env';
  *  - Captura de leads desde la landing pública
  *  - Tareas de super-admin / impersonación controlada
  * Toda consulta debe filtrar explícitamente por organization_id cuando aplique.
+ *
+ * NOTA (F-1b): al generar los tipos de la BD (supabase gen types →
+ * database.types.ts), cambiar a SupabaseClient<Database> aquí y en los
+ * factories de server/client para tipado estricto de tablas.
+ * (Antes era ReturnType<typeof createClient>, que colapsa los genéricos a
+ * `never` y rompía el typecheck en todos los .insert/.update con este cliente.)
  */
-let _admin: ReturnType<typeof createClient> | null = null;
+let _admin: SupabaseClient | null = null;
 
 export function createSupabaseAdminClient() {
   if (_admin) return _admin;
