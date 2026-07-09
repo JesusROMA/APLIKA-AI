@@ -127,7 +127,6 @@ input,button,textarea,select{font-family:inherit;}
 class Component extends DCLogic {
   state = { name: '', business: '', contact: '', industry: 'Refaccionaria', size: '100 a 1,000', formState: 'idle', errors: {} };
 
-  componentDidMount() { this._io = null; }
   componentWillUnmount() { if (this._io) this._io.disconnect(); }
   setupReveal(el) {
     if (!el || this._revealInit) return;
@@ -136,7 +135,7 @@ class Component extends DCLogic {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
     secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
-    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); if (this._io) this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
   }
 
