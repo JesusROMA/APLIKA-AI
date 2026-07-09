@@ -27,66 +27,362 @@ button{font-family:inherit;}
 .a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
 .a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
 @media (prefers-reduced-motion:reduce){.a-reveal,.a-reveal .a-stag>*{opacity:1!important;transform:none!important;transition:none!important;}}
+
+/* ===== Design tokens (portados VERBATIM desde Aplika.ai.dc.html) ===== */
+:root{
+  /* ===== Paleta (hex existentes) ===== */
+  --navy:#0C447C;            /* marca / fondos oscuros */
+  --navy-hover:#0A3A6B;
+  --ink:#042C53;             /* texto principal */
+  --blue:#378ADD;            /* acento / CTA */
+  --blue-hover:#4F9AE6;
+  --blue-bright:#4FA0E8;     /* acento marca (logo, dots) */
+  --blue-300:#9CC6F0;
+  --blue-200:#B5D4F4;
+  --blue-100:#E6F1FB;        /* superficie azul clara / bordes suaves */
+  --blue-logo:#6FB3EC;       /* ".ai" del logo */
+  --surface:#F5F8FC;         /* fondo de paneles claros */
+  --line:#EEF3F9;            /* borde hairline / skeleton */
+  --border:#D8E6F5;          /* borde visible (inputs, slider) */
+  --white:#FFFFFF;
+  --green:#1FA85A;  --green-bg:#E4F6EC;
+  --amber:#B9682B;  --amber-bg:#FBEEDD;
+  --whatsapp:#25D366; --whatsapp-hover:#1FB855;
+
+  /* rgba más usados (blanco sobre navy) */
+  --w-85:rgba(255,255,255,0.85); --w-74:rgba(255,255,255,0.74);
+  --w-66:rgba(255,255,255,0.66); --w-55:rgba(255,255,255,0.55);
+  --w-22:rgba(255,255,255,0.22); --w-16:rgba(255,255,255,0.16);
+  --w-10:rgba(255,255,255,0.1);  --w-08:rgba(255,255,255,0.08);
+  /* rgba de tinta (navy sobre blanco) */
+  --ink-66:rgba(4,44,83,0.66);   /* cuerpo atenuado */
+  --ink-55:rgba(4,44,83,0.55);   /* muted */
+  --ink-45:rgba(4,44,83,0.45);   /* faint */
+  /* oscuro para scrims/sombras */
+  --dark:4,28,53;                /* usar rgba(var(--dark),x) */
+
+  /* ===== Tipografía (consolidada, clamp) ===== */
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+  --fs-display:clamp(56px,7vw,112px);   /* Historia lead-main */
+  --fs-h1:clamp(38px,6vw,68px);         /* Hero */
+  --fs-title:clamp(30px,4vw,52px);      /* CTA final, Historia h2, números Stats */
+  --fs-h2:clamp(26px,3.4vw,40px);       /* H2 de sección (único) */
+  --fs-h3:clamp(22px,2.6vw,30px);       /* subtítulos / quote */
+  --fs-card-title:18px;                 /* títulos de tarjeta */
+  --fs-lead:clamp(17px,1.9vw,21px);     /* párrafo lead */
+  --fs-body:16px;                       /* botones, FAQ pregunta, UI */
+  --fs-body-sm:15px;                    /* cuerpo de tarjetas */
+  --fs-small:14px;                      /* meta, roles, labels */
+  --fs-caption:12px;                    /* micro-labels, badges */
+  --lh-tight:1.1;   /* titulares (1.02–1.15 → por rol) */
+  --lh-snug:1.45;   /* labels/stats */
+  --lh-body:1.55;   /* cuerpo (absorbe 1.5/1.6) */
+  --track-tight:-0.02em; --track-label:0.02em; --track-wide:0.18em; /* DESLIZA unificado */
+
+  /* ===== Espaciado (base 8px) ===== */
+  --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:40px;
+  --sp-6:48px; --sp-8:64px; --sp-10:80px; --sp-12:96px;
+  --sec-y:clamp(56px,8vw,100px);        /* padding vertical estándar de sección */
+  --sec-y-lg:clamp(60px,9vw,110px);     /* secciones destacadas (Plataforma, CTA) */
+  --sec-x:24px;
+
+  /* ===== Radios ===== */
+  --r-xs:4px;    /* barras, skeletons (absorbe 5px) */
+  --r-sm:8px;    /* icon-tiles pequeños (absorbe 7/9/10px) */
+  --r-md:12px;   /* chips, KPIs, filas, botones (absorbe 11/13/14px) */
+  --r-lg:18px;   /* tarjetas (absorbe 16/17/20px) */
+  --r-xl:24px;   /* frames/banners (absorbe 28px) */
+  --r-full:999px;
+
+  /* ===== Sombras ===== */
+  --shadow-1:0 18px 40px -24px rgba(12,68,124,0.3);   /* tarjeta */
+  --shadow-2:0 20px 40px -18px rgba(2,18,38,0.5);     /* flotante */
+  --shadow-3:0 40px 80px -36px rgba(2,18,38,0.7);     /* panel héroe */
+  --shadow-btn:0 14px 28px -12px rgba(55,138,221,0.7);/* hover CTA */
+
+  /* ===== Timing ===== */
+  --ease:cubic-bezier(.22,1,.36,1);         /* estándar */
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --dur-fast:.2s;    /* hovers */
+  --dur-base:.4s;    /* acordeón, chat (absorbe .3/.35) */
+  --dur-slow:.55s;   /* leads/stagger (absorbe .5/.6) */
+  --dur-reveal:.7s;  /* scroll-reveal */
+
+  /* ===== Layout ===== */
+  --container:1180px;
+  --container-narrow:880px;   /* Testimonios, CTA, FAQ */
+}
+
+/* ===== Utilidades del contrato (portadas VERBATIM desde Aplika.ai.dc.html) ===== */
+.u-wrap{width:100%;max-width:var(--container);margin:0 auto;padding-left:var(--sec-x);padding-right:var(--sec-x);}
+.u-wrap--narrow{max-width:var(--container-narrow);}
+.sec{padding-top:var(--sec-y);padding-bottom:var(--sec-y);}
+.sec--lg{padding-top:var(--sec-y-lg);padding-bottom:var(--sec-y-lg);}
+.h2-sec{font-size:var(--fs-h2);font-weight:600;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--ink);margin:0;text-wrap:balance;}
+.h2-sec--light{color:var(--white);}
+.lead-sec{font-size:var(--fs-lead);line-height:var(--lh-body);color:var(--ink-66);margin:0;max-width:52ch;}
+.lead-sec--light{color:var(--w-74);}
+.eyebrow{font-size:var(--fs-small);font-weight:600;color:var(--blue);letter-spacing:var(--track-label);margin:0 0 14px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:var(--fs-body);font-weight:600;line-height:1;padding:16px 32px;border:1px solid transparent;border-radius:var(--r-md);text-decoration:none;cursor:pointer;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease);}
+.btn--primary{background:var(--blue);color:var(--white);}
+.btn--primary:hover{background:var(--blue-hover);transform:translateY(-2px);box-shadow:var(--shadow-btn);}
+.btn--ghost{background:var(--w-08);color:var(--white);border-color:var(--w-22);}
+.btn--ghost:hover{background:var(--w-16);}
+.btn--navy{background:var(--navy);color:var(--white);}
+.btn--navy:hover{background:var(--navy-hover);}
+.btn:focus-visible{outline:2px solid var(--blue-bright);outline-offset:2px;}
+.link-more{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-body-sm);font-weight:600;color:var(--blue);text-decoration:none;transition:gap var(--dur-fast) var(--ease);}
+.link-more:hover{gap:11px;}
+.link-more:focus-visible{outline:2px solid var(--blue-bright);outline-offset:2px;border-radius:var(--r-xs);}
+.dotted-navy{background-color:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;}
+.demo-card{background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-1);}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;padding:4px 9px;border-radius:var(--r-full);}
+.pill--ok{color:var(--green);background:var(--green-bg);}
+.pill--warn{color:var(--amber);background:var(--amber-bg);}
+.icon-tile{display:inline-flex;align-items:center;justify-content:center;flex:none;background:var(--blue-100);border-radius:var(--r-sm);color:var(--navy);}
+.icon-tile--lg{border-radius:var(--r-md);}
+.kpi{background:var(--surface);border-radius:var(--r-md);padding:13px;}
+.kpi--hl{background:var(--blue-100);}
+.kpi-label{font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0 0 6px;}
+.kpi--hl .kpi-label{color:var(--navy);}
+.kpi-value{font-size:var(--fs-card-title);font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;}
+.bar{flex:1;background:var(--blue-200);border-radius:var(--r-xs) var(--r-xs) 0 0;}
+.bar--hl{background:var(--blue);}
+.sk-bar{display:block;background:var(--blue-100);border-radius:var(--r-xs);}
+.sk-bar--accent{background:var(--blue);}
+.sk-product{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;}
+.inv-row{display:flex;align-items:center;gap:13px;background:var(--white);border:1px solid var(--line);border-radius:var(--r-md);padding:13px;}
+.inv-row--warn{border-color:var(--amber-bg);}
+.card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
+.card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
+
+/* ===== Layout de spotlights alternados (solo geometría, sin color) ===== */
+.spot{display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,5vw,64px);}
+.spot__text{flex:1 1 360px;min-width:min(100%,300px);}
+.spot__media{flex:1 1 380px;min-width:min(100%,300px);}
+/* En desktop las filas pares invierten el orden (mockup a la izquierda).
+   En móvil (< 760px) NO se invierte: el DOM va texto→mockup, así que
+   apilado el texto SIEMPRE queda arriba. */
+@media(min-width:760px){.spot--rev{flex-direction:row-reverse;}}
+.mod-card{background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:28px;box-shadow:var(--shadow-1);transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);}
+.mod-card:hover{border-color:var(--blue-200);transform:translateY(-2px);}
 </style>
 </helmet>
-<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+<div ref="{{ setReveal }}" style="font-family:var(--font);color:var(--ink);background:var(--white);overflow-x:hidden;">
 
 <dc-import name="Header" active="servicios" hint-size="100%,72px"></dc-import>
 
-<!-- ===== HERO subpágina ===== -->
-<section style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
-  <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:56px;background:rgba(55,138,221,0.2);transform:rotate(16deg);"></div>
-  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(130px,16vw,160px) 24px clamp(56px,8vw,84px);">
-    <p style="font-size:14px;font-weight:600;color:#6FB3EC;letter-spacing:0.04em;margin:0 0 16px;">El producto</p>
-    <h1 style="font-size:clamp(34px,5.2vw,60px);font-weight:700;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 20px;max-width:760px;text-wrap:balance;">Un solo producto para vender, operar y automatizar</h1>
-    <p style="font-size:clamp(17px,1.9vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0 0 30px;max-width:560px;">Aplika reúne ventas, inventario, CRM, pagos, facturación, agentes de IA y automatizaciones en un mismo lugar. Activas los módulos que tu pyme necesita.</p>
+<!-- ===== 1 · HERO subpágina ===== -->
+<section class="dotted-navy" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:var(--r-xl);background:rgba(55,138,221,0.2);transform:rotate(16deg);"></div>
+  <div class="u-wrap" style="position:relative;padding-top:clamp(130px,16vw,160px);padding-bottom:clamp(56px,8vw,84px);">
+    <p class="eyebrow" style="color:var(--blue-logo);">El producto</p>
+    <h1 style="font-size:var(--fs-h1);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0 0 20px;max-width:760px;text-wrap:balance;">Un solo producto para vender, operar y automatizar</h1>
+    <p class="lead-sec lead-sec--light" style="margin:0 0 30px;max-width:560px;">Aplika reúne ventas, inventario, CRM, pagos, facturación, agentes de IA y automatizaciones en un mismo lugar. Activas los módulos que tu pyme necesita.</p>
     <div style="display:flex;flex-wrap:wrap;gap:12px;">
-      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16px;font-weight:600;padding:15px 28px;border-radius:12px;text-decoration:none;" style-hover="background:#4F9AE6;">Agenda una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);color:#FFFFFF;font-size:16px;font-weight:600;padding:15px 28px;border-radius:12px;border:1px solid rgba(255,255,255,0.22);text-decoration:none;" style-hover="background:rgba(255,255,255,0.16);">Hablar con ventas</a>
+      <a href="Agenda-demo.dc.html" class="btn btn--primary">Agenda una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="Agenda-demo.dc.html" class="btn btn--ghost">Hablar con ventas</a>
     </div>
   </div>
 </section>
 
-<!-- ===== PLATAFORMA: tarjetas ===== -->
-<section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
-    <div style="max-width:660px;margin-bottom:clamp(34px,5vw,52px);">
-      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Módulos del producto</p>
-      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0 0 16px;text-wrap:balance;">Todo lo que incluye Aplika</h2>
-      <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.64);margin:0;">Módulos que activas según lo que tu negocio necesita. Sin pagar por lo que no usas.</p>
+<!-- ===== 2 · Intro de módulos ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div style="text-align:center;max-width:660px;margin:0 auto;">
+      <p class="eyebrow">Módulos del producto</p>
+      <h2 class="h2-sec" style="margin-bottom:16px;">Todo lo que incluye Aplika</h2>
+      <p class="lead-sec" style="margin:0 auto;max-width:52ch;">Módulos que activas según lo que tu negocio necesita. Sin pagar por lo que no usas.</p>
     </div>
-    <!-- INTEGRACIÓN: catálogo de servicios puede venir de API/CMS -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;">
-      <sc-for list="{{ services }}" as="item" hint-placeholder-count="6">
-        <div style="background:#FFFFFF;border:1px solid #E6F1FB;border-radius:18px;padding:30px;box-shadow:0 1px 2px rgba(12,68,124,0.04);" style-hover="border-color:#B5D4F4;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;background:#E6F1FB;border-radius:14px;color:#0C447C;margin-bottom:20px;"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
-          <h3 style="font-size:19px;font-weight:600;color:#042C53;margin:0 0 9px;">{{ item.title }}</h3>
-          <p style="font-size:15px;line-height:1.55;color:rgba(4,44,83,0.62);margin:0 0 18px;">{{ item.desc }}</p>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <sc-for list="{{ item.bullets }}" as="b" hint-placeholder-count="3">
-              <div style="display:flex;gap:9px;align-items:center;"><span style="flex:none;color:#378ADD;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:14.5px;color:rgba(4,44,83,0.78);">{{ b }}</span></div>
-            </sc-for>
+  </div>
+</section>
+
+<!-- ===== 3a · SPOTLIGHT · Venta en línea (texto izq / mockup der) ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div class="spot">
+      <div class="spot__text">
+        <span class="icon-tile icon-tile--lg" style="width:50px;height:50px;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 4.7 4.5H19.3L21 9.5M4.5 9.5V19.5H19.5V9.5M3 9.5H21M9.5 19.5V14H14.5V19.5"></path></svg></span>
+        <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 var(--sp-2);">Venta en línea</h3>
+        <p class="lead-sec" style="margin:0 0 24px;">Tu catálogo y carrito en una tienda lista para recibir pedidos a cualquier hora, sin comisiones por venta.</p>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:26px;">
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Catálogo con fotos y variantes</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Carrito y checkout simples</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Pedidos en un solo lugar</span></div>
+        </div>
+        <a href="Agenda-demo.dc.html" class="link-more">Ver una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div class="spot__media">
+        <!-- Mockup ilustrativo en CSS; se puede sustituir por <img> real (ancho ~520px, ratio ~4/3, loading=lazy, alt descriptivo) -->
+        <div class="demo-card" aria-hidden="true">
+          <p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0 0 14px;">Tienda en línea</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="sk-product"><div style="aspect-ratio:1;background:var(--blue-100);"></div><div style="padding:8px;"><span class="sk-bar" style="height:7px;width:80%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:46%;"></span></div></div>
+            <div class="sk-product"><div style="aspect-ratio:1;background:var(--blue-100);"></div><div style="padding:8px;"><span class="sk-bar" style="height:7px;width:70%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:50%;"></span></div></div>
+            <div class="sk-product"><div style="aspect-ratio:1;background:var(--blue-100);"></div><div style="padding:8px;"><span class="sk-bar" style="height:7px;width:78%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:42%;"></span></div></div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3b · SPOTLIGHT · Control de inventario (mockup izq / texto der) ===== -->
+<section style="background:var(--surface);">
+  <div class="u-wrap sec">
+    <div class="spot spot--rev">
+      <div class="spot__text">
+        <span class="icon-tile icon-tile--lg" style="width:50px;height:50px;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2"></path></svg></span>
+        <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 var(--sp-2);">Control de inventario</h3>
+        <p class="lead-sec" style="margin:0 0 24px;">Sabe qué tienes, qué se agota y qué reordenar en tiempo real. Tu inventario se actualiza con cada venta, para que nunca pierdas una.</p>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:26px;">
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Stock en tiempo real</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Alertas de faltantes</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Reportes de movimiento</span></div>
+        </div>
+        <a href="Industrias.dc.html" class="link-more">Ver industrias con inventario<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div class="spot__media">
+        <!-- Mockup ilustrativo en CSS; se puede sustituir por <img> real (ancho ~520px, ratio ~4/3, loading=lazy, alt descriptivo) -->
+        <div class="demo-card" aria-hidden="true">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0;">Productos</p><span class="pill pill--warn">Reordenar 3</span></div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <div class="inv-row"><span style="flex:none;width:38px;height:38px;background:var(--blue-100);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:9px;width:55%;margin-bottom:6px;"></span><span class="sk-bar" style="height:8px;width:32%;background:var(--line);"></span></div><span style="font-size:var(--fs-small);font-weight:700;color:var(--green);">142</span></div>
+            <div class="inv-row inv-row--warn"><span style="flex:none;width:38px;height:38px;background:var(--amber-bg);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:9px;width:48%;margin-bottom:6px;"></span><span class="sk-bar" style="height:8px;width:40%;background:var(--line);"></span></div><span style="font-size:var(--fs-small);font-weight:700;color:var(--amber);">6</span></div>
+            <div class="inv-row"><span style="flex:none;width:38px;height:38px;background:var(--blue-100);border-radius:var(--r-sm);"></span><div style="flex:1;"><span class="sk-bar" style="height:9px;width:62%;margin-bottom:6px;"></span><span class="sk-bar" style="height:8px;width:30%;background:var(--line);"></span></div><span style="font-size:var(--fs-small);font-weight:700;color:var(--green);">88</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3c · SPOTLIGHT · Agenda y citas (texto izq / mockup der) ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div class="spot">
+      <div class="spot__text">
+        <span class="icon-tile icon-tile--lg" style="width:50px;height:50px;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5H20V20H4ZM4 9.5H20M8.5 3.5V7.5M15.5 3.5V7.5"></path></svg></span>
+        <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 var(--sp-2);">Agenda y citas</h3>
+        <p class="lead-sec" style="margin:0 0 24px;">Reserva y confirma citas en línea con recordatorios automáticos que reducen las inasistencias. Pensado para consultorios, clínicas y negocios de servicios con cita.</p>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:26px;">
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Reserva y confirmación en línea</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Recordatorios automáticos</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Ideal para consultorios y clínicas</span></div>
+        </div>
+        <a href="Agenda-demo.dc.html" class="link-more">Agenda una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div class="spot__media">
+        <!-- Mockup ilustrativo en CSS; se puede sustituir por <img> real (ancho ~520px, ratio ~4/3, loading=lazy, alt descriptivo) -->
+        <div class="demo-card" aria-hidden="true">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0;">Agenda de hoy</p><span class="pill pill--ok">3 citas</span></div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">9:00</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Consulta · Ana Ruiz</span><span class="sk-bar" style="height:6px;width:52%;margin-top:6px;display:block;"></span></div><span class="pill pill--ok">Confirmada</span></div>
+            <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">11:30</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Sesión · Luis Ortega</span><span class="sk-bar" style="height:6px;width:42%;margin-top:6px;display:block;"></span></div><span class="pill pill--warn">Recordar</span></div>
+            <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">16:00</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Valoración · Grupo Vega</span><span class="sk-bar" style="height:6px;width:58%;margin-top:6px;display:block;"></span></div><span class="pill pill--ok">Confirmada</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3d · SPOTLIGHT · Dashboard interactivo (mockup izq / texto der) ===== -->
+<section style="background:var(--surface);">
+  <div class="u-wrap sec">
+    <div class="spot spot--rev">
+      <div class="spot__text">
+        <span class="icon-tile icon-tile--lg" style="width:50px;height:50px;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.5V20.5H20.5M7.5 16.5V13M12 16.5V9M16.5 16.5V6.5"></path></svg></span>
+        <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 var(--sp-2);">Dashboard interactivo</h3>
+        <p class="lead-sec" style="margin:0 0 24px;">Ventas, pedidos e inventario en una sola pantalla fácil de leer, para decidir con datos y no a ciegas.</p>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:26px;">
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Ventas del día y la semana</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Pedidos por surtir</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Tendencias claras de un vistazo</span></div>
+        </div>
+        <a href="Agenda-demo.dc.html" class="link-more">Ver una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div class="spot__media">
+        <!-- Mockup ilustrativo en CSS; se puede sustituir por <img> real (ancho ~520px, ratio ~4/3, loading=lazy, alt descriptivo) -->
+        <div class="demo-card" aria-hidden="true">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+            <div class="kpi kpi--hl"><p class="kpi-label">Ingresos</p><p class="kpi-value">$94,500</p></div>
+            <div class="kpi"><p class="kpi-label">Ticket prom.</p><p class="kpi-value">$640</p></div>
+          </div>
+          <div style="background:var(--surface);border-radius:var(--r-md);padding:14px;"><div style="display:flex;align-items:flex-end;gap:7px;height:64px;"><span class="bar" style="height:40%;"></span><span class="bar" style="height:66%;"></span><span class="bar" style="height:54%;"></span><span class="bar bar--hl" style="height:88%;"></span><span class="bar bar--hl" style="height:72%;"></span><span class="bar bar--hl" style="height:100%;"></span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3e · SPOTLIGHT · Clínicas de psicología (VERTICAL, texto izq / mockup der) ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div class="spot">
+      <div class="spot__text">
+        <span class="icon-tile icon-tile--lg" style="width:50px;height:50px;margin-bottom:20px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.5 15 3.5 8.9A4.4 4.4 0 0 1 12 7.2A4.4 4.4 0 0 1 20.5 8.9C20.5 15 12 20.5 12 20.5Z"></path></svg></span>
+        <p class="eyebrow">Vertical · Psicología y salud</p>
+        <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 var(--sp-2);">Clínicas de psicología</h3>
+        <p class="lead-sec" style="margin:0 0 24px;">Un consultorio digital para psicólogos: expediente por paciente, agenda con recordatorios de sesión y cobros, todo dentro de Aplika.</p>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:26px;">
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Expediente por paciente</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Agenda con recordatorios de sesión</span></div>
+          <div style="display:flex;gap:11px;align-items:center;"><span class="icon-tile" style="width:24px;height:24px;color:var(--blue);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:var(--fs-body-sm);color:var(--ink);">Cobros y seguimiento en un lugar</span></div>
+        </div>
+        <a href="Industrias.dc.html" class="link-more">Ver Psicología y salud<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+      <div class="spot__media">
+        <!-- Mockup ilustrativo en CSS; se puede sustituir por <img> real (ancho ~520px, ratio ~4/3, loading=lazy, alt descriptivo) -->
+        <div class="demo-card" aria-hidden="true">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0;">Expediente · Ana Ruiz</p><span class="pill pill--ok">Activo</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+            <div class="kpi kpi--hl"><p class="kpi-label">Sesiones</p><p class="kpi-value">12</p></div>
+            <div class="kpi"><p class="kpi-label">Próxima</p><p class="kpi-value">Jue 10:00</p></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">Jue</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Sesión individual</span><span class="sk-bar" style="height:6px;width:48%;margin-top:6px;display:block;"></span></div><span class="pill pill--warn">Recordar</span></div>
+            <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">Lun</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Seguimiento</span><span class="sk-bar" style="height:6px;width:56%;margin-top:6px;display:block;"></span></div><span class="pill pill--ok">Confirmada</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4 · Rejilla compacta de módulos secundarios ===== -->
+<section style="background:var(--surface);">
+  <div class="u-wrap sec">
+    <div style="text-align:center;max-width:620px;margin:0 auto clamp(34px,4vw,50px);">
+      <p class="eyebrow">Incluido también</p>
+      <h3 class="h2-sec" style="font-size:var(--fs-h3);">Y también incluye</h3>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--sp-3);">
+      <sc-for list="{{ services }}" as="item" hint-placeholder-count="4">
+        <div class="mod-card">
+          <span class="icon-tile icon-tile--lg" style="width:48px;height:48px;margin-bottom:18px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
+          <h4 class="card-title">{{ item.title }}</h4>
+          <p class="card-body">{{ item.desc }}</p>
         </div>
       </sc-for>
     </div>
   </div>
 </section>
 
-<!-- ===== CTA ===== -->
-<section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
-    <div style="background:#E6F1FB;border-radius:24px;padding:clamp(36px,5vw,60px);text-align:center;">
-      <h2 style="font-size:clamp(26px,3.2vw,40px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#042C53;margin:0 0 14px;text-wrap:balance;">¿Cuál de estos módulos necesita tu negocio?</h2>
-      <p style="font-size:17px;line-height:1.55;color:rgba(4,44,83,0.64);margin:0 0 28px;max-width:480px;margin-left:auto;margin-right:auto;">Te ayudamos a definirlo en una demo gratis, sin compromiso.</p>
-      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;" style-hover="background:#2C6FB5;">Agenda una demo</a>
+<!-- ===== 5 · CTA final ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div style="background:var(--blue-100);border-radius:var(--r-xl);padding:clamp(36px,5vw,60px);text-align:center;">
+      <h2 class="h2-sec" style="margin:0 0 14px;">¿Cuál de estos módulos necesita tu negocio?</h2>
+      <p class="lead-sec" style="margin:0 auto 28px;max-width:480px;">Te ayudamos a definirlo en una demo gratis, sin compromiso.</p>
+      <a href="Agenda-demo.dc.html" class="btn btn--primary">Agenda una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
   </div>
 </section>
 
 <dc-import name="Footer" hint-size="100%,360px"></dc-import>
 
-<a href="Agenda-demo.dc.html" aria-label="WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#25D366;border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:#1FB855;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg></a>
+<a href="Agenda-demo.dc.html" aria-label="WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:var(--whatsapp);border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:var(--whatsapp-hover);"><svg width="30" height="30" viewBox="0 0 24 24" style="fill:var(--white);"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg></a>
 
 </div>
 </x-dc>
@@ -104,14 +400,10 @@ class Component extends DCLogic {
     secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
   }
   services = [
-    { title: 'Venta en línea', desc: 'Tu catálogo y carrito en una tienda lista para recibir pedidos a cualquier hora.', d: 'M3 9.5 4.7 4.5H19.3L21 9.5M4.5 9.5V19.5H19.5V9.5M3 9.5H21M9.5 19.5V14H14.5V19.5', bullets: ['Catálogo con fotos y variantes', 'Carrito y checkout simples', 'Pedidos en un solo lugar'] },
-    { title: 'Pagos en línea', desc: 'Cobra con tarjeta, transferencia o efectivo, con confirmación automática.', d: 'M2.5 6.5H21.5V17.5H2.5ZM2.5 10.5H21.5M6 14H10', bullets: ['Tarjeta y transferencia', 'Confirmación automática', 'Cobros protegidos'] },
-    { title: 'Control de inventario', desc: 'Sabe qué tienes, qué se agota y qué reordenar, en tiempo real.', d: 'M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2', bullets: ['Stock en tiempo real', 'Alertas de faltantes', 'Reportes de movimiento'] },
-    { title: 'CRM de ventas', desc: 'Tus clientes de mayoreo, sus precios y su crédito, ordenados en un solo lugar.', d: 'M9 11A3 3 0 1 0 9 5A3 3 0 0 0 9 11ZM3 20C3 16.7 5.7 15 9 15S15 16.7 15 20M16 5A3 3 0 0 1 16 11M18 20C18 18 17.2 16.5 16 15.5', bullets: ['Ficha con RFC y régimen', 'Listas de precios y descuentos', 'Crédito y saldo por cliente'] },
-    { title: 'Automatizaciones', desc: 'Deja que Aplika haga el trabajo repetitivo: avisos, seguimientos y tareas por regla.', d: 'M12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9ZM19.4 13A7.5 7.5 0 0 0 19.4 11L21.3 9.6L19.4 6.3L17.2 7.2A7 7 0 0 0 15.5 6.2L15 3.9H11L10.6 6.2A7 7 0 0 0 8.9 7.2L6.7 6.3L4.8 9.6L6.7 11A7.5 7.5 0 0 0 6.7 13L4.8 14.4L6.7 17.7L8.9 16.8A7 7 0 0 0 10.6 17.8L11 20.1H15L15.5 17.8A7 7 0 0 0 17.2 16.8L19.4 17.7L21.3 14.4Z', bullets: ['Avisos de stock y pagos', 'Seguimiento de pedidos', 'Reglas sin código'] },
-    { title: 'Facturación (opcional)', desc: 'Genera comprobantes y facturas sin salir de la plataforma.', d: 'M6.5 2.5H14.5L18 6V21.5H6.5ZM14.5 2.5V6H18M9.5 11H15M9.5 14.5H15M9.5 17.5H13', bullets: ['Comprobantes de venta', 'Facturas CFDI', 'Todo desde un lugar'] },
-    { title: 'Dashboard interactivo', desc: 'Ventas, pedidos e inventario en una sola pantalla fácil de leer.', d: 'M3.5 3.5V20.5H20.5M7.5 16.5V13M12 16.5V9M16.5 16.5V6.5', bullets: ['Ventas del día y semana', 'Pedidos por surtir', 'Tendencias claras'] },
-    { title: 'Búsqueda con imágenes', desc: 'Tus clientes encuentran la pieza correcta por foto, marca o código.', d: 'M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16M8 11.5 10 13.5 14 9', bullets: ['Buscar por foto', 'Filtros por marca', 'Resultados con precio'] }
+    { title: 'Pagos en línea', desc: 'Cobra con tarjeta, transferencia o efectivo, con confirmación automática de cada pago.', d: 'M2.5 6.5H21.5V17.5H2.5ZM2.5 10.5H21.5M6 14H10' },
+    { title: 'CRM de ventas', desc: 'Tus clientes, sus precios y su crédito ordenados en un solo lugar para vender más.', d: 'M9 11A3 3 0 1 0 9 5A3 3 0 0 0 9 11ZM3 20C3 16.7 5.7 15 9 15S15 16.7 15 20M16 5A3 3 0 0 1 16 11M18 20C18 18 17.2 16.5 16 15.5' },
+    { title: 'Automatizaciones', desc: 'Avisos, seguimientos y tareas por regla: Aplika hace el trabajo repetitivo por ti.', d: 'M12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9ZM19.4 13A7.5 7.5 0 0 0 19.4 11L21.3 9.6L19.4 6.3L17.2 7.2A7 7 0 0 0 15.5 6.2L15 3.9H11L10.6 6.2A7 7 0 0 0 8.9 7.2L6.7 6.3L4.8 9.6L6.7 11A7.5 7.5 0 0 0 6.7 13L4.8 14.4L6.7 17.7L8.9 16.8A7 7 0 0 0 10.6 17.8L11 20.1H15L15.5 17.8A7 7 0 0 0 17.2 16.8L19.4 17.7L21.3 14.4Z' },
+    { title: 'Facturación (opcional)', desc: 'Genera comprobantes y facturas CFDI sin salir de la plataforma.', d: 'M6.5 2.5H14.5L18 6V21.5H6.5ZM14.5 2.5V6H18M9.5 11H15M9.5 14.5H15M9.5 17.5H13' }
   ];
   renderVals() {
     return { setReveal: (el) => this.setupReveal(el), services: this.services };
