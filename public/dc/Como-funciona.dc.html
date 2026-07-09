@@ -12,50 +12,182 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+:root{
+  /* ===== Paleta (hex existentes) ===== */
+  --navy:#0C447C;            /* marca / fondos oscuros */
+  --navy-hover:#0A3A6B;
+  --ink:#042C53;             /* texto principal */
+  --blue:#378ADD;            /* acento / CTA */
+  --blue-hover:#4F9AE6;
+  --blue-bright:#4FA0E8;     /* acento marca (logo, dots) */
+  --blue-300:#9CC6F0;
+  --blue-200:#B5D4F4;
+  --blue-100:#E6F1FB;        /* superficie azul clara / bordes suaves */
+  --blue-logo:#6FB3EC;       /* ".ai" del logo */
+  --surface:#F5F8FC;         /* fondo de paneles claros */
+  --line:#EEF3F9;            /* borde hairline / skeleton */
+  --border:#D8E6F5;          /* borde visible (inputs, slider) */
+  --white:#FFFFFF;
+  --green:#1FA85A;  --green-bg:#E4F6EC;
+  --amber:#B9682B;  --amber-bg:#FBEEDD;
+  --whatsapp:#25D366; --whatsapp-hover:#1FB855;
+
+  /* rgba más usados (blanco sobre navy) */
+  --w-85:rgba(255,255,255,0.85); --w-74:rgba(255,255,255,0.74);
+  --w-66:rgba(255,255,255,0.66); --w-55:rgba(255,255,255,0.55);
+  --w-22:rgba(255,255,255,0.22); --w-16:rgba(255,255,255,0.16);
+  --w-10:rgba(255,255,255,0.1);  --w-08:rgba(255,255,255,0.08);
+  /* rgba de tinta (navy sobre blanco) */
+  --ink-66:rgba(4,44,83,0.66);   /* cuerpo atenuado */
+  --ink-55:rgba(4,44,83,0.55);   /* muted */
+  --ink-45:rgba(4,44,83,0.45);   /* faint */
+  /* oscuro para scrims/sombras */
+  --dark:4,28,53;                /* usar rgba(var(--dark),x) */
+
+  /* ===== Tipografía (consolidada, clamp) ===== */
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+  --fs-display:clamp(56px,7vw,112px);   /* Historia lead-main */
+  --fs-h1:clamp(38px,6vw,68px);         /* Hero */
+  --fs-title:clamp(30px,4vw,52px);      /* CTA final, Historia h2, números Stats */
+  --fs-h2:clamp(26px,3.4vw,40px);       /* H2 de sección (único) */
+  --fs-h3:clamp(22px,2.6vw,30px);       /* subtítulos / quote */
+  --fs-card-title:18px;                 /* títulos de tarjeta */
+  --fs-lead:clamp(17px,1.9vw,21px);     /* párrafo lead */
+  --fs-body:16px;                       /* botones, FAQ pregunta, UI */
+  --fs-body-sm:15px;                    /* cuerpo de tarjetas */
+  --fs-small:14px;                      /* meta, roles, labels */
+  --fs-caption:12px;                    /* micro-labels, badges */
+  --lh-tight:1.1;   /* titulares (1.02–1.15 → por rol) */
+  --lh-snug:1.45;   /* labels/stats */
+  --lh-body:1.55;   /* cuerpo (absorbe 1.5/1.6) */
+  --track-tight:-0.02em; --track-label:0.02em; --track-wide:0.18em; /* DESLIZA unificado */
+
+  /* ===== Espaciado (base 8px) ===== */
+  --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:40px;
+  --sp-6:48px; --sp-8:64px; --sp-10:80px; --sp-12:96px;
+  --sec-y:clamp(56px,8vw,100px);        /* padding vertical estándar de sección */
+  --sec-y-lg:clamp(60px,9vw,110px);     /* secciones destacadas (Plataforma, CTA) */
+  --sec-x:24px;
+
+  /* ===== Radios ===== */
+  --r-xs:4px;    /* barras, skeletons (absorbe 5px) */
+  --r-sm:8px;    /* icon-tiles pequeños (absorbe 7/9/10px) */
+  --r-md:12px;   /* chips, KPIs, filas, botones (absorbe 11/13/14px) */
+  --r-lg:18px;   /* tarjetas (absorbe 16/17/20px) */
+  --r-xl:24px;   /* frames/banners (absorbe 28px) */
+  --r-full:999px;
+
+  /* ===== Sombras ===== */
+  --shadow-1:0 18px 40px -24px rgba(12,68,124,0.3);   /* tarjeta */
+  --shadow-2:0 20px 40px -18px rgba(2,18,38,0.5);     /* flotante */
+  --shadow-3:0 40px 80px -36px rgba(2,18,38,0.7);     /* panel héroe */
+  --shadow-btn:0 14px 28px -12px rgba(55,138,221,0.7);/* hover CTA */
+
+  /* ===== Timing ===== */
+  --ease:cubic-bezier(.22,1,.36,1);         /* estándar */
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --dur-fast:.2s;    /* hovers */
+  --dur-base:.4s;    /* acordeón, chat (absorbe .3/.35) */
+  --dur-slow:.55s;   /* leads/stagger (absorbe .5/.6) */
+  --dur-reveal:.7s;  /* scroll-reveal */
+
+  /* ===== Layout ===== */
+  --container:1180px;
+  --container-narrow:880px;   /* Testimonios, CTA, FAQ */
+}
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{margin:0;background:#FFFFFF;}
-button{font-family:inherit;}
-::selection{background:#B5D4F4;color:#042C53;}
+body{margin:0;background:var(--white);}
+input,button,textarea{font-family:inherit;}
+::selection{background:var(--blue-200);color:var(--ink);}
 
-/* ===== Scroll reveal ===== */
-.a-reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform;}
+/* ===== Utilidades del contrato (portadas de Aplika.ai) ===== */
+.u-wrap{width:100%;max-width:var(--container);margin:0 auto;padding-left:var(--sec-x);padding-right:var(--sec-x);}
+.u-wrap--narrow{max-width:var(--container-narrow);}
+.sec{padding-top:var(--sec-y);padding-bottom:var(--sec-y);}
+.sec--lg{padding-top:var(--sec-y-lg);padding-bottom:var(--sec-y-lg);}
+.h2-sec{font-size:var(--fs-h2);font-weight:600;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--ink);margin:0;text-wrap:balance;}
+.h2-sec--light{color:var(--white);}
+.lead-sec{font-size:var(--fs-lead);line-height:var(--lh-body);color:var(--ink-66);margin:0;max-width:52ch;}
+.lead-sec--light{color:var(--w-74);}
+.eyebrow{font-size:var(--fs-small);font-weight:600;color:var(--blue);letter-spacing:var(--track-label);margin:0 0 14px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:var(--fs-body);font-weight:600;line-height:1;padding:16px 32px;border:1px solid transparent;border-radius:var(--r-md);text-decoration:none;cursor:pointer;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease);}
+.btn--primary{background:var(--blue);color:var(--white);}
+.btn--primary:hover{background:var(--blue-hover);transform:translateY(-2px);box-shadow:var(--shadow-btn);}
+.btn--ghost{background:var(--w-08);color:var(--white);border-color:var(--w-22);}
+.btn--ghost:hover{background:var(--w-16);}
+.btn--navy{background:var(--navy);color:var(--white);}
+.btn--navy:hover{background:var(--navy-hover);}
+.btn--lg{font-size:var(--fs-card-title);padding:var(--sp-2) var(--sp-5);}
+.btn:focus-visible{outline:2px solid var(--blue-bright);outline-offset:2px;}
+.link-more{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-body-sm);font-weight:600;color:var(--blue);text-decoration:none;transition:gap var(--dur-fast) var(--ease);}
+.link-more:hover{gap:11px;}
+.dotted-navy{background-color:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;}
+.demo-card{background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-1);}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-caption);font-weight:600;padding:4px 9px;border-radius:var(--r-full);}
+.pill--ok{color:var(--green);background:var(--green-bg);}
+.pill--warn{color:var(--amber);background:var(--amber-bg);}
+.icon-tile{display:inline-flex;align-items:center;justify-content:center;flex:none;background:var(--blue-100);border-radius:var(--r-sm);color:var(--navy);}
+.icon-tile--lg{border-radius:var(--r-md);}
+.card-title{font-size:var(--fs-card-title);font-weight:600;color:var(--ink);margin:0 0 8px;}
+.card-body{font-size:var(--fs-body-sm);line-height:var(--lh-body);color:var(--ink-66);margin:0;}
+
+/* ===== Scroll reveal de secciones (portado de Aplika.ai) ===== */
+.a-reveal{opacity:0;transform:translateY(48px) scale(.965);transition:opacity var(--dur-reveal) var(--ease),transform var(--dur-reveal) var(--ease);will-change:opacity,transform;}
 .a-reveal.a-in{opacity:1;transform:none;}
-.a-reveal .a-stag>*{opacity:0;transform:translateY(18px);}
-.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1);}
+.a-reveal .a-stag>*{opacity:0;transform:translateY(28px);}
+.a-reveal.a-in .a-stag>*{opacity:1;transform:none;transition:opacity var(--dur-slow) ease,transform var(--dur-slow) var(--ease);}
 .a-reveal.a-in .a-stag>*:nth-child(1){transition-delay:.04s}.a-reveal.a-in .a-stag>*:nth-child(2){transition-delay:.1s}
 .a-reveal.a-in .a-stag>*:nth-child(3){transition-delay:.16s}.a-reveal.a-in .a-stag>*:nth-child(4){transition-delay:.22s}
 .a-reveal.a-in .a-stag>*:nth-child(5){transition-delay:.28s}.a-reveal.a-in .a-stag>*:nth-child(6){transition-delay:.34s}
 .a-reveal.a-in .a-stag>*:nth-child(n+7){transition-delay:.4s}
 
-/* ===== Mini-panel interactivo ===== */
+/* ===== Cómo funciona: flujo (COMPONENTE PORTADO VERBATIM de Aplika.ai) ===== */
+.cf-flow{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;}
+.cf-node{position:relative;flex:1 1 220px;max-width:258px;background:var(--white);border-radius:var(--r-lg);padding:28px 22px;text-align:center;}
+.cf-ic{position:relative;width:62px;height:62px;margin:0 auto 16px;border-radius:var(--r-lg);background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--navy);}
+.cf-num{position:absolute;top:-8px;right:-8px;width:25px;height:25px;border-radius:50%;background:var(--navy);color:var(--white);font-size:var(--fs-caption);font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid var(--blue-100);}
+/* Flecha centrada en el hueco (gap 28px) entre tarjetas y al centro VERTICAL
+   del recuadro (top:50%). translate: 50% de su propio ancho la lleva al borde
+   de la tarjeta, +14px al centro del hueco; -50% la centra en vertical. */
+.cf-arrow{position:absolute;right:0;top:50%;transform:translate(calc(50% + 14px),-50%);color:var(--blue-300);opacity:0;pointer-events:none;}
+@media(max-width:1000px){.cf-arrow{display:none;}}
+.a-reveal .cf-node{opacity:0;transform:translateY(22px) scale(.96);}
+.a-reveal.a-in .cf-node{opacity:1;transform:none;transition:opacity var(--dur-slow) ease,transform var(--dur-slow) var(--ease-spring);}
+.a-reveal.a-in .cf-node:nth-child(1){transition-delay:.05s}.a-reveal.a-in .cf-node:nth-child(2){transition-delay:.2s}
+.a-reveal.a-in .cf-node:nth-child(3){transition-delay:.35s}.a-reveal.a-in .cf-node:nth-child(4){transition-delay:.5s}
+.a-reveal.a-in .cf-arrow{opacity:1;transition:opacity var(--dur-slow) ease .55s;}
+.cf-node{transition:box-shadow var(--dur-fast) var(--ease);}
+.cf-node:hover{box-shadow:var(--shadow-1);}
+
+/* ===== Mini-panel interactivo (Ventas / Inventario / Agente IA) ===== */
 .vbars{position:relative;display:flex;align-items:flex-end;gap:7px;height:120px;}
 .vbar{position:relative;flex:1;display:flex;align-items:flex-end;height:100%;cursor:pointer;}
-.vbar-fill{width:100%;border-radius:5px 5px 0 0;background:#B5D4F4;transform-origin:bottom;transition:background .15s;animation:growUp .7s cubic-bezier(.22,.61,.36,1) both;}
-.vbar:hover .vbar-fill{background:#378ADD;}
+.vbar-fill{width:100%;border-radius:var(--r-xs) var(--r-xs) 0 0;background:var(--blue-200);transform-origin:bottom;transition:background var(--dur-fast);animation:growUp .7s var(--ease) both;}
+.vbar:hover .vbar-fill{background:var(--blue);}
 .vbars .vbar:nth-child(1) .vbar-fill{animation-delay:.05s}.vbars .vbar:nth-child(2) .vbar-fill{animation-delay:.11s}
 .vbars .vbar:nth-child(3) .vbar-fill{animation-delay:.17s}.vbars .vbar:nth-child(4) .vbar-fill{animation-delay:.23s}
 .vbars .vbar:nth-child(5) .vbar-fill{animation-delay:.29s}.vbars .vbar:nth-child(6) .vbar-fill{animation-delay:.35s}
 .vbars .vbar:nth-child(7) .vbar-fill{animation-delay:.41s}
 @keyframes growUp{from{transform:scaleY(0);}to{transform:scaleY(1);}}
-.vbar-tip{position:absolute;left:50%;bottom:calc(100% + 7px);transform:translate(-50%,5px);opacity:0;pointer-events:none;background:#0C447C;color:#FFFFFF;font-size:11.5px;font-weight:700;padding:5px 9px;border-radius:8px;white-space:nowrap;transition:opacity .15s,transform .15s;z-index:4;box-shadow:0 8px 18px -8px rgba(2,18,38,0.5);}
-.vbar-tip span{display:block;font-size:9px;font-weight:500;color:rgba(255,255,255,0.65);text-align:center;}
+.vbar-tip{position:absolute;left:50%;bottom:calc(100% + 7px);transform:translate(-50%,5px);opacity:0;pointer-events:none;background:var(--navy);color:var(--white);font-size:11.5px;font-weight:700;padding:5px 9px;border-radius:var(--r-sm);white-space:nowrap;transition:opacity var(--dur-fast),transform var(--dur-fast);z-index:4;box-shadow:var(--shadow-2);}
+.vbar-tip span{display:block;font-size:9px;font-weight:500;color:var(--w-66);text-align:center;}
 .vbar:hover .vbar-tip{opacity:1;transform:translate(-50%,0);}
 
-.inv-row{position:relative;display:flex;align-items:center;gap:11px;padding:10px;border-radius:12px;cursor:pointer;transition:background .15s,transform .15s;}
-.inv-row:hover{background:#F5F8FC;transform:translateX(2px);}
-.inv-tip{position:absolute;right:10px;bottom:calc(100% - 4px);opacity:0;pointer-events:none;transform:translateY(4px);background:#0C447C;color:#FFFFFF;font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:7px;white-space:nowrap;transition:opacity .15s,transform .15s;z-index:4;box-shadow:0 8px 18px -8px rgba(2,18,38,0.5);}
-.inv-row:hover .inv-tip{opacity:1;transform:translateY(0);}
+.pinv-row{position:relative;display:flex;align-items:center;gap:11px;padding:10px;border-radius:var(--r-md);cursor:pointer;transition:background var(--dur-fast),transform var(--dur-fast);}
+.pinv-row:hover{background:var(--surface);transform:translateX(2px);}
+.pinv-tip{position:absolute;right:10px;bottom:calc(100% - 4px);opacity:0;pointer-events:none;transform:translateY(4px);background:var(--navy);color:var(--white);font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:var(--r-sm);white-space:nowrap;transition:opacity var(--dur-fast),transform var(--dur-fast);z-index:4;box-shadow:var(--shadow-2);}
+.pinv-row:hover .pinv-tip{opacity:1;transform:translateY(0);}
 
 /* ===== Animación de chat (Agente IA) ===== */
 @keyframes chatIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:none;}}
-.chat-msg{animation:chatIn .35s ease both;}
+.chat-msg{animation:chatIn var(--dur-base) ease both;}
 @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-4px);opacity:1;}}
-.t-dot{width:6px;height:6px;border-radius:50%;background:#9CC6F0;display:inline-block;animation:typingDot 1s infinite;}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--blue-300);display:inline-block;animation:typingDot 1s infinite;}
 .t-dot:nth-child(2){animation-delay:.15s}.t-dot:nth-child(3){animation-delay:.3s}
 
-/* ===== Hub de integraciones (APLIKA se conecta) ===== */
-.flow{stroke:#C9DCF0;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:3 7;animation:flow 1.1s linear infinite;}
+/* ===== Hub de integraciones (Aplika se conecta) ===== */
+.flow{stroke:var(--border);stroke-width:2.6;stroke-linecap:round;stroke-dasharray:3 7;animation:flow 1.1s linear infinite;}
 .flow.f2{animation-delay:.28s}.flow.f3{animation-delay:.55s}.flow.f4{animation-delay:.82s}
 @keyframes flow{to{stroke-dashoffset:-20;}}
 .hub-ring{transform-box:fill-box;transform-origin:center;animation:hubPulse 2.4s ease-in-out infinite;}
@@ -64,63 +196,54 @@ button{font-family:inherit;}
 .sat.s2{animation-delay:.4s}.sat.s3{animation-delay:.8s}.sat.s4{animation-delay:1.2s}
 @keyframes satFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
 
-/* ===== Flujo del proceso ===== */
-.proc{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;}
-.proc-card{position:relative;flex:1 1 240px;max-width:272px;background:#FFFFFF;border:1px solid #EAF1FA;border-radius:18px;padding:26px 22px;box-shadow:0 1px 2px rgba(12,68,124,0.04);}
-.proc-ic{position:relative;width:58px;height:58px;border-radius:16px;background:#E6F1FB;color:#0C447C;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
-.proc-num{position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;background:#0C447C;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #FFFFFF;}
-.proc-arrow{position:absolute;right:-24px;top:44px;color:#9CC6F0;opacity:0;}
-@media(max-width:980px){.proc-arrow{display:none;}}
-.a-reveal .proc-card{opacity:0;transform:translateY(22px) scale(.96);}
-.a-reveal.a-in .proc-card{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.56,.64,1);}
-.a-reveal.a-in .proc-card:nth-child(1){transition-delay:.05s}.a-reveal.a-in .proc-card:nth-child(2){transition-delay:.2s}
-.a-reveal.a-in .proc-card:nth-child(3){transition-delay:.35s}.a-reveal.a-in .proc-card:nth-child(4){transition-delay:.5s}
-.a-reveal.a-in .proc-arrow{opacity:1;transition:opacity .5s ease .55s;}
-
 @media (prefers-reduced-motion:reduce){
-  .a-reveal,.a-reveal .a-stag>*,.a-reveal .proc-card,.vbar-fill,.chat-msg{opacity:1!important;transform:none!important;transition:none!important;animation:none!important;}
+  .a-reveal,.a-reveal .a-stag>*,.a-reveal .cf-node,.vbar-fill,.chat-msg{opacity:1!important;transform:none!important;transition:none!important;animation:none!important;}
+  .cf-arrow{opacity:1!important;}
   .flow,.hub-ring,.sat,.t-dot{animation:none!important;}
-  .proc-arrow{opacity:1!important;}
 }
 </style>
 </helmet>
-<div ref="{{ setReveal }}" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#042C53;background:#FFFFFF;overflow-x:hidden;">
+<div ref="{{ setReveal }}" style="font-family:var(--font);color:var(--ink);background:var(--white);overflow-x:hidden;">
 
 <dc-import name="Header" active="como" hint-size="100%,72px"></dc-import>
 
 <!-- ===== HERO ===== -->
-<section style="position:relative;background:#0C447C;background-image:radial-gradient(rgba(255,255,255,0.055) 1.4px,transparent 1.4px);background-size:26px 26px;overflow:hidden;">
-  <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:56px;background:rgba(55,138,221,0.2);transform:rotate(16deg);"></div>
-  <div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:clamp(130px,16vw,160px) 24px clamp(56px,8vw,84px);">
-    <p style="font-size:14px;font-weight:600;color:#6FB3EC;letter-spacing:0.04em;margin:0 0 16px;">Cómo funciona</p>
-    <h1 style="font-size:clamp(34px,5.2vw,60px);font-weight:700;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;margin:0 0 20px;max-width:740px;text-wrap:balance;">Un proceso claro, sin sorpresas</h1>
-    <p style="font-size:clamp(17px,1.9vw,20px);line-height:1.55;color:rgba(255,255,255,0.74);margin:0;max-width:560px;">Nosotros nos encargamos de la parte técnica. Tú te concentras en vender. Así trabajamos contigo de principio a fin.</p>
+<section class="dotted-navy" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:var(--r-xl);background:rgba(55,138,221,0.2);transform:rotate(16deg);"></div>
+  <div class="u-wrap" style="position:relative;padding-top:clamp(130px,16vw,160px);padding-bottom:clamp(56px,8vw,84px);">
+    <p class="eyebrow" style="color:var(--blue-logo);">Cómo funciona</p>
+    <h1 style="font-size:var(--fs-h1);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--track-tight);color:var(--white);margin:0 0 20px;max-width:760px;text-wrap:balance;">Un proceso claro, sin sorpresas</h1>
+    <p class="lead-sec lead-sec--light" style="margin:0 0 30px;max-width:580px;">Te mostramos exactamente cómo pasas de tu operación de hoy a vender en línea con Aplika: qué hacemos nosotros, qué pones tú y cuánto tarda cada etapa.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;">
+      <a href="Agenda-demo.dc.html" class="btn btn--primary">Agenda un diagnóstico<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="Servicios.dc.html" class="btn btn--ghost">Ver los módulos</a>
+    </div>
   </div>
 </section>
 
 <!-- ===== DEMO INTERACTIVO DEL PANEL + INTEGRACIONES ===== -->
-<section style="background:#F5F8FC;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
+<section style="background:var(--surface);">
+  <div class="u-wrap sec">
     <div style="text-align:center;max-width:680px;margin:0 auto clamp(30px,4vw,44px);">
-      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">Tu panel, en vivo</p>
-      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0 0 14px;text-wrap:balance;">Conócelo por dentro, sin instalar nada</h2>
-      <p style="font-size:17px;line-height:1.6;color:rgba(4,44,83,0.64);margin:0;">Cambia de vista y pasa el cursor sobre los datos: las ventas, el inventario y el agente de IA cobran vida.</p>
+      <p class="eyebrow">Tu panel, en vivo</p>
+      <h2 class="h2-sec" style="margin-bottom:14px;">Conócelo por dentro, sin instalar nada</h2>
+      <p class="lead-sec" style="margin:0 auto;">Cambia de vista y pasa el cursor sobre los datos: las ventas, el inventario y el agente de IA cobran vida.</p>
     </div>
 
     <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,3vw,30px);align-items:stretch;justify-content:center;">
 
       <!-- PANEL INTERACTIVO -->
-      <div style="flex:1 1 470px;min-width:300px;max-width:600px;background:#FFFFFF;border:1px solid #E6F1FB;border-radius:20px;box-shadow:0 40px 80px -44px rgba(2,18,38,0.45);overflow:hidden;">
-        <div style="height:46px;background:#F5F8FC;border-bottom:1px solid #E6F1FB;display:flex;align-items:center;gap:7px;padding:0 18px;">
-          <span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span><span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span><span style="width:10px;height:10px;border-radius:50%;background:#D8E6F5;"></span>
-          <span style="margin-left:10px;font-size:12px;font-weight:600;color:rgba(4,44,83,0.5);">aplika · Refaccionaria del Norte</span>
+      <div style="flex:1 1 470px;min-width:300px;max-width:600px;background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-xl);box-shadow:var(--shadow-3);overflow:hidden;">
+        <div style="height:46px;background:var(--surface);border-bottom:1px solid var(--blue-100);display:flex;align-items:center;gap:7px;padding:0 18px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--border);"></span><span style="width:10px;height:10px;border-radius:50%;background:var(--border);"></span><span style="width:10px;height:10px;border-radius:50%;background:var(--border);"></span>
+          <span style="margin-left:10px;font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);">aplika · Refaccionaria del Norte</span>
         </div>
         <div style="padding:18px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
-            <p style="font-size:15px;font-weight:700;color:#042C53;margin:0;">Resumen del negocio</p>
-            <div style="display:inline-flex;gap:4px;background:#F5F8FC;padding:4px;border-radius:11px;">
+            <p style="font-size:var(--fs-body-sm);font-weight:700;color:var(--ink);margin:0;">Resumen del negocio</p>
+            <div style="display:inline-flex;gap:4px;background:var(--surface);padding:4px;border-radius:var(--r-md);">
               <sc-for list="{{ panelTabs }}" as="t" hint-placeholder-count="3">
-                <button onClick="{{ t.onClick }}" style="border:none;cursor:pointer;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:8px;transition:all .18s;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};box-shadow:{{ t.shadow }};">{{ t.label }}</button>
+                <button onClick="{{ t.onClick }}" style="border:none;cursor:pointer;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:var(--r-sm);transition:all var(--dur-fast);white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};box-shadow:{{ t.shadow }};">{{ t.label }}</button>
               </sc-for>
             </div>
           </div>
@@ -128,12 +251,12 @@ button{font-family:inherit;}
           <!-- VISTA: VENTAS -->
           <sc-if value="{{ isPVentas }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-              <div style="flex:1 1 120px;border:1px solid #EEF3F9;border-radius:12px;padding:12px;"><p style="font-size:11.5px;color:rgba(4,44,83,0.6);margin:0 0 5px;">Ventas de la semana</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">$72,400</p></div>
-              <div style="flex:1 1 90px;border:1px solid #EEF3F9;border-radius:12px;padding:12px;"><p style="font-size:11.5px;color:rgba(4,44,83,0.6);margin:0 0 5px;">Pedidos</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">37</p></div>
-              <div style="flex:1 1 90px;border:1px solid #EEF3F9;border-radius:12px;padding:12px;"><p style="font-size:11.5px;color:rgba(4,44,83,0.6);margin:0 0 5px;">Ticket prom.</p><p style="font-size:19px;font-weight:700;color:#042C53;margin:0;font-variant-numeric:tabular-nums;">$1,840</p></div>
+              <div style="flex:1 1 120px;border:1px solid var(--line);border-radius:var(--r-md);padding:12px;"><p style="font-size:11.5px;color:var(--ink-55);margin:0 0 5px;">Ventas de la semana</p><p style="font-size:19px;font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;">$72,400</p></div>
+              <div style="flex:1 1 90px;border:1px solid var(--line);border-radius:var(--r-md);padding:12px;"><p style="font-size:11.5px;color:var(--ink-55);margin:0 0 5px;">Pedidos</p><p style="font-size:19px;font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;">37</p></div>
+              <div style="flex:1 1 90px;border:1px solid var(--line);border-radius:var(--r-md);padding:12px;"><p style="font-size:11.5px;color:var(--ink-55);margin:0 0 5px;">Ticket prom.</p><p style="font-size:19px;font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;">$1,840</p></div>
             </div>
-            <div style="border:1px solid #EEF3F9;border-radius:13px;padding:16px 16px 12px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:13px;font-weight:600;color:#042C53;margin:0;">Tendencia de ventas</p><span style="font-size:11px;font-weight:600;color:#1FA85A;background:#E4F6EC;padding:4px 10px;border-radius:999px;">▲ 12.4%</span></div>
+            <div style="border:1px solid var(--line);border-radius:var(--r-md);padding:16px 16px 12px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:13px;font-weight:600;color:var(--ink);margin:0;">Tendencia de ventas</p><span class="pill pill--ok">▲ 12.4%</span></div>
               <div class="vbars">
                 <sc-for list="{{ ventasBars }}" as="b" hint-placeholder-count="7">
                   <div class="vbar"><div class="vbar-tip">{{ b.v }}<span>{{ b.l }}</span></div><div class="vbar-fill" style="height:{{ b.h }};"></div></div>
@@ -141,90 +264,90 @@ button{font-family:inherit;}
               </div>
               <div style="display:flex;justify-content:space-between;margin-top:9px;">
                 <sc-for list="{{ ventasBars }}" as="b" hint-placeholder-count="7">
-                  <span style="flex:1;text-align:center;font-size:10px;color:rgba(4,44,83,0.4);">{{ b.l }}</span>
+                  <span style="flex:1;text-align:center;font-size:10px;color:var(--ink-45);">{{ b.l }}</span>
                 </sc-for>
               </div>
             </div>
-            <p style="font-size:11.5px;color:rgba(4,44,83,0.45);margin:12px 0 0;text-align:center;">Pasa el cursor sobre una barra para ver el detalle.</p>
+            <p style="font-size:11.5px;color:var(--ink-45);margin:12px 0 0;text-align:center;">Pasa el cursor sobre una barra para ver el detalle.</p>
           </sc-if>
 
           <!-- VISTA: INVENTARIO -->
           <sc-if value="{{ isPInv }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><p style="font-size:13px;font-weight:600;color:#042C53;margin:0;">Inventario en tiempo real</p><span style="font-size:11px;font-weight:600;color:#B9682B;background:#FBEEDD;padding:4px 9px;border-radius:999px;">{{ invAlerta }}</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><p style="font-size:13px;font-weight:600;color:var(--ink);margin:0;">Inventario en tiempo real</p><span class="pill pill--warn">{{ invAlerta }}</span></div>
             <div style="display:flex;flex-direction:column;gap:4px;">
               <sc-for list="{{ invRows }}" as="p" hint-placeholder-count="4">
-                <div class="inv-row">
-                  <span class="inv-tip">Almacén {{ p.wh }} · mín {{ p.min }}</span>
-                  <span style="flex:none;width:34px;height:34px;background:#E6F1FB;border-radius:9px;"></span>
+                <div class="pinv-row">
+                  <span class="pinv-tip">Almacén {{ p.wh }} · mín {{ p.min }}</span>
+                  <span style="flex:none;width:34px;height:34px;background:var(--blue-100);border-radius:var(--r-sm);"></span>
                   <div style="flex:1;min-width:0;">
-                    <p style="font-size:13px;font-weight:600;color:#042C53;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.name }}</p>
-                    <span style="display:block;height:6px;background:#EEF3F9;border-radius:4px;overflow:hidden;"><span style="display:block;height:100%;width:{{ p.pct }};background:{{ p.fg }};border-radius:4px;"></span></span>
+                    <p style="font-size:13px;font-weight:600;color:var(--ink);margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.name }}</p>
+                    <span style="display:block;height:6px;background:var(--line);border-radius:var(--r-xs);overflow:hidden;"><span style="display:block;height:100%;width:{{ p.pct }};background:{{ p.fg }};border-radius:var(--r-xs);"></span></span>
                   </div>
-                  <span style="flex:none;min-width:34px;text-align:center;font-size:12.5px;font-weight:700;color:{{ p.fg }};background:{{ p.bg }};padding:4px 9px;border-radius:20px;font-variant-numeric:tabular-nums;">{{ p.stock }}</span>
+                  <span style="flex:none;min-width:34px;text-align:center;font-size:12.5px;font-weight:700;color:{{ p.fg }};background:{{ p.bg }};padding:4px 9px;border-radius:var(--r-full);font-variant-numeric:tabular-nums;">{{ p.stock }}</span>
                 </div>
               </sc-for>
             </div>
-            <p style="font-size:11.5px;color:rgba(4,44,83,0.45);margin:10px 0 0;text-align:center;">Pasa el cursor sobre un producto para ver su almacén y mínimo.</p>
+            <p style="font-size:11.5px;color:var(--ink-45);margin:10px 0 0;text-align:center;">Pasa el cursor sobre un producto para ver su almacén y mínimo.</p>
           </sc-if>
 
           <!-- VISTA: AGENTE IA -->
           <sc-if value="{{ isPIA }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid #EEF3F9;margin-bottom:14px;">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#0C447C;border-radius:10px;"><span style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:14px;height:14px;"><span style="background:#FFFFFF;border-radius:2px;"></span><span style="background:#B5D4F4;border-radius:2px;"></span><span style="background:#4FA0E8;border-radius:2px;"></span><span style="background:#FFFFFF;border-radius:2px;"></span></span></span>
-              <div><p style="font-size:13.5px;font-weight:600;color:#042C53;margin:0;">Asistente aplika</p><p style="font-size:11.5px;color:#1FA85A;margin:1px 0 0;display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;background:#1FA85A;border-radius:50%;"></span>Atendiendo en WhatsApp</p></div>
+            <div style="display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:14px;">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:var(--navy);border-radius:var(--r-sm);"><span style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:14px;height:14px;"><span style="background:var(--white);border-radius:2px;"></span><span style="background:var(--blue-200);border-radius:2px;"></span><span style="background:var(--blue-bright);border-radius:2px;"></span><span style="background:var(--white);border-radius:2px;"></span></span></span>
+              <div><p style="font-size:13.5px;font-weight:600;color:var(--ink);margin:0;">Asistente aplika</p><p style="font-size:11.5px;color:var(--green);margin:1px 0 0;display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;background:var(--green);border-radius:50%;"></span>Atendiendo en WhatsApp</p></div>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;min-height:190px;">
               <sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="4">
                 <div class="chat-msg" style="align-self:{{ m.align }};max-width:82%;background:{{ m.bg }};color:{{ m.color }};font-size:13.5px;line-height:1.45;padding:10px 13px;border-radius:{{ m.radius }};">{{ m.text }}</div>
               </sc-for>
               <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
-                <div class="chat-msg" style="align-self:flex-end;display:inline-flex;align-items:center;gap:4px;background:#378ADD;padding:13px 15px;border-radius:13px 13px 4px 13px;"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
+                <div class="chat-msg" style="align-self:flex-end;display:inline-flex;align-items:center;gap:4px;background:var(--blue);padding:13px 15px;border-radius:13px 13px 4px 13px;"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></div>
               </sc-if>
             </div>
           </sc-if>
         </div>
       </div>
 
-      <!-- INTEGRACIONES (APLIKA se conecta) -->
-      <div style="flex:1 1 300px;min-width:280px;max-width:420px;background:#FFFFFF;border:1px solid #E6F1FB;border-radius:20px;padding:clamp(22px,3vw,28px);display:flex;flex-direction:column;justify-content:center;">
-        <p style="font-size:13px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 10px;">Integraciones</p>
-        <h3 style="font-size:clamp(20px,2.4vw,26px);font-weight:600;line-height:1.18;color:#042C53;margin:0 0 10px;text-wrap:balance;">Se conecta con lo que ya usas</h3>
-        <p style="font-size:15px;line-height:1.55;color:rgba(4,44,83,0.64);margin:0 0 8px;">Aplika se enlaza con tu tienda en línea, WhatsApp, los pagos y la facturación. Todo llega a un mismo panel.</p>
+      <!-- INTEGRACIONES (Aplika se conecta) -->
+      <div style="flex:1 1 300px;min-width:280px;max-width:420px;background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-xl);padding:clamp(22px,3vw,28px);display:flex;flex-direction:column;justify-content:center;">
+        <p class="eyebrow" style="margin-bottom:10px;">Integraciones</p>
+        <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 10px;text-wrap:balance;">Se conecta con lo que ya usas</h3>
+        <p class="card-body" style="margin:0 0 8px;">Aplika se enlaza con tu tienda en línea, WhatsApp, los pagos y la facturación. Todo llega a un mismo panel.</p>
         <svg viewBox="0 0 320 250" width="100%" style="max-width:380px;margin:6px auto 0;display:block;">
           <line class="flow"    x1="54" y1="58"  x2="160" y2="118"></line>
           <line class="flow f2" x1="266" y1="58"  x2="160" y2="118"></line>
           <line class="flow f3" x1="54" y1="186" x2="160" y2="122"></line>
           <line class="flow f4" x1="266" y1="186" x2="160" y2="122"></line>
 
-          <circle class="hub-ring" cx="160" cy="120" r="34" fill="none" stroke="#378ADD" stroke-width="2"></circle>
-          <circle cx="160" cy="120" r="30" fill="#0C447C"></circle>
+          <circle class="hub-ring" cx="160" cy="120" r="34" fill="none" style="stroke:var(--blue);" stroke-width="2"></circle>
+          <circle cx="160" cy="120" r="30" style="fill:var(--navy);"></circle>
           <g transform="translate(160,120)">
-            <rect x="-8" y="-8" width="7" height="7" rx="2" fill="#FFFFFF"></rect>
-            <rect x="1" y="-8" width="7" height="7" rx="2" fill="#B5D4F4"></rect>
-            <rect x="-8" y="1" width="7" height="7" rx="2" fill="#4FA0E8"></rect>
-            <rect x="1" y="1" width="7" height="7" rx="2" fill="#FFFFFF"></rect>
+            <rect x="-8" y="-8" width="7" height="7" rx="2" style="fill:var(--white);"></rect>
+            <rect x="1" y="-8" width="7" height="7" rx="2" style="fill:var(--blue-200);"></rect>
+            <rect x="-8" y="1" width="7" height="7" rx="2" style="fill:var(--blue-bright);"></rect>
+            <rect x="1" y="1" width="7" height="7" rx="2" style="fill:var(--white);"></rect>
           </g>
-          <text x="160" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#0C447C">aplika.ai</text>
+          <text x="160" y="170" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--navy);">aplika.ai</text>
 
           <g class="sat">
-            <circle cx="54" cy="58" r="23" fill="#FFFFFF" stroke="#E6F1FB" stroke-width="1.5"></circle>
-            <svg x="42" y="46" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C447C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 4.7 4.5H19.3L21 9.5M4.5 9.5V19.5H19.5V9.5M3 9.5H21M9.5 19.5V14H14.5V19.5"></path></svg>
-            <text x="54" y="95" text-anchor="middle" font-size="9.5" font-weight="600" fill="#042C53">Tienda en línea</text>
+            <circle cx="54" cy="58" r="23" style="fill:var(--white);stroke:var(--blue-100);" stroke-width="1.5"></circle>
+            <svg x="42" y="46" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke:var(--navy);" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 4.7 4.5H19.3L21 9.5M4.5 9.5V19.5H19.5V9.5M3 9.5H21M9.5 19.5V14H14.5V19.5"></path></svg>
+            <text x="54" y="95" text-anchor="middle" font-size="9.5" font-weight="600" style="fill:var(--ink);">Tienda en línea</text>
           </g>
           <g class="sat s2">
-            <circle cx="266" cy="58" r="23" fill="#FFFFFF" stroke="#E6F1FB" stroke-width="1.5"></circle>
-            <svg x="254" y="46" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C447C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5zM8 9h8M8 12h5"></path></svg>
-            <text x="266" y="95" text-anchor="middle" font-size="9.5" font-weight="600" fill="#042C53">WhatsApp</text>
+            <circle cx="266" cy="58" r="23" style="fill:var(--white);stroke:var(--blue-100);" stroke-width="1.5"></circle>
+            <svg x="254" y="46" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke:var(--navy);" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3.5zM8 9h8M8 12h5"></path></svg>
+            <text x="266" y="95" text-anchor="middle" font-size="9.5" font-weight="600" style="fill:var(--ink);">WhatsApp</text>
           </g>
           <g class="sat s3">
-            <circle cx="54" cy="186" r="23" fill="#FFFFFF" stroke="#E6F1FB" stroke-width="1.5"></circle>
-            <svg x="42" y="174" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C447C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5H21.5V17.5H2.5ZM2.5 10.5H21.5M6 14H10"></path></svg>
-            <text x="54" y="223" text-anchor="middle" font-size="9.5" font-weight="600" fill="#042C53">Pagos</text>
+            <circle cx="54" cy="186" r="23" style="fill:var(--white);stroke:var(--blue-100);" stroke-width="1.5"></circle>
+            <svg x="42" y="174" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke:var(--navy);" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5H21.5V17.5H2.5ZM2.5 10.5H21.5M6 14H10"></path></svg>
+            <text x="54" y="223" text-anchor="middle" font-size="9.5" font-weight="600" style="fill:var(--ink);">Pagos</text>
           </g>
           <g class="sat s4">
-            <circle cx="266" cy="186" r="23" fill="#FFFFFF" stroke="#E6F1FB" stroke-width="1.5"></circle>
-            <svg x="254" y="174" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C447C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 2.5H14.5L18 6V21.5H6.5ZM14.5 2.5V6H18M9.5 11H15M9.5 14.5H15"></path></svg>
-            <text x="266" y="223" text-anchor="middle" font-size="9.5" font-weight="600" fill="#042C53">Facturación</text>
+            <circle cx="266" cy="186" r="23" style="fill:var(--white);stroke:var(--blue-100);" stroke-width="1.5"></circle>
+            <svg x="254" y="174" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke:var(--navy);" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 2.5H14.5L18 6V21.5H6.5ZM14.5 2.5V6H18M9.5 11H15M9.5 14.5H15"></path></svg>
+            <text x="266" y="223" text-anchor="middle" font-size="9.5" font-weight="600" style="fill:var(--ink);">Facturación</text>
           </g>
         </svg>
       </div>
@@ -232,67 +355,166 @@ button{font-family:inherit;}
   </div>
 </section>
 
-<!-- ===== PROCESO (flujo homologado) ===== -->
-<section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
-    <div style="text-align:center;max-width:620px;margin:0 auto clamp(34px,4vw,52px);">
-      <p style="font-size:14px;font-weight:600;color:#378ADD;letter-spacing:0.02em;margin:0 0 14px;">El proceso</p>
-      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#042C53;margin:0;text-wrap:balance;">De principio a fin, en cuatro pasos</h2>
+<!-- ===== EL PROCESO A FONDO (versión profunda, distinta al resumen de Inicio) ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div style="text-align:center;max-width:660px;margin:0 auto clamp(34px,4vw,52px);">
+      <p class="eyebrow">El proceso por dentro</p>
+      <h2 class="h2-sec" style="margin-bottom:14px;">Cada etapa, con lo que entra y lo que sale</h2>
+      <p class="lead-sec" style="margin:0 auto;">Para cada etapa te decimos qué pasa, qué te entrega Aplika y qué necesitas poner de tu lado. Sin letras chiquitas.</p>
     </div>
-    <div class="proc">
-      <sc-for list="{{ flowSteps }}" as="item" hint-placeholder-count="4">
-        <div class="proc-card">
-          <div class="proc-ic"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg><span class="proc-num">{{ item.num }}</span></div>
-          <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px;">
-            <h3 style="font-size:18px;font-weight:600;color:#042C53;margin:0;">{{ item.title }}</h3>
-            <span style="font-size:12px;font-weight:600;color:#0C447C;background:#E6F1FB;padding:4px 10px;border-radius:999px;">{{ item.time }}</span>
+    <div style="display:flex;flex-direction:column;gap:clamp(18px,2.5vw,24px);">
+      <sc-for list="{{ stages }}" as="s" hint-placeholder-count="4">
+        <div style="background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:clamp(24px,3vw,34px);box-shadow:var(--shadow-1);">
+          <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,3vw,40px);">
+            <div style="flex:1 1 230px;min-width:210px;">
+              <span class="icon-tile icon-tile--lg" style="position:relative;width:56px;height:56px;margin-bottom:16px;">
+                <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ s.d }}"></path></svg>
+                <span class="cf-num" style="border-color:var(--white);">{{ s.num }}</span>
+              </span>
+              <h3 class="card-title" style="font-size:var(--fs-h3);line-height:1.18;margin:0 0 12px;">{{ s.title }}</h3>
+              <span class="pill" style="color:var(--navy);background:var(--blue-100);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 8V12L15 14"></path></svg>{{ s.time }}
+              </span>
+            </div>
+            <div style="flex:2 1 440px;min-width:260px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:20px;">
+              <div>
+                <p style="font-size:var(--fs-caption);font-weight:700;letter-spacing:var(--track-label);text-transform:uppercase;color:var(--blue);margin:0 0 7px;">Qué pasa</p>
+                <p class="card-body">{{ s.happens }}</p>
+              </div>
+              <div>
+                <p style="font-size:var(--fs-caption);font-weight:700;letter-spacing:var(--track-label);text-transform:uppercase;color:var(--blue);margin:0 0 7px;">Qué entrega Aplika</p>
+                <p class="card-body">{{ s.delivers }}</p>
+              </div>
+              <div>
+                <p style="font-size:var(--fs-caption);font-weight:700;letter-spacing:var(--track-label);text-transform:uppercase;color:var(--blue);margin:0 0 7px;">Qué pones tú</p>
+                <p class="card-body">{{ s.youBring }}</p>
+              </div>
+            </div>
           </div>
-          <p style="font-size:14.5px;line-height:1.55;color:rgba(4,44,83,0.64);margin:0 0 14px;">{{ item.desc }}</p>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <sc-for list="{{ item.bullets }}" as="b" hint-placeholder-count="3">
-              <div style="display:flex;gap:8px;align-items:center;"><span style="flex:none;color:#378ADD;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg></span><span style="font-size:13.5px;color:rgba(4,44,83,0.74);">{{ b }}</span></div>
-            </sc-for>
-          </div>
-          <sc-if value="{{ item.showArrow }}" hint-placeholder-val="{{ true }}"><span class="proc-arrow"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></sc-if>
         </div>
       </sc-for>
     </div>
   </div>
 </section>
 
-<!-- ===== CONFIANZA ===== -->
-<section style="background:#0C447C;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(48px,7vw,90px) 24px;">
+<!-- ===== CONFIGURACIÓN VERTICAL POR MÓDULOS (sección nueva) ===== -->
+<section style="background:var(--surface);">
+  <div class="u-wrap sec">
+    <div style="max-width:680px;margin:0 auto clamp(30px,4vw,44px);text-align:center;">
+      <p class="eyebrow">Configuración vertical</p>
+      <h2 class="h2-sec" style="margin-bottom:14px;">Un producto que se configura por módulos, según tu giro</h2>
+      <p class="lead-sec" style="margin:0 auto;">Aplika no es un software genérico: se configura por vertical. Elegimos tu giro y, a partir de ahí, el catálogo, los flujos y los módulos se adaptan a tu forma de vender. Todos arrancan con los módulos base; encima sumamos solo los opcionales que tu operación pida.</p>
+    </div>
+
+    <!-- Verticales -->
+    <div class="a-stag" style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:clamp(30px,4vw,44px);">
+      <sc-for list="{{ verticals }}" as="v" hint-placeholder-count="4">
+        <span style="display:inline-flex;align-items:center;gap:9px;background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-full);padding:9px 16px;font-size:var(--fs-body-sm);font-weight:600;color:var(--ink);">
+          <span class="icon-tile" style="width:26px;height:26px;color:var(--navy);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ v.d }}"></path></svg></span>{{ v.name }}
+        </span>
+      </sc-for>
+    </div>
+
+    <!-- Base vs opcionales -->
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(18px,2.5vw,24px);align-items:stretch;">
+      <div style="flex:1 1 340px;min-width:280px;background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-xl);padding:clamp(24px,3vw,32px);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <h3 class="card-title" style="margin:0;">Módulos base</h3>
+          <span class="pill pill--ok">Incluidos</span>
+        </div>
+        <p class="card-body" style="margin:0 0 20px;">Vienen activados en todos los negocios. Es el mínimo para vender y operar en línea.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <sc-for list="{{ baseModules }}" as="m" hint-placeholder-count="4">
+            <div style="display:flex;gap:13px;align-items:flex-start;">
+              <span class="icon-tile icon-tile--lg" style="width:42px;height:42px;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.d }}"></path></svg></span>
+              <div style="flex:1;min-width:0;">
+                <p style="font-size:var(--fs-body-sm);font-weight:600;color:var(--ink);margin:0 0 3px;">{{ m.title }}</p>
+                <p class="card-body" style="font-size:var(--fs-small);">{{ m.desc }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex:1 1 340px;min-width:280px;background:var(--white);border:1px solid var(--blue-100);border-radius:var(--r-xl);padding:clamp(24px,3vw,32px);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <h3 class="card-title" style="margin:0;">Módulos opcionales</h3>
+          <span class="pill pill--warn">A elección</span>
+        </div>
+        <p class="card-body" style="margin:0 0 20px;">Se activan según tu giro y tu operación. Sumas solo lo que tu negocio necesita, sin pagar de más.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <sc-for list="{{ optionalModules }}" as="m" hint-placeholder-count="5">
+            <div style="display:flex;gap:13px;align-items:flex-start;">
+              <span class="icon-tile icon-tile--lg" style="width:42px;height:42px;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.d }}"></path></svg></span>
+              <div style="flex:1;min-width:0;">
+                <p style="font-size:var(--fs-body-sm);font-weight:600;color:var(--ink);margin:0 0 3px;">{{ m.title }}</p>
+                <p class="card-body" style="font-size:var(--fs-small);">{{ m.desc }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- EN PROCESO: flujo con flechas (COMPONENTE cf-flow / cf-arrow REUTILIZADO) -->
+    <div style="background:var(--blue-100);border-radius:var(--r-xl);padding:clamp(30px,4vw,52px);margin-top:clamp(24px,3vw,32px);">
+      <div style="text-align:center;max-width:560px;margin:0 auto clamp(28px,3.5vw,40px);">
+        <p class="eyebrow" style="color:var(--navy);">En proceso</p>
+        <h3 class="card-title" style="font-size:var(--fs-h3);margin:0;">Así armamos tu configuración</h3>
+      </div>
+      <div class="cf-flow">
+        <sc-for list="{{ moduleFlow }}" as="item" hint-placeholder-count="4">
+          <div class="cf-node">
+            <div class="cf-ic">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg>
+              <span class="cf-num">{{ item.num }}</span>
+            </div>
+            <h3 class="card-title">{{ item.title }}</h3>
+            <p class="card-body">{{ item.desc }}</p>
+            <sc-if value="{{ item.showArrow }}" hint-placeholder-val="{{ true }}">
+              <span class="cf-arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACOMPAÑAMIENTO (Nunca te quedas solo) ===== -->
+<section style="background:var(--navy);">
+  <div class="u-wrap sec">
     <div style="max-width:600px;margin-bottom:clamp(30px,4vw,46px);">
-      <p style="font-size:14px;font-weight:600;color:#6FB3EC;letter-spacing:0.02em;margin:0 0 14px;">Acompañamiento</p>
-      <h2 style="font-size:clamp(26px,3.4vw,40px);font-weight:600;line-height:1.14;letter-spacing:-0.01em;color:#FFFFFF;margin:0;text-wrap:balance;">Nunca te quedas solo</h2>
+      <p class="eyebrow" style="color:var(--blue-logo);">Acompañamiento</p>
+      <h2 class="h2-sec h2-sec--light">Nunca te quedas solo</h2>
     </div>
     <div class="a-stag" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;">
       <sc-for list="{{ trust }}" as="item" hint-placeholder-count="4">
-        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:26px;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;background:rgba(255,255,255,0.1);border-radius:12px;color:#9CC6F0;margin-bottom:16px;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
-          <h3 style="font-size:17px;font-weight:600;color:#FFFFFF;margin:0 0 6px;">{{ item.title }}</h3>
-          <p style="font-size:14px;line-height:1.5;color:rgba(255,255,255,0.66);margin:0;">{{ item.desc }}</p>
+        <div style="background:var(--w-08);border:1px solid var(--w-16);border-radius:var(--r-lg);padding:26px;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;background:var(--w-10);border-radius:var(--r-md);color:var(--blue-300);margin-bottom:16px;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg></span>
+          <h3 class="card-title" style="color:var(--white);margin:0 0 6px;">{{ item.title }}</h3>
+          <p style="font-size:var(--fs-small);line-height:1.5;color:var(--w-66);margin:0;">{{ item.desc }}</p>
         </div>
       </sc-for>
     </div>
   </div>
 </section>
 
-<!-- ===== CTA (sin cambios) ===== -->
-<section style="background:#FFFFFF;">
-  <div style="width:100%;max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 24px;">
-    <div style="background:#E6F1FB;border-radius:24px;padding:clamp(36px,5vw,60px);text-align:center;">
-      <h2 style="font-size:clamp(26px,3.2vw,40px);font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:#042C53;margin:0 0 14px;text-wrap:balance;">Empecemos por un diagnóstico gratis</h2>
-      <p style="font-size:17px;line-height:1.55;color:rgba(4,44,83,0.64);margin:0 0 28px;max-width:480px;margin-left:auto;margin-right:auto;">En una llamada corta entendemos tu negocio y te decimos qué necesitas.</p>
-      <a href="Agenda-demo.dc.html" style="display:inline-flex;align-items:center;gap:8px;background:#378ADD;color:#FFFFFF;font-size:16.5px;font-weight:600;padding:16px 32px;border-radius:13px;text-decoration:none;" style-hover="background:#2C6FB5;">Agenda una demo</a>
+<!-- ===== CTA ===== -->
+<section style="background:var(--white);">
+  <div class="u-wrap sec">
+    <div style="background:var(--blue-100);border-radius:var(--r-xl);padding:clamp(36px,5vw,60px);text-align:center;">
+      <h2 class="h2-sec" style="margin:0 0 14px;">Empecemos por un diagnóstico gratis</h2>
+      <p class="lead-sec" style="margin:0 auto 28px;max-width:480px;">En una llamada corta entendemos tu giro y te decimos qué módulos necesitas.</p>
+      <a href="Agenda-demo.dc.html" class="btn btn--primary">Agenda una demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
   </div>
 </section>
 
 <dc-import name="Footer" hint-size="100%,360px"></dc-import>
 
-<a href="Agenda-demo.dc.html" aria-label="WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#25D366;border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:#1FB855;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg></a>
+<a href="Agenda-demo.dc.html" aria-label="WhatsApp" style="position:fixed;bottom:22px;right:22px;z-index:60;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:var(--whatsapp);border-radius:50%;box-shadow:0 10px 28px -8px rgba(37,211,102,0.6);text-decoration:none;" style-hover="background:var(--whatsapp-hover);"><svg width="30" height="30" viewBox="0 0 24 24" style="fill:var(--white);"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Zm0 1.8a7.2 7.2 0 0 1 6.1 11 .9.9 0 0 1-.1.2 7.2 7.2 0 0 1-9.7 2.2l-.3-.2-2.8.7.7-2.7-.2-.3A7.2 7.2 0 0 1 12 4.8Zm-3.4 3.3c-.2 0-.4 0-.6.5-.3.6-.4 1.6.3 3.2 1 2 2.7 3.7 4.7 4.7 1.6.7 2.6.6 3.2.3.5-.2.5-.4.5-.7v-.5c0-.2 0-.4-.5-.6l-1.6-.7c-.2-.1-.4 0-.6.1l-.6.5c-.1.1-.3.2-.5.1-.9-.3-1.9-1.3-2.2-2.2-.1-.2 0-.4.1-.5l.5-.6c.1-.2.2-.4.1-.6l-.7-1.6c-.2-.5-.4-.5-.6-.5h-.5Z"></path></svg></a>
 
 </div>
 </x-dc>
@@ -301,7 +523,6 @@ class Component extends DCLogic {
   state = { panelTab: 'ventas', chatN: 0, typing: false };
 
   componentDidMount() {
-    this._io = null;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) { this.setState({ chatN: 4, typing: false }); } else { this.runChat(); }
   }
@@ -318,7 +539,7 @@ class Component extends DCLogic {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof IntersectionObserver === 'undefined') { secs.forEach((s) => s.classList.add('a-reveal', 'a-in')); return; }
     secs.forEach((s, i) => { if (i > 0) s.classList.add('a-reveal'); });
-    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    this._io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('a-in'); if (this._io) this._io.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     secs.forEach((s, i) => { if (i > 0) this._io.observe(s); });
   }
 
@@ -339,11 +560,12 @@ class Component extends DCLogic {
     this._chatTO = setTimeout(run, 700);
   }
 
+  // Chat propio de esta página (inventario) — distinto al de Inicio para no duplicar.
   chatScript = [
-    { who: 'user',  text: 'Hola, ¿tienen balatas para Versa 2019?' },
-    { who: 'agent', text: '¡Sí! Tenemos 3 opciones en stock. ¿Cerámicas o semimetálicas?' },
-    { who: 'user',  text: 'Cerámicas, apártamelas.' },
-    { who: 'agent', text: 'Listo, pedido PD-1042 apartado. 📍' }
+    { who: 'user',  text: '¿Ya entraron los filtros de aceite FX-90?' },
+    { who: 'agent', text: 'Sí, llegaron 120 piezas hoy y ya se reflejan en tu inventario. ¿Ajusto el mínimo de reorden?' },
+    { who: 'user',  text: 'Sí, déjalo en 40.' },
+    { who: 'agent', text: 'Listo. Te aviso por WhatsApp cuando baje de 40. ✅' }
   ];
 
   ventasBars = [
@@ -356,19 +578,65 @@ class Component extends DCLogic {
     { l: 'Dom', v: '$8,500',  h: '56%' }
   ];
 
+  // Sin stock 0 (evita un color de peligro fuera de los tokens): solo ok / warn.
   invItems = [
-    { name: 'Balata cerámica D-1184', stock: 6,   min: 20, wh: 'Matriz' },
+    { name: 'Balata cerámica D-1184', stock: 8,   min: 20, wh: 'Matriz' },
     { name: 'Filtro de aceite FX-90', stock: 142, min: 40, wh: 'Matriz' },
-    { name: 'Bujía iridio NGK 6',     stock: 0,   min: 30, wh: 'Bodega 2' },
+    { name: 'Bujía iridio NGK 6',     stock: 14,  min: 30, wh: 'Bodega 2' },
     { name: 'Amortiguador GT',        stock: 34,  min: 15, wh: 'Matriz' }
   ];
 
-  steps = [
-    { num: '1', title: 'Diagnóstico', time: '1–2 días', desc: 'Entendemos tu negocio, tus productos y cómo vendes hoy. Sin costo y sin compromiso.', bullets: ['Llamada inicial', 'Revisión de tu catálogo', 'Propuesta a la medida'], d: 'M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16M8 11h6M11 8v6' },
-    { num: '2', title: 'Configuración', time: '1–3 semanas', desc: 'Armamos tu plataforma con tu catálogo, tu marca y tu forma de trabajar.', bullets: ['Carga de productos', 'Diseño con tu marca', 'Integración de pagos'], d: 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 13v4' },
-    { num: '3', title: 'Lanzamiento', time: '1 día', desc: 'Salimos en vivo, hacemos pruebas con pedidos reales y capacitamos a tu equipo.', bullets: ['Publicación de tu tienda', 'Capacitación al equipo', 'Pruebas reales'], d: 'M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2a3 3 0 0 0-3-3ZM9 13l-2 2M19 5c0 5-3 9-7 11l-3-3C11 9 15 6 20 6ZM14.5 9.5A1.5 1.5 0 1 0 14.5 6.5A1.5 1.5 0 0 0 14.5 9.5Z' },
-    { num: '4', title: 'Soporte continuo', time: 'siempre', desc: 'Te acompañamos con soporte en México, mejoras y ajustes cuando los necesites.', bullets: ['Soporte por WhatsApp', 'Soporte por correo', 'Mejoras y ajustes', 'Reportes periódicos'], d: 'M4.5 13V11A7.5 7.5 0 0 1 19.5 11V13M4.5 13H7V18.5H4.5ZM19.5 13H17V18.5H19.5M17 18.5V19.5A2 2 0 0 1 15 21.5H12' }
+  // Etapas PROFUNDAS: qué pasa / qué entrega Aplika / qué pones tú + cuánto tarda.
+  // Títulos reescritos para no duplicar el resumen de 4 pasos de Inicio.
+  stages = [
+    { num: '1', title: 'Diagnóstico y alcance', time: '1–2 días', d: 'M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16M8 11h6M11 8v6',
+      happens: 'En una llamada corta revisamos tu giro, tu catálogo y cómo vendes y cobras hoy.',
+      delivers: 'Un plan con los módulos que necesitas y una propuesta a tu medida, sin costo ni compromiso.',
+      youBring: '30 minutos y una idea de tus productos y tu forma de cobrar.' },
+    { num: '2', title: 'Montaje de tu plataforma', time: '1–3 semanas', d: 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 13v4',
+      happens: 'Cargamos tu catálogo, aplicamos tu marca y activamos los módulos de tu vertical.',
+      delivers: 'Tu tienda, inventario y pagos listos, conectados a WhatsApp y a tu facturación.',
+      youBring: 'Tu logo, tu lista de productos y los accesos a tus cuentas de cobro.' },
+    { num: '3', title: 'Puesta en marcha', time: '1 día', d: 'M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2a3 3 0 0 0-3-3ZM9 13l-2 2M19 5c0 5-3 9-7 11l-3-3C11 9 15 6 20 6ZM14.5 9.5A1.5 1.5 0 1 0 14.5 6.5A1.5 1.5 0 0 0 14.5 9.5Z',
+      happens: 'Salimos en vivo, probamos con pedidos reales y capacitamos a tu equipo.',
+      delivers: 'Tu negocio operando en línea y tu personal usando el panel con confianza.',
+      youBring: 'Al equipo que atenderá pedidos y una hora para la capacitación.' },
+    { num: '4', title: 'Operación acompañada', time: 'siempre', d: 'M4.5 13V11A7.5 7.5 0 0 1 19.5 11V13M4.5 13H7V18.5H4.5ZM19.5 13H17V18.5H19.5M17 18.5V19.5A2 2 0 0 1 15 21.5H12',
+      happens: 'Damos soporte en México, resolvemos dudas y ajustamos el producto contigo.',
+      delivers: 'Mejoras continuas, reportes y respuesta por WhatsApp o correo cuando lo necesites.',
+      youBring: 'Tu retroalimentación: nos dices qué mejorar y lo afinamos.' }
   ];
+
+  verticals = [
+    { name: 'Refaccionaria', d: 'M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9ZM12 4V6.5M12 17.5V20M4 12H6.5M17.5 12H20' },
+    { name: 'Ferretería',    d: 'M14.5 6.5A3.5 3.5 0 0 1 9.8 10.8L5 15.6V19H8.4L13.2 14.2A3.5 3.5 0 0 0 17.5 9.5L15 12L12 9Z' },
+    { name: 'Mayorista',     d: 'M3 10 12 4.5 21 10V20.5H3ZM7.5 20.5V13.5H16.5V20.5M7.5 16.5H16.5' },
+    { name: 'Clínica',       d: 'M12 20.5C12 20.5 3.5 15 3.5 8.9A4.4 4.4 0 0 1 12 7.2A4.4 4.4 0 0 1 20.5 8.9C20.5 15 12 20.5 12 20.5Z' }
+  ];
+
+  baseModules = [
+    { title: 'Venta en línea', desc: 'Tu catálogo y carrito listos para recibir pedidos a cualquier hora.', d: 'M3 9.5 4.7 4.5H19.3L21 9.5M4.5 9.5V19.5H19.5V9.5M3 9.5H21M9.5 19.5V14H14.5V19.5' },
+    { title: 'Control de inventario', desc: 'Stock que se actualiza con cada venta, con alertas de faltantes.', d: 'M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2' },
+    { title: 'Pagos en línea', desc: 'Cobra con tarjeta, transferencia o efectivo, con confirmación automática.', d: 'M2.5 6.5H21.5V17.5H2.5ZM2.5 10.5H21.5M6 14H10' },
+    { title: 'Dashboard', desc: 'Ventas, pedidos e inventario en una sola pantalla fácil de leer.', d: 'M3.5 3.5V20.5H20.5M7.5 16.5V13M12 16.5V9M16.5 16.5V6.5' }
+  ];
+
+  optionalModules = [
+    { title: 'CRM de ventas', desc: 'Tus clientes, sus precios y su crédito ordenados para vender más.', d: 'M9 11A3 3 0 1 0 9 5A3 3 0 0 0 9 11ZM3 20C3 16.7 5.7 15 9 15S15 16.7 15 20M16 5A3 3 0 0 1 16 11M18 20C18 18 17.2 16.5 16 15.5' },
+    { title: 'Automatizaciones', desc: 'Avisos, seguimientos y tareas por regla que corren solas.', d: 'M12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9ZM19.4 13A7.5 7.5 0 0 0 19.4 11L21.3 9.6L19.4 6.3L17.2 7.2A7 7 0 0 0 15.5 6.2L15 3.9H11L10.6 6.2A7 7 0 0 0 8.9 7.2L6.7 6.3L4.8 9.6L6.7 11A7.5 7.5 0 0 0 6.7 13L4.8 14.4L6.7 17.7L8.9 16.8A7 7 0 0 0 10.6 17.8L11 20.1H15L15.5 17.8A7 7 0 0 0 17.2 16.8L19.4 17.7L21.3 14.4Z' },
+    { title: 'Agentes de IA', desc: 'Atienden y cotizan por WhatsApp con tu catálogo y tu inventario.', d: 'M4 5h16v11H8l-4 3.5zM8 9h8M8 12h5' },
+    { title: 'Agenda y citas', desc: 'Reservas y recordatorios automáticos para consultorios y servicios.', d: 'M4 5.5H20V20H4ZM4 9.5H20M8.5 3.5V7.5M15.5 3.5V7.5' },
+    { title: 'Facturación CFDI', desc: 'Genera comprobantes y facturas sin salir de la plataforma.', d: 'M6.5 2.5H14.5L18 6V21.5H6.5ZM14.5 2.5V6H18M9.5 11H15M9.5 14.5H15M9.5 17.5H13' }
+  ];
+
+  // Flujo "En proceso" (cf-flow / cf-arrow reutilizado): configuración por módulos.
+  moduleFlow = [
+    { num: '1', title: 'Elegimos tu vertical', desc: 'Refaccionaria, ferretería, mayorista o clínica: definimos tu giro.', d: 'M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9ZM12 4V6.5M12 17.5V20M4 12H6.5M17.5 12H20' },
+    { num: '2', title: 'Activamos módulos base', desc: 'Venta, inventario, pagos y dashboard quedan listos para operar.', d: 'M12 2.8 3.5 6.7 12 10.6 20.5 6.7ZM3.5 6.7V16.3L12 20.2V10.6M20.5 6.7V16.3L12 20.2' },
+    { num: '3', title: 'Sumamos opcionales', desc: 'CRM, automatizaciones, agenda, facturación o agentes de IA, según tu giro.', d: 'M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 8V16M8 12H16' },
+    { num: '4', title: 'Operando', desc: 'Tu producto queda armado a tu medida y listo para vender.', d: 'M12 3A9 9 0 1 0 12 21A9 9 0 0 0 12 3ZM8 12l3 3 5-6' }
+  ];
+
   trust = [
     { title: 'Soporte en México', desc: 'Atención local que entiende tu negocio.', d: 'M4.5 13V11A7.5 7.5 0 0 1 19.5 11V13M4.5 13H7V18.5H4.5ZM19.5 13H17V18.5H19.5ZM17 18.5V19.5A2 2 0 0 1 15 21.5H12' },
     { title: 'Capacitación incluida', desc: 'Tu equipo aprende a usar todo sin enredos.', d: 'M12 3 21 7.5 12 12 3 7.5ZM7 9.7V14.5C7 14.5 9 16.5 12 16.5C15 16.5 17 14.5 17 14.5V9.7M21 7.5V13' },
@@ -376,16 +644,17 @@ class Component extends DCLogic {
     { title: 'Mejora continua', desc: 'La plataforma crece junto con tu negocio.', d: 'M3 17 9 11 13 15 21 7M21 7H15M21 7V13' }
   ];
 
-  semaforo(p) { return p.stock === 0 ? { bg: '#FBE7E7', fg: '#D24545' } : (p.stock < p.min ? { bg: '#FBEEDD', fg: '#B9682B' } : { bg: '#E4F6EC', fg: '#1FA85A' }); }
+  // Semáforo solo con tokens ok/warn (sin estado de peligro fuera de paleta).
+  semaforo(p) { return p.stock < p.min ? { bg: 'var(--amber-bg)', fg: 'var(--amber)' } : { bg: 'var(--green-bg)', fg: 'var(--green)' }; }
 
   renderVals() {
     const v = this.state.panelTab;
     const tab = (key, label) => ({
       label,
       onClick: () => this.setState({ panelTab: key }),
-      bg: v === key ? '#FFFFFF' : 'transparent',
-      color: v === key ? '#042C53' : 'rgba(4,44,83,0.6)',
-      shadow: v === key ? '0 1px 2px rgba(4,44,83,0.1)' : 'none'
+      bg: v === key ? 'var(--white)' : 'transparent',
+      color: v === key ? 'var(--ink)' : 'var(--ink-55)',
+      shadow: v === key ? '0 1px 2px rgba(var(--dark),0.12)' : 'none'
     });
     return {
       setReveal: (el) => this.setupReveal(el),
@@ -397,21 +666,25 @@ class Component extends DCLogic {
       invAlerta: this.invItems.filter((p) => p.stock < p.min).length + ' por agotarse',
       invRows: this.invItems.map((p) => {
         const c = this.semaforo(p);
-        const pct = p.stock === 0 ? 6 : Math.max(6, Math.min(100, Math.round((p.stock / (p.min * 4)) * 100)));
+        const pct = Math.max(6, Math.min(100, Math.round((p.stock / (p.min * 4)) * 100)));
         return { name: p.name, stock: p.stock, min: p.min, wh: p.wh, bg: c.bg, fg: c.fg, pct: pct + '%' };
       }),
 
       chatMsgs: this.chatScript.slice(0, this.state.chatN).map((m) => ({
         text: m.text,
         align: m.who === 'user' ? 'flex-start' : 'flex-end',
-        bg: m.who === 'user' ? '#F0F5FB' : '#378ADD',
-        color: m.who === 'user' ? '#042C53' : '#FFFFFF',
+        bg: m.who === 'user' ? 'var(--surface)' : 'var(--blue)',
+        color: m.who === 'user' ? 'var(--ink)' : 'var(--white)',
         radius: m.who === 'user' ? '13px 13px 13px 4px' : '13px 13px 4px 13px'
       })),
       typing: this.state.typing,
 
-      trust: this.trust,
-      flowSteps: this.steps.map((s, i) => ({ num: s.num, title: s.title, time: s.time, desc: s.desc, d: s.d, bullets: s.bullets, showArrow: i < this.steps.length - 1 }))
+      stages: this.stages,
+      verticals: this.verticals,
+      baseModules: this.baseModules,
+      optionalModules: this.optionalModules,
+      moduleFlow: this.moduleFlow.map((s, i) => ({ num: s.num, title: s.title, desc: s.desc, d: s.d, showArrow: i < this.moduleFlow.length - 1 })),
+      trust: this.trust
     };
   }
 }
