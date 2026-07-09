@@ -444,12 +444,13 @@ input,button,textarea{font-family:inherit;}
             <div style="background:var(--surface);border-radius:var(--r-md);padding:14px;"><div style="display:flex;align-items:flex-end;gap:7px;height:64px;"><span class="bar" style="height:40%;"></span><span class="bar" style="height:66%;"></span><span class="bar" style="height:54%;"></span><span class="bar bar--hl" style="height:88%;"></span><span class="bar bar--hl" style="height:72%;"></span><span class="bar bar--hl" style="height:100%;"></span></div></div>
           </div>
         </sc-if>
-        <sc-if value="{{ isTabBusqueda }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ isTabAgenda }}" hint-placeholder-val="{{ false }}">
           <div class="tab-pop demo-card">
-            <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--blue-100);border-radius:var(--r-full);padding:9px 14px;margin-bottom:14px;color:var(--ink-45);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4A7 7 0 1 0 11 18A7 7 0 0 0 11 4ZM20.5 20.5 16 16"></path></svg><span style="font-size:var(--fs-small);color:var(--ink-55);">balata cerámica Versa 2019</span></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div class="sk-product"><div style="aspect-ratio:4/3;background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--blue-300);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span class="sk-bar" style="height:7px;width:70%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:40%;"></span></div></div>
-              <div class="sk-product"><div style="aspect-ratio:4/3;background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--blue-300);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4A8 8 0 1 0 12 20A8 8 0 0 0 12 4ZM12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z"></path></svg></div><div style="padding:9px;"><span class="sk-bar" style="height:7px;width:62%;margin-bottom:5px;"></span><span class="sk-bar sk-bar--accent" style="height:9px;width:46%;"></span></div></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:var(--fs-caption);font-weight:600;color:var(--ink-55);margin:0;">Agenda de hoy</p><span class="pill pill--ok">3 citas</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+              <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">9:00</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Consulta · Ana Ruiz</span><span class="sk-bar" style="height:6px;width:52%;margin-top:6px;display:block;"></span></div><span class="pill pill--ok">Confirmada</span></div>
+              <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">11:30</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Sesión · Luis Ortega</span><span class="sk-bar" style="height:6px;width:42%;margin-top:6px;display:block;"></span></div><span class="pill pill--warn">Recordar</span></div>
+              <div style="display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--r-md);padding:10px 12px;"><span style="flex:none;width:44px;font-size:var(--fs-caption);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;">16:00</span><div style="flex:1;min-width:0;"><span style="display:block;font-size:var(--fs-caption);font-weight:600;color:var(--ink);">Valoración · Grupo Vega</span><span class="sk-bar" style="height:6px;width:58%;margin-top:6px;display:block;"></span></div><span class="pill pill--ok">Confirmada</span></div>
             </div>
           </div>
         </sc-if>
@@ -972,7 +973,7 @@ class Component extends DCLogic {
     { key: 'venta', label: 'Venta en línea', title: 'Una tienda lista para vender 24/7', desc: 'Tu catálogo completo, carrito y checkout en una tienda que recibe pedidos a cualquier hora, desde cualquier teléfono.', bullets: ['Catálogo con fotos y variantes', 'Carrito y checkout simples', 'Pedidos organizados en un solo lugar'] },
     { key: 'inventario', label: 'Inventario', title: 'Inventario al día, sin sorpresas', desc: 'Cada venta actualiza tu inventario y te avisa antes de quedarte sin producto. Sabes qué reordenar y cuándo.', bullets: ['Stock en tiempo real', 'Alertas de productos por agotarse', 'Reportes de lo que más se mueve'] },
     { key: 'dashboard', label: 'Dashboard', title: 'Tu negocio en una sola pantalla', desc: 'Ventas, pedidos e inventario en un panel claro y fácil de leer, pensado para alguien poco técnico.', bullets: ['Ventas del día y de la semana', 'Pedidos pendientes por surtir', 'Ticket promedio y tendencias'] },
-    { key: 'busqueda', label: 'Búsqueda con imágenes', title: 'Encuentran la pieza correcta por foto', desc: 'Tus clientes buscan por foto, marca o código y encuentran exactamente lo que necesitan. Menos errores, menos devoluciones.', bullets: ['Búsqueda por imagen', 'Filtros por marca y compatibilidad', 'Resultados con foto y precio'] }
+    { key: 'agenda', label: 'Agenda y citas', title: 'Una agenda que se llena sola', desc: 'Tus clientes reservan y confirman en línea, y el agente manda recordatorios. Ideal para consultorios, clínicas y servicios con cita.', bullets: ['Reserva y confirmación en línea', 'Recordatorios automáticos', 'Menos ausencias y menos huecos'] }
   ];
 
   aiItems = [
@@ -1111,7 +1112,7 @@ class Component extends DCLogic {
         border: i === at ? '#0C447C' : '#D8E6F5'
       })),
       tabTitle: tab.title, tabDesc: tab.desc, tabBullets: tab.bullets,
-      isTabVenta: at === 0, isTabInventario: at === 1, isTabDashboard: at === 2, isTabBusqueda: at === 3,
+      isTabVenta: at === 0, isTabInventario: at === 1, isTabDashboard: at === 2, isTabAgenda: at === 3,
 
       tQuote: t.quote, tName: t.name, tRole: t.role, tIni: t.ini,
       dots: this.testimonials.map((_, i) => ({ go: () => this.setState({ slide: i }), bg: i === this.state.slide ? '#378ADD' : '#C9DCF0' })),
