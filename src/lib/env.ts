@@ -12,6 +12,7 @@ export const env = {
   stripeSecret: () => req('APLIKA_STRIPE_SECRET_KEY'),
   stripeWebhookSecret: () => req('APLIKA_STRIPE_WEBHOOK_SECRET'),
   pacProvider: () => process.env.APLIKA_PAC_PROVIDER || 'stub',
+  emailProvider: () => process.env.APLIKA_EMAIL_PROVIDER || 'mock',
   rootDomain: () => process.env.APLIKA_ROOT_DOMAIN || 'aplika.shop',
   appUrl: () => process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   leadsNotifyEmail: () => process.env.APLIKA_LEADS_NOTIFY_EMAIL || 'hola@aplika.ai',

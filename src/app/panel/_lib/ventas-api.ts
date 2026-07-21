@@ -1,0 +1,60 @@
+/**
+ * Cliente fetch de las piezas COMPARTIDAS de Ventas (F1). PROPIEDAD DEL
+ * ORQUESTADOR. Cubre solo los endpoints transversales que consumen los 4
+ * submódulos y los componentes compartidos (picker de variantes, catálogos de
+ * pago, document flow). Cada submódulo agrega su propio cliente para sus
+ * endpoints (`_lib/<submodulo>.ts`); esto NO los reemplaza.
+ */
+
+import type { VariantPick, VentasCatalogs, DocumentFlow, DocType } from '@/lib/types/erp-ventas';
+import { ApiError } from '@/app/panel/_lib/api';
+
+const BASE = '/api/erp';
+
+async function req<T>(path: string, init?: RequestInit): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(init?.headers ?? {}),
+      },
+      ...init,
+    });
+  } catch {
+    throw new ApiError(0, 'No se pudo contactar el servidor');
+  }
+  if (!res.ok) {
+    let msg = `Error ${res.status}`;
+    try {
+      const b = (await res.json()) as { error?: string };
+      if (b?.error) msg = b.error;
+    } catch {
+      /* sin JSON */
+    }
+    throw new ApiError(res.status, msg);
+  }
+  if (res.status === 204) return undefined as T;
+  return (await res.json()) as T;
+}
+
+/** Busca variantes con precio ya resuelto para el cliente (fuente del picker). */
+export function searchVariants(search: string, customerId?: string | null) {
+  const q = new URLSearchParams();
+  if (search) q.set('search', search);
+  if (customerId) q.set('customerId', customerId);
+  return req<{ data: VariantPick[] }>(`/variants?${q.toString()}`).then((r) => r.data);
+}
+
+/** Catálogos SAT de pago (forma/método) para los selects de facturación. */
+export function getVentasCatalogs() {
+  return req<VentasCatalogs>('/catalogs/ventas');
+}
+
+/** Cadena documental navegable en ambos sentidos de un documento. */
+export function getDocumentFlow(type: DocType, id: string) {
+  const q = new URLSearchParams({ type, id });
+  return req<DocumentFlow>(`/document-flow?${q.toString()}`);
+}

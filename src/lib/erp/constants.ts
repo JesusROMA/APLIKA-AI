@@ -4,6 +4,8 @@ import type { ModuleKey, PermAction } from '@/lib/types/erp';
 export const ALL_MODULE_KEYS: ModuleKey[] = [
   'dashboard',
   'ordenes',
+  'cotizaciones',
+  'remisiones',
   'inventario',
   'facturacion',
   'pagos',

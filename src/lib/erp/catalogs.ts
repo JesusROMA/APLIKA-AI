@@ -1,7 +1,13 @@
 import type { SatCatalogEntry } from '@/lib/types/erp';
+import type { VentasCatalogs } from '@/lib/types/erp-ventas';
 import type { ErpClient } from '@/lib/erp/db';
 
-export type SatCatalogTable = 'sat_regimen_fiscal' | 'sat_uso_cfdi' | 'sat_clave_unidad';
+export type SatCatalogTable =
+  | 'sat_regimen_fiscal'
+  | 'sat_uso_cfdi'
+  | 'sat_clave_unidad'
+  | 'sat_forma_pago'
+  | 'sat_metodo_pago';
 
 /** Lee un catálogo SAT global (lectura authenticated). Ordenado por code. */
 export async function fetchSatCatalog(
@@ -21,4 +27,13 @@ export async function fetchCatalogCodes(
   const { data, error } = await supabase.from(table).select('code');
   if (error) throw error;
   return new Set((data ?? []).map((r) => r.code));
+}
+
+/** Catálogos SAT de pago (forma/método) para los selects de facturación (F1). */
+export async function fetchVentasCatalogs(supabase: ErpClient): Promise<VentasCatalogs> {
+  const [formaPago, metodoPago] = await Promise.all([
+    fetchSatCatalog(supabase, 'sat_forma_pago'),
+    fetchSatCatalog(supabase, 'sat_metodo_pago'),
+  ]);
+  return { formaPago, metodoPago };
 }

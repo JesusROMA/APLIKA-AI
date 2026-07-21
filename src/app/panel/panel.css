@@ -771,3 +771,242 @@
     display: none;
   }
 }
+
+/* ===== F1 · Ventas (componentes compartidos) =====
+ * Clases nuevas para CustomerPicker / ProductPicker / DocLinesEditor /
+ * DocumentFlow. No modifican clases existentes; reutilizan los tokens :root.
+ */
+
+/* ---- Pickers (cliente / producto) con dropdown ---- */
+.f1-picker {
+  position: relative;
+}
+.f1-picker-box {
+  position: relative;
+}
+.f1-picker-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: 288px;
+  overflow-y: auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+}
+.f1-picker-empty {
+  padding: 10px var(--sp-2);
+  font-size: var(--fs-small);
+  color: var(--ink-55);
+  text-align: center;
+}
+.f1-picker-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-size: var(--fs-body-sm);
+}
+.f1-picker-option.is-active {
+  background: var(--blue-100);
+}
+.f1-picker-option-main {
+  color: var(--ink);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.f1-picker-option-side {
+  flex: 0 0 auto;
+  color: var(--ink-55);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.f1-picker-option--publico {
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+}
+.f1-picker-sku {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--navy);
+}
+.f1-picker-dot {
+  color: var(--ink-45);
+}
+.f1-picker-stock {
+  color: var(--ink-45);
+}
+/* Chip de cliente seleccionado */
+.f1-picker-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.f1-picker-chip-name {
+  font-weight: 700;
+  color: var(--ink);
+}
+.f1-picker-chip-sub {
+  font-size: var(--fs-caption);
+  color: var(--ink-55);
+  font-variant-numeric: tabular-nums;
+}
+.f1-picker-chip .pbtn {
+  margin-left: auto;
+}
+
+/* ---- Editor de partidas ---- */
+.f1-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.f1-lines-tools {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.f1-lines-tools-picker {
+  flex: 1 1 320px;
+  min-width: 240px;
+}
+.f1-lines-empty {
+  text-align: center;
+  color: var(--ink-55);
+  padding: var(--sp-4) var(--sp-2);
+}
+.f1-line-sku {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--fs-caption);
+  color: var(--navy);
+}
+.f1-line-name {
+  display: block;
+  color: var(--ink);
+}
+.f1-line-name-input {
+  min-width: 180px;
+  padding: 6px var(--sp-1);
+}
+.f1-num {
+  width: 100px;
+  max-width: 100%;
+  padding: 6px var(--sp-1);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.f1-line-importe {
+  font-weight: 700;
+}
+.f1-line-del {
+  padding: 6px 10px;
+}
+.f1-totals {
+  margin-left: auto;
+  width: min(340px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.f1-totals-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 4px 0;
+  font-size: var(--fs-body-sm);
+}
+.f1-totals-row--input {
+  padding-bottom: var(--sp-1);
+  margin-bottom: 4px;
+  border-bottom: 1px dashed var(--line);
+}
+.f1-totals-label {
+  color: var(--ink-66);
+  font-weight: 600;
+}
+.f1-totals-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.f1-totals-row--grand {
+  margin-top: 4px;
+  padding-top: var(--sp-1);
+  border-top: 2px solid var(--border);
+  font-size: var(--fs-card-title);
+}
+.f1-totals-row--grand .f1-totals-label,
+.f1-totals-row--grand .f1-totals-value {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+/* ---- Cadena documental ---- */
+.f1-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.f1-flow-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.f1-flow-node {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 8px var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--white);
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: var(--shadow-1);
+  transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+a.f1-flow-node:hover {
+  border-color: var(--blue-300);
+  transform: translateY(-1px);
+}
+.f1-flow-node--current {
+  border-color: var(--blue);
+  background: var(--blue-100);
+  box-shadow: none;
+}
+.f1-flow-folio {
+  font-weight: 700;
+  font-size: var(--fs-body-sm);
+}
+.f1-flow-total {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-66);
+  font-size: var(--fs-small);
+}
+.f1-flow-arrow {
+  color: var(--ink-45);
+  font-size: var(--fs-card-title);
+}
+.f1-flow-empty {
+  font-size: var(--fs-small);
+  color: var(--ink-55);
+  margin: 0;
+}

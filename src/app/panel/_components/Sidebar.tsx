@@ -21,6 +21,18 @@ const MAESTROS_LINKS = [
   { href: '/panel/listas-precios', label: 'Listas de precios', d: CORE_ICONS.listas },
 ];
 
+/**
+ * Ruta del panel React por key de módulo. Desacopla la nav de React del
+ * `route_prefix` de la BD (que usa el panel dc antiguo). Los módulos sin página
+ * propia todavía (F2+) caen a `/panel/{key}`.
+ */
+const MODULE_ROUTES: Record<string, string> = {
+  ordenes: '/panel/pedidos',
+  cotizaciones: '/panel/cotizaciones',
+  remisiones: '/panel/remisiones',
+  facturacion: '/panel/facturacion',
+};
+
 function isActive(pathname: string, href: string): boolean {
   if (href === '/panel') return pathname === '/panel';
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -65,7 +77,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       {operative.length > 0 && (
         <>
           <div className="panel-nav-group-label">Módulos</div>
-          {operative.map((m) => navLink(m.routePrefix || `/panel/${m.key}`, m.icon, m.label))}
+          {operative.map((m) =>
+            navLink(MODULE_ROUTES[m.key] ?? `/panel/${m.key}`, m.icon, m.label),
+          )}
         </>
       )}
     </nav>

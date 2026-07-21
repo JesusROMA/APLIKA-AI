@@ -1,0 +1,316 @@
+/* ============================================================================
+ * print.css — Estilos de las vistas imprimibles de Ventas (F1, compartido).
+ *
+ * Dos capas: (1) pantalla → preview centrado tipo hoja; (2) @media print →
+ * márgenes de página, oculta .no-print y fuerza colores exactos. Colores
+ * neutros + --brand para acentos. Sin librerías ni fuentes remotas (usa la
+ * fuente del brand kit / system-ui). PROPIEDAD: orquestador (pieza compartida F1).
+ * ==========================================================================*/
+
+.print-root {
+  /* Token de marca para las vistas de impresión (portado del brand kit navy).
+     Los documentos pueden sobreescribirlo con --doc-brand vía brandColor. */
+  --brand: #0c447c;
+  --print-ink: #101828;
+  --print-muted: #667085;
+  --print-line: #e4e7ec;
+  --print-bg: #f2f4f7;
+
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: var(--print-ink);
+  background: var(--print-bg);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.print-root *,
+.print-root *::before,
+.print-root *::after {
+  box-sizing: border-box;
+}
+
+/* ============================= Preview (pantalla) ======================= */
+
+.print-doc {
+  --doc-brand: var(--brand);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px 64px;
+}
+.print-actions {
+  width: min(800px, 100%);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.print-sheet {
+  width: min(800px, 100%);
+  background: #ffffff;
+  color: var(--print-ink);
+  padding: 40px 44px;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px -18px rgba(16, 24, 40, 0.35);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ================================ Cabecera ============================== */
+
+.print-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid var(--doc-brand);
+}
+.print-logo {
+  max-height: 56px;
+  max-width: 220px;
+  object-fit: contain;
+}
+.print-org-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--doc-brand);
+}
+.print-head-doc {
+  text-align: right;
+}
+.print-doc-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--doc-brand);
+  text-transform: uppercase;
+}
+.print-doc-folio {
+  margin: 2px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.print-doc-status {
+  margin: 4px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--print-muted);
+}
+.print-doc-date {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--print-muted);
+}
+
+/* ================================ Partes =============================== */
+
+.print-parties {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+}
+.print-party {
+  min-width: 220px;
+}
+.print-party-title {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--print-muted);
+}
+.print-party-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+.print-party-line {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--print-ink);
+}
+.print-meta {
+  margin: 0;
+  min-width: 220px;
+}
+.print-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+  font-size: 12px;
+}
+.print-meta-row dt {
+  color: var(--print-muted);
+  font-weight: 600;
+}
+.print-meta-row dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* ================================ Tabla =============================== */
+
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.print-table thead th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  background: var(--doc-brand);
+}
+.print-table tbody td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--print-line);
+  vertical-align: top;
+}
+.print-c-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.print-c-sku {
+  white-space: nowrap;
+  color: var(--print-muted);
+}
+.print-c-desc {
+  width: 100%;
+}
+
+/* ================================ Totales ============================== */
+
+.print-totals {
+  margin-left: auto;
+  margin-top: 16px;
+  width: min(320px, 100%);
+}
+.print-total-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 5px 0;
+  font-size: 13px;
+}
+.print-total-row span:first-child {
+  color: var(--print-muted);
+  font-weight: 600;
+}
+.print-total-row span:last-child {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.print-total-row--grand {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 2px solid var(--doc-brand);
+  font-size: 16px;
+}
+.print-total-row--grand span:first-child {
+  color: var(--doc-brand);
+  font-weight: 800;
+}
+.print-total-row--grand span:last-child {
+  color: var(--doc-brand);
+  font-weight: 800;
+}
+
+/* ============================== Notas / pie ============================ */
+
+.print-notes {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid var(--print-line);
+}
+.print-notes-title {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--print-muted);
+}
+.print-notes-body {
+  margin: 0;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.print-foot {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid var(--print-line);
+  font-size: 11px;
+  color: var(--print-muted);
+  text-align: center;
+}
+
+/* ================================ Botón =============================== */
+
+.print-actions .pbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.print-actions .pbtn--primary {
+  background: var(--doc-brand);
+  color: #ffffff;
+}
+
+/* ================================ Impresión =========================== */
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  .print-root {
+    background: #ffffff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-doc {
+    padding: 0;
+    display: block;
+  }
+  .print-sheet {
+    width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+  }
+  /* Fuerza colores exactos de acentos/cabeceras en impresión. */
+  .print-root,
+  .print-sheet,
+  .print-table thead th,
+  .print-total-row--grand,
+  .print-head {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-table tbody tr {
+    break-inside: avoid;
+  }
+}

@@ -10,6 +10,8 @@
 export type ModuleKey =
   | 'dashboard'
   | 'ordenes'
+  | 'cotizaciones' // F1 Ventas
+  | 'remisiones' // F1 Ventas
   | 'inventario'
   | 'facturacion'
   | 'pagos'

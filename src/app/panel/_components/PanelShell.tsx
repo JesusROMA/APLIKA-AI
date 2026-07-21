@@ -26,6 +26,10 @@ const TITLES: Record<string, string> = {
   '/panel/productos': 'Productos',
   '/panel/almacenes': 'Almacenes',
   '/panel/listas-precios': 'Listas de precios',
+  '/panel/cotizaciones': 'Cotizaciones',
+  '/panel/pedidos': 'Pedidos',
+  '/panel/remisiones': 'Remisiones',
+  '/panel/facturacion': 'Facturación',
 };
 
 function titleFromPath(pathname: string): string {
@@ -114,6 +118,16 @@ export function PanelShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
+    );
+  }
+
+  // Rutas de impresión (/panel/**/print): sin sidebar ni topbar, solo el lienzo
+  // imprimible, pero conservando el contexto de sesión (branding del tenant).
+  if (pathname?.endsWith('/print')) {
+    return (
+      <SessionProvider value={session}>
+        <div className="print-root">{children}</div>
+      </SessionProvider>
     );
   }
 

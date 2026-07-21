@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './panel.css';
+import './print/print.css';
 import { PanelShell } from './_components/PanelShell';
 
 /**
