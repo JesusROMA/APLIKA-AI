@@ -1,13 +1,18 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { ApiError } from '@/lib/api';
+import { readImpersonationCookie } from '@/lib/erp/impersonation';
 
-export type UserRole = 'super_admin' | 'tenant_admin' | 'tenant_user' | 'customer';
+// F0: agrega 'tenant_viewer' (Solo-lectura) para calzar con el enum user_role
+// de la BD. Sigue siendo un superconjunto seguro para el código existente.
+export type UserRole = 'super_admin' | 'tenant_admin' | 'tenant_user' | 'tenant_viewer' | 'customer';
 
 export interface SessionContext {
   userId: string;
   email: string | null;
   role: UserRole;
   organizationId: string | null;
+  /** Org impersonada (C1.3): presente solo si un super_admin tiene cookie activa. */
+  impersonatedOrgId?: string | null;
 }
 
 /** Devuelve el contexto de sesión o null si no hay usuario autenticado. */
@@ -41,11 +46,19 @@ export async function requireUser(): Promise<SessionContext> {
   return ctx;
 }
 
-/** Exige un tenant (tenant_admin/tenant_user). Lanza 403 si no aplica. */
+/**
+ * Exige un tenant. Lanza 403 si no aplica. Un super_admin YA NO es rechazado si
+ * tiene una cookie de impersonación válida (C1.3): en ese caso opera el tenant
+ * impersonado y `organizationId` = la org impersonada.
+ */
 export async function requireTenant(): Promise<SessionContext & { organizationId: string }> {
   const ctx = await requireUser();
   if (ctx.role === 'super_admin') {
-    // super_admin debe operar un tenant vía impersonación explícita.
+    const impersonatedOrgId = readImpersonationCookie();
+    if (impersonatedOrgId) {
+      return { ...ctx, organizationId: impersonatedOrgId, impersonatedOrgId };
+    }
+    // Sin impersonación explícita, super_admin no opera un tenant.
     throw new ApiError(403, 'super_admin debe impersonar un tenant para esta acción');
   }
   if (!ctx.organizationId) throw new ApiError(403, 'Usuario sin organización');
