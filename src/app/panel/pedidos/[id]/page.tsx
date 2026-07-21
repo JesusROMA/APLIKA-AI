@@ -11,6 +11,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { DocLineInput, OrderStatus } from '@/lib/types/erp-ventas';
 import {
   getOrder,
@@ -19,6 +20,7 @@ import {
   ORDER_STATUS_LABEL,
   orderStatusTone,
 } from '../../_lib/pedidos';
+import { convertOrderToInvoice } from '../../_lib/ventas-api';
 import { listWarehouses } from '../../_lib/api';
 import { useAsyncData } from '../../_lib/hooks';
 import { useCan } from '../../_components/session';
@@ -52,6 +54,7 @@ const CARD: React.CSSProperties = {
 
 export default function PedidoDetallePage({ params }: { params: { id: string } }) {
   const can = useCan();
+  const router = useRouter();
   const { data: order, loading, error, reload } = useAsyncData(() => getOrder(params.id));
   const warehouses = useAsyncData(() => listWarehouses({ pageSize: 100 }));
 
@@ -83,6 +86,8 @@ export default function PedidoDetallePage({ params }: { params: { id: string } }
   const canCancel = can('ordenes', 'cancelar');
   const next = NEXT[order.status];
   const showCancel = !['cancelada', 'enviado'].includes(order.status);
+  const canInvoice =
+    order.status !== 'cancelada' && Boolean(order.customerId) && can('facturacion', 'crear');
   const showDeliver = DELIVERABLE.includes(order.status) && canEdit;
   const pendingLines = order.items.filter((it) => it.id && (it.qty - (it.qtyDelivered ?? 0)) > 0);
 
@@ -172,6 +177,21 @@ export default function PedidoDetallePage({ params }: { params: { id: string } }
               onClick={() => runAction(() => transitionOrder(params.id, next.status))}
             >
               {next.label}
+            </button>
+          )}
+          {canInvoice && (
+            <button
+              type="button"
+              className="pbtn pbtn--primary"
+              disabled={busy}
+              onClick={() =>
+                runAction(async () => {
+                  const { invoiceId } = await convertOrderToInvoice(params.id);
+                  router.push(`/panel/facturacion/${invoiceId}`);
+                })
+              }
+            >
+              Convertir a factura
             </button>
           )}
           {showCancel && canCancel && (

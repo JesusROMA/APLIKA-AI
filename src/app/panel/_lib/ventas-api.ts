@@ -58,3 +58,24 @@ export function getDocumentFlow(type: DocType, id: string) {
   const q = new URLSearchParams({ type, id });
   return req<DocumentFlow>(`/document-flow?${q.toString()}`);
 }
+
+// ===== Conversiones entre documentos (enlace cotización→pedido→factura) =====
+
+/** Convierte una cotización aceptada en pedido (liga por document_links). */
+export function convertQuoteToOrder(quoteId: string) {
+  return req<{ ok: boolean; orderId: string }>('/conversions/quote-to-order', {
+    method: 'POST',
+    body: JSON.stringify({ quoteId }),
+  });
+}
+
+/** Convierte un pedido en factura (borrador). */
+export function convertOrderToInvoice(
+  orderId: string,
+  opts?: { metodoPago?: 'PUE' | 'PPD'; formaPago?: string; serie?: string },
+) {
+  return req<{ ok: boolean; invoiceId: string }>('/conversions/order-to-invoice', {
+    method: 'POST',
+    body: JSON.stringify({ orderId, ...opts }),
+  });
+}

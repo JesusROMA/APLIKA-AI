@@ -18,6 +18,7 @@ import {
   rechazarQuote,
   duplicarQuote,
 } from '../../_lib/cotizaciones';
+import { convertQuoteToOrder } from '../../_lib/ventas-api';
 import { useAsyncData } from '../../_lib/hooks';
 import { useCan } from '../../_components/session';
 import { DocLinesEditor } from '../../_components/DocLinesEditor';
@@ -55,6 +56,8 @@ export default function CotizacionDetallePage() {
   // 'vencida' es display de una 'enviada' expirada: el server la sigue tratando
   // como enviada, así que las acciones de "enviada" siguen disponibles.
   const isEnviada = quote.status === 'enviada' || quote.status === 'vencida';
+  const isAceptada = quote.status === 'aceptada';
+  const canCreateOrder = can('ordenes', 'crear');
 
   const runAction = async (key: string, fn: () => Promise<unknown>) => {
     setBusy(key);
@@ -165,6 +168,21 @@ export default function CotizacionDetallePage() {
               disabled={Boolean(busy)}
             >
               {busy === 'rechazar' ? 'Rechazando…' : 'Rechazar'}
+            </button>
+          )}
+          {isAceptada && canCreateOrder && (
+            <button
+              type="button"
+              className="pbtn pbtn--primary"
+              onClick={() =>
+                runAction('convertir', async () => {
+                  const { orderId } = await convertQuoteToOrder(id);
+                  router.push(`/panel/pedidos/${orderId}`);
+                })
+              }
+              disabled={Boolean(busy)}
+            >
+              {busy === 'convertir' ? 'Generando pedido…' : 'Convertir a pedido'}
             </button>
           )}
           {canCreate && (
