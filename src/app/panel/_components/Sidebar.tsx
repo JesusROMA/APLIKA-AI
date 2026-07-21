@@ -29,7 +29,6 @@ const MAESTROS_LINKS = [
 const MODULE_ROUTES: Record<string, string> = {
   ordenes: '/panel/pedidos',
   cotizaciones: '/panel/cotizaciones',
-  remisiones: '/panel/remisiones',
   facturacion: '/panel/facturacion',
 };
 

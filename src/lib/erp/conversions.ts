@@ -161,74 +161,6 @@ export async function convertOrderToInvoice(
 }
 
 // ============================================================================
-// Remisión → Factura (individual)
-// ============================================================================
-export async function convertSalesNoteToInvoice(
-  supabase: ErpClient,
-  session: SessionInfo,
-  salesNoteId: string,
-  opts: InvoiceOpts = {},
-): Promise<string> {
-  const note = await loadCobrada(supabase, salesNoteId);
-  if (!note.customer_id) {
-    throw new ApiError(422, 'La remisión es a Público en general; asigna un cliente con RFC para facturar');
-  }
-
-  const invoiceId = await createInvoice(supabase, session, {
-    customerId: note.customer_id,
-    items: note.items,
-    totals: { subtotal: note.subtotal, tax: note.tax, total: note.total },
-    ...opts,
-  });
-
-  await bindSalesNotes(supabase, session, invoiceId, [salesNoteId]);
-  await linkDocs(supabase, { type: 'sales_note', id: salesNoteId }, { type: 'invoice', id: invoiceId });
-  return invoiceId;
-}
-
-// ============================================================================
-// Remisiones → Factura GLOBAL (N remisiones cobradas → 1 factura)
-// ============================================================================
-export async function convertSalesNotesToGlobalInvoice(
-  supabase: ErpClient,
-  session: SessionInfo,
-  salesNoteIds: string[],
-  opts: InvoiceOpts = {},
-): Promise<string> {
-  const ids = [...new Set(salesNoteIds)];
-  if (ids.length < 2) throw new ApiError(422, 'La factura global requiere al menos 2 remisiones');
-
-  const notes = await Promise.all(ids.map((id) => loadCobrada(supabase, id)));
-
-  // Mismo cliente con RFC en todas.
-  const customerId = notes[0].customer_id;
-  if (!customerId) {
-    throw new ApiError(422, 'Las remisiones a Público en general no se pueden facturar globalmente');
-  }
-  if (notes.some((n) => n.customer_id !== customerId)) {
-    throw new ApiError(422, 'Todas las remisiones deben ser del mismo cliente');
-  }
-
-  const items = notes.flatMap((n) => n.items);
-  const totals = notes.reduce<Totals>(
-    (acc, n) => ({
-      subtotal: round2(acc.subtotal + n.subtotal),
-      tax: round2(acc.tax + n.tax),
-      total: round2(acc.total + n.total),
-    }),
-    { subtotal: 0, tax: 0, total: 0 },
-  );
-
-  const invoiceId = await createInvoice(supabase, session, { customerId, items, totals, ...opts });
-
-  await bindSalesNotes(supabase, session, invoiceId, ids);
-  for (const id of ids) {
-    await linkDocs(supabase, { type: 'sales_note', id }, { type: 'invoice', id: invoiceId });
-  }
-  return invoiceId;
-}
-
-// ============================================================================
 // Helpers
 // ============================================================================
 
@@ -307,71 +239,6 @@ async function createInvoice(
   return invoice.id;
 }
 
-/** Carga una remisión 'cobrada' con sus partidas normalizadas. */
-async function loadCobrada(supabase: ErpClient, salesNoteId: string) {
-  const { data: note, error } = await supabase
-    .from('sales_notes')
-    .select('*, sales_note_items(*)')
-    .eq('id', salesNoteId)
-    .maybeSingle();
-  if (error) throw error;
-  if (!note) throw new ApiError(404, `Remisión ${salesNoteId} no encontrada`);
-  if (note.status !== 'cobrada') {
-    throw new ApiError(409, `La remisión ${note.folio} debe estar cobrada para facturar`);
-  }
-  const items = ((note.sales_note_items ?? []) as SrcItem[]).map((it) => ({
-    product_variant_id: it.product_variant_id,
-    sku: it.sku,
-    name: it.name,
-    qty: Number(it.qty),
-    unit_price: Number(it.unit_price),
-    discount_pct: Number(it.discount_pct),
-    iva_rate: Number(it.iva_rate),
-    line_total: Number(it.line_total),
-  }));
-  return {
-    id: note.id,
-    folio: note.folio,
-    customer_id: note.customer_id,
-    subtotal: Number(note.subtotal),
-    tax: Number(note.tax),
-    total: Number(note.total),
-    items,
-  };
-}
-
-/**
- * Marca remisiones como 'facturada' y crea el candado `invoice_sales_notes`
- * (unique(sales_note_id) ⇒ una remisión no puede ir en 2 facturas). Si ya está
- * en otra factura, el unique violation se traduce a 409 limpio.
- */
-async function bindSalesNotes(
-  supabase: ErpClient,
-  session: SessionInfo,
-  invoiceId: string,
-  salesNoteIds: string[],
-): Promise<void> {
-  const orgId = session.organization!.id;
-  const { error: linkErr } = await supabase.from('invoice_sales_notes').insert(
-    salesNoteIds.map((sid) => ({
-      organization_id: orgId,
-      invoice_id: invoiceId,
-      sales_note_id: sid,
-    })),
-  );
-  if (linkErr) {
-    if (linkErr.code === '23505') {
-      throw new ApiError(409, 'Alguna remisión ya está incluida en otra factura');
-    }
-    throw new ApiError(400, linkErr.message);
-  }
-  const { error: updErr } = await supabase
-    .from('sales_notes')
-    .update({ status: 'facturada' })
-    .in('id', salesNoteIds);
-  if (updErr) throw new ApiError(400, updErr.message);
-}
-
 /** 409 si ya existe un `document_link` src→dstType. */
 async function assertNotLinked(
   supabase: ErpClient,
@@ -406,8 +273,4 @@ async function ivaRateByVariant(
     map.set(v.id, Number(prod?.iva_rate ?? 0.16));
   }
   return map;
-}
-
-function round2(n: number): number {
-  return Math.round((n + Number.EPSILON) * 100) / 100;
 }

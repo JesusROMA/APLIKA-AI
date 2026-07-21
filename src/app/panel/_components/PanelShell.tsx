@@ -28,7 +28,6 @@ const TITLES: Record<string, string> = {
   '/panel/listas-precios': 'Listas de precios',
   '/panel/cotizaciones': 'Cotizaciones',
   '/panel/pedidos': 'Pedidos',
-  '/panel/remisiones': 'Remisiones',
   '/panel/facturacion': 'Facturación',
 };
 

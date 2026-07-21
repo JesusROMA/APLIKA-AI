@@ -730,46 +730,6 @@ export type Database = {
           },
         ]
       }
-      invoice_sales_notes: {
-        Row: {
-          invoice_id: string
-          organization_id: string
-          sales_note_id: string
-        }
-        Insert: {
-          invoice_id: string
-          organization_id: string
-          sales_note_id: string
-        }
-        Update: {
-          invoice_id?: string
-          organization_id?: string
-          sales_note_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "invoice_sales_notes_invoice_id_fkey"
-            columns: ["invoice_id"]
-            isOneToOne: false
-            referencedRelation: "invoices"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "invoice_sales_notes_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "invoice_sales_notes_sales_note_id_fkey"
-            columns: ["sales_note_id"]
-            isOneToOne: true
-            referencedRelation: "sales_notes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       invoices: {
         Row: {
           cancelada_at: string | null
@@ -1785,162 +1745,6 @@ export type Database = {
           },
         ]
       }
-      sales_note_items: {
-        Row: {
-          discount_pct: number
-          id: string
-          iva_rate: number
-          line_total: number
-          name: string
-          organization_id: string
-          product_variant_id: string | null
-          qty: number
-          sales_note_id: string
-          sku: string | null
-          unit_price: number
-        }
-        Insert: {
-          discount_pct?: number
-          id?: string
-          iva_rate?: number
-          line_total: number
-          name: string
-          organization_id: string
-          product_variant_id?: string | null
-          qty: number
-          sales_note_id: string
-          sku?: string | null
-          unit_price: number
-        }
-        Update: {
-          discount_pct?: number
-          id?: string
-          iva_rate?: number
-          line_total?: number
-          name?: string
-          organization_id?: string
-          product_variant_id?: string | null
-          qty?: number
-          sales_note_id?: string
-          sku?: string | null
-          unit_price?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sales_note_items_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sales_note_items_product_variant_id_fkey"
-            columns: ["product_variant_id"]
-            isOneToOne: false
-            referencedRelation: "product_variants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sales_note_items_sales_note_id_fkey"
-            columns: ["sales_note_id"]
-            isOneToOne: false
-            referencedRelation: "sales_notes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      sales_notes: {
-        Row: {
-          cancel_reason: string | null
-          canceled_at: string | null
-          created_at: string
-          created_by: string | null
-          custom: Json
-          customer_id: string | null
-          folio: string
-          id: string
-          organization_id: string
-          paid_at: string | null
-          payment_method: string | null
-          status: Database["public"]["Enums"]["sales_note_status"]
-          stock_applied: boolean
-          subtotal: number
-          tax: number
-          total: number
-          updated_at: string
-          warehouse_id: string | null
-        }
-        Insert: {
-          cancel_reason?: string | null
-          canceled_at?: string | null
-          created_at?: string
-          created_by?: string | null
-          custom?: Json
-          customer_id?: string | null
-          folio: string
-          id?: string
-          organization_id: string
-          paid_at?: string | null
-          payment_method?: string | null
-          status?: Database["public"]["Enums"]["sales_note_status"]
-          stock_applied?: boolean
-          subtotal?: number
-          tax?: number
-          total?: number
-          updated_at?: string
-          warehouse_id?: string | null
-        }
-        Update: {
-          cancel_reason?: string | null
-          canceled_at?: string | null
-          created_at?: string
-          created_by?: string | null
-          custom?: Json
-          customer_id?: string | null
-          folio?: string
-          id?: string
-          organization_id?: string
-          paid_at?: string | null
-          payment_method?: string | null
-          status?: Database["public"]["Enums"]["sales_note_status"]
-          stock_applied?: boolean
-          subtotal?: number
-          tax?: number
-          total?: number
-          updated_at?: string
-          warehouse_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sales_notes_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sales_notes_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sales_notes_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sales_notes_warehouse_id_fkey"
-            columns: ["warehouse_id"]
-            isOneToOne: false
-            referencedRelation: "warehouses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       sat_clave_unidad: {
         Row: {
           code: string
@@ -2206,35 +2010,6 @@ export type Database = {
         Args: { p_org: string; p_vertical: string }
         Returns: undefined
       }
-      cobrar_remision: {
-        Args: { p_id: string; p_method: string }
-        Returns: {
-          cancel_reason: string | null
-          canceled_at: string | null
-          created_at: string
-          created_by: string | null
-          custom: Json
-          customer_id: string | null
-          folio: string
-          id: string
-          organization_id: string
-          paid_at: string | null
-          payment_method: string | null
-          status: Database["public"]["Enums"]["sales_note_status"]
-          stock_applied: boolean
-          subtotal: number
-          tax: number
-          total: number
-          updated_at: string
-          warehouse_id: string | null
-        }
-        SetofOptions: {
-          from: "*"
-          to: "sales_notes"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
       current_org_id: { Args: never; Returns: string }
       has_perm: {
         Args: { p_action: string; p_module: string }
@@ -2379,7 +2154,6 @@ export type Database = {
         | "aceptada"
         | "rechazada"
         | "vencida"
-      sales_note_status: "abierta" | "cobrada" | "facturada" | "cancelada"
       subscription_status: "activa" | "prueba" | "morosa" | "cancelada"
       user_role:
         | "super_admin"
@@ -3086,7 +2860,6 @@ export const Constants = {
       org_status: ["activo", "prueba", "suspendido"],
       payment_status: ["pendiente", "exitoso", "fallido", "reembolsado"],
       quote_status: ["borrador", "enviada", "aceptada", "rechazada", "vencida"],
-      sales_note_status: ["abierta", "cobrada", "facturada", "cancelada"],
       subscription_status: ["activa", "prueba", "morosa", "cancelada"],
       user_role: [
         "super_admin",

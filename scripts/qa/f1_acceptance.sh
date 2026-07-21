@@ -131,45 +131,6 @@ rollback;
 SQL
 
 # ===========================================================================
-# D — cobrar_remision aplica inventario UNA sola vez (candado stock_applied)
-#     Fixtures propios (producto/variante/almacen/inventario) como admin.
-# ===========================================================================
-check "D   cobrar_remision decrementa stock una vez; 2do cobro falla" <<SQL
-begin;
-do \$\$
-declare v_prod uuid; v_var uuid; v_wh uuid; v_note uuid; s0 int; s1 int; s2 int;
-begin
-  perform set_config('request.jwt.claims', json_build_object('sub','d0000000-0000-0000-0000-0000000000b1','role','authenticated')::text, true);
-  perform set_config('role','authenticated', true);
-  insert into products (organization_id, name) values ('$REF','QA Prod F1') returning id into v_prod;
-  insert into product_variants (organization_id, product_id, sku, name, base_price_mxn)
-    values ('$REF', v_prod, 'QA-F1-SKU', 'QA Var', 100) returning id into v_var;
-  insert into warehouses (organization_id, name, is_default) values ('$REF','QA WH', true) returning id into v_wh;
-  insert into inventory (organization_id, product_variant_id, warehouse_id, stock)
-    values ('$REF', v_var, v_wh, 50);
-  insert into sales_notes (organization_id, folio, warehouse_id, total, subtotal, tax)
-    values ('$REF', public.next_serie_folio('$REF','sales_note',null), v_wh, 116, 100, 16) returning id into v_note;
-  insert into sales_note_items (organization_id, sales_note_id, product_variant_id, name, qty, unit_price, line_total)
-    values ('$REF', v_note, v_var, 'QA Var', 10, 100, 1000);
-  select stock into s0 from inventory where product_variant_id=v_var and warehouse_id=v_wh;
-  perform public.cobrar_remision(v_note, 'efectivo');
-  select stock into s1 from inventory where product_variant_id=v_var and warehouse_id=v_wh;
-  begin
-    perform public.cobrar_remision(v_note, 'efectivo');  -- 2do cobro debe fallar (no abierta)
-    raise notice 'RESULT=FAIL 2do cobro no fallo';
-  exception when others then
-    select stock into s2 from inventory where product_variant_id=v_var and warehouse_id=v_wh;
-    if s0=50 and s1=40 and s2=40 then
-      raise notice 'RESULT=PASS stock 50->40 y 2do cobro bloqueado (sin doble decremento)';
-    else
-      raise notice 'RESULT=FAIL stock s0=% s1=% s2=%', s0, s1, s2;
-    end if;
-  end;
-end \$\$;
-rollback;
-SQL
-
-# ===========================================================================
 # E — registrar_pago_factura: pago parcial -> pago_parcial; salda -> pagada
 # ===========================================================================
 check "E   Pagos factura: parcial=>pago_parcial, saldo0=>pagada" <<SQL
@@ -196,33 +157,9 @@ rollback;
 SQL
 
 # ===========================================================================
-# F — Candado factura global: una remision no puede ir en 2 facturas (23505)
+# F — record_delivery: entrega parcial => surtido_parcial; total => surtido
 # ===========================================================================
-check "F   invoice_sales_notes candado (remision en 2 facturas -> 23505)" <<SQL
-begin;
-do \$\$
-declare v_note uuid; v_i1 uuid; v_i2 uuid;
-begin
-  perform set_config('request.jwt.claims', json_build_object('sub','d0000000-0000-0000-0000-0000000000b1','role','authenticated')::text, true);
-  perform set_config('role','authenticated', true);
-  insert into sales_notes (organization_id, folio, total) values ('$REF', public.next_serie_folio('$REF','sales_note',null), 100) returning id into v_note;
-  insert into invoices (organization_id, serie, folio, total) values ('$REF','A',(public.next_folio('$REF','invoice'))::text,100) returning id into v_i1;
-  insert into invoices (organization_id, serie, folio, total) values ('$REF','A',(public.next_folio('$REF','invoice'))::text,100) returning id into v_i2;
-  insert into invoice_sales_notes (organization_id, invoice_id, sales_note_id) values ('$REF', v_i1, v_note);
-  begin
-    insert into invoice_sales_notes (organization_id, invoice_id, sales_note_id) values ('$REF', v_i2, v_note);
-    raise notice 'RESULT=FAIL remision aceptada en 2 facturas';
-  exception when sqlstate '23505' then raise notice 'RESULT=PASS candado OK (remision en 1 sola factura)';
-                when others then raise notice 'RESULT=FAIL error inesperado % %', sqlstate, sqlerrm;
-  end;
-end \$\$;
-rollback;
-SQL
-
-# ===========================================================================
-# G — record_delivery: entrega parcial => surtido_parcial; total => surtido
-# ===========================================================================
-check "G   Entregas: parcial=>surtido_parcial, completa=>surtido" <<SQL
+check "F   Entregas: parcial=>surtido_parcial, completa=>surtido" <<SQL
 begin;
 do \$\$
 declare v_ord uuid; it1 uuid; it2 uuid; st1 text; st2 text;

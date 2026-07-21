@@ -9,10 +9,9 @@ import type { SatCatalogEntry } from '@/lib/types/erp';
 
 // ===== Enums espejo de la BD =====
 
-export type DocType = 'quote' | 'order' | 'sales_note' | 'invoice';
+export type DocType = 'quote' | 'order' | 'invoice';
 
 export type QuoteStatus = 'borrador' | 'enviada' | 'aceptada' | 'rechazada' | 'vencida';
-export type SalesNoteStatus = 'abierta' | 'cobrada' | 'facturada' | 'cancelada';
 /** order_status con el estado lateral 'surtido_parcial' de F1. */
 export type OrderStatus =
   | 'borrador'
@@ -132,38 +131,6 @@ export interface DeliveryLineInput {
   qty: number;
 }
 
-// ===== Remisiones =====
-
-export interface SalesNoteRow {
-  id: string;
-  folio: string;
-  customerId: string | null;
-  customerName: string | null; // null ⇒ "Público en general"
-  warehouseId: string | null;
-  status: SalesNoteStatus;
-  subtotal: number;
-  tax: number;
-  total: number;
-  paymentMethod: string | null;
-  paidAt: string | null;
-  createdAt: string;
-}
-
-export interface SalesNoteDetail extends SalesNoteRow {
-  stockApplied: boolean;
-  cancelReason: string | null;
-  custom: Record<string, unknown>;
-  items: DocLine[];
-  links?: DocumentLink[];
-}
-
-/** Fila del corte del día (remisiones cobradas agregadas por forma de pago). */
-export interface CorteDelDiaRow {
-  paymentMethod: string;
-  count: number;
-  total: number;
-}
-
 // ===== Facturas + pagos (CxC / REP) =====
 
 export interface InvoiceRow {
@@ -198,8 +165,6 @@ export interface InvoiceDetail extends InvoiceRow {
   usoCfdi: string | null;
   items: DocLine[];
   payments: InvoicePaymentRow[];
-  /** Remisiones que consolida (factura global). */
-  salesNoteIds?: string[];
   links?: DocumentLink[];
 }
 

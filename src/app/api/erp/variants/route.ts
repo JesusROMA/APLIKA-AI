@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/erp/variants?search=&customerId= — búsqueda de variantes con precio
  * YA RESUELTO para el cliente (lista o base) + stock agregado. Fuente compartida
- * del DocLinesEditor (cotizaciones/pedidos/remisiones/facturación). Lee maestros
+ * del DocLinesEditor (cotizaciones/pedidos/facturación). Lee maestros
  * (módulo core) ⇒ requiere sesión de tenant con 'maestros/ver'. RLS aplica sola.
  */
 export const GET = handle(async (req) => {

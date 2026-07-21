@@ -24,8 +24,7 @@ export const LIST_SELECT =
 export const DETAIL_SELECT = `id, serie, folio, uuid, customer_id, status, metodo_pago, forma_pago, subtotal, tax, total, saldo, regimen, uso_cfdi, created_at, timbrada_at,
   customers ( name ),
   invoice_items ( id, product_variant_id, sku, name, qty, unit_price, discount_pct, iva_rate, line_total ),
-  invoice_payments ( id, fecha, monto, forma_pago, is_rep, uuid_rep ),
-  invoice_sales_notes ( sales_note_id )`;
+  invoice_payments ( id, fecha, monto, forma_pago, is_rep, uuid_rep )`;
 
 // ===== Formas crudas (cast tras la query, patrón del codebase) =====
 
@@ -73,7 +72,6 @@ export interface RawInvoiceDetail extends RawInvoiceHeader {
   uso_cfdi: string | null;
   invoice_items: RawInvoiceItem[];
   invoice_payments: RawInvoicePayment[];
-  invoice_sales_notes: { sales_note_id: string }[];
 }
 
 // ===== Mappers =====
@@ -133,7 +131,6 @@ export function toInvoiceDetail(r: RawInvoiceDetail): InvoiceDetail {
     usoCfdi: r.uso_cfdi,
     items: (r.invoice_items ?? []).map(toDocLine),
     payments,
-    salesNoteIds: (r.invoice_sales_notes ?? []).map((s) => s.sales_note_id),
   };
 }
 

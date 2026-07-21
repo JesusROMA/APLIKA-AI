@@ -6,7 +6,7 @@ import type { DocType } from '@/lib/types/erp-ventas';
 
 export const dynamic = 'force-dynamic';
 
-const TYPES: DocType[] = ['quote', 'order', 'sales_note', 'invoice'];
+const TYPES: DocType[] = ['quote', 'order', 'invoice'];
 
 /**
  * GET /api/erp/document-flow?type=&id= — cadena documental navegable en ambos

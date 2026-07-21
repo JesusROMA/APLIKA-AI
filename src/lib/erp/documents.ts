@@ -154,9 +154,8 @@ async function fetchNodeHeader(
   };
   switch (node.type) {
     case 'quote':
-    case 'order':
-    case 'sales_note': {
-      const table = node.type === 'quote' ? 'quotes' : node.type === 'order' ? 'orders' : 'sales_notes';
+    case 'order': {
+      const table = node.type === 'quote' ? 'quotes' : 'orders';
       const { data } = await supabase
         .from(table)
         .select('folio, status, total')

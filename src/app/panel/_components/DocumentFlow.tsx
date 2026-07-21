@@ -24,7 +24,6 @@ const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' 
 const ROUTE: Record<DocType, string> = {
   quote: '/panel/cotizaciones',
   order: '/panel/pedidos',
-  sales_note: '/panel/remisiones',
   invoice: '/panel/facturacion',
 };
 
