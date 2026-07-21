@@ -481,6 +481,7 @@ export type Database = {
       }
       inventory: {
         Row: {
+          avg_cost: number
           id: string
           max_stock: number
           min_stock: number
@@ -491,6 +492,7 @@ export type Database = {
           warehouse_id: string
         }
         Insert: {
+          avg_cost?: number
           id?: string
           max_stock?: number
           min_stock?: number
@@ -501,6 +503,7 @@ export type Database = {
           warehouse_id: string
         }
         Update: {
+          avg_cost?: number
           id?: string
           max_stock?: number
           min_stock?: number
@@ -534,8 +537,117 @@ export type Database = {
           },
         ]
       }
+      inventory_count_items: {
+        Row: {
+          count_id: string
+          counted_qty: number | null
+          id: string
+          organization_id: string
+          product_variant_id: string
+          system_qty: number
+        }
+        Insert: {
+          count_id: string
+          counted_qty?: number | null
+          id?: string
+          organization_id: string
+          product_variant_id: string
+          system_qty?: number
+        }
+        Update: {
+          count_id?: string
+          counted_qty?: number | null
+          id?: string
+          organization_id?: string
+          product_variant_id?: string
+          system_qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_count_items_count_id_fkey"
+            columns: ["count_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_counts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_count_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_count_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_counts: {
+        Row: {
+          applied_at: string | null
+          created_at: string
+          created_by: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["inventory_count_status"]
+          warehouse_id: string
+        }
+        Insert: {
+          applied_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          folio: string
+          id?: string
+          notas?: string | null
+          organization_id: string
+          status?: Database["public"]["Enums"]["inventory_count_status"]
+          warehouse_id: string
+        }
+        Update: {
+          applied_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          folio?: string
+          id?: string
+          notas?: string | null
+          organization_id?: string
+          status?: Database["public"]["Enums"]["inventory_count_status"]
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_counts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_counts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_counts_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventory_movements: {
         Row: {
+          avg_cost_after: number | null
+          balance_after: number | null
           created_at: string
           created_by: string | null
           id: string
@@ -546,9 +658,12 @@ export type Database = {
           ref_id: string | null
           ref_type: string | null
           type: Database["public"]["Enums"]["movement_type"]
+          unit_cost: number | null
           warehouse_id: string
         }
         Insert: {
+          avg_cost_after?: number | null
+          balance_after?: number | null
           created_at?: string
           created_by?: string | null
           id?: string
@@ -559,9 +674,12 @@ export type Database = {
           ref_id?: string | null
           ref_type?: string | null
           type: Database["public"]["Enums"]["movement_type"]
+          unit_cost?: number | null
           warehouse_id: string
         }
         Update: {
+          avg_cost_after?: number | null
+          balance_after?: number | null
           created_at?: string
           created_by?: string | null
           id?: string
@@ -572,6 +690,7 @@ export type Database = {
           ref_id?: string | null
           ref_type?: string | null
           type?: Database["public"]["Enums"]["movement_type"]
+          unit_cost?: number | null
           warehouse_id?: string
         }
         Relationships: [
@@ -599,6 +718,126 @@ export type Database = {
           {
             foreignKeyName: "inventory_movements_warehouse_id_fkey"
             columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_transfer_items: {
+        Row: {
+          id: string
+          organization_id: string
+          product_variant_id: string
+          qty: number
+          transfer_id: string
+          unit_cost: number | null
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          product_variant_id: string
+          qty: number
+          transfer_id: string
+          unit_cost?: number | null
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          product_variant_id?: string
+          qty?: number
+          transfer_id?: string
+          unit_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_transfer_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transfer_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transfer_items_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_transfers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          folio: string
+          from_warehouse_id: string
+          id: string
+          notas: string | null
+          organization_id: string
+          received_at: string | null
+          shipped_at: string | null
+          status: Database["public"]["Enums"]["inventory_transfer_status"]
+          to_warehouse_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          folio: string
+          from_warehouse_id: string
+          id?: string
+          notas?: string | null
+          organization_id: string
+          received_at?: string | null
+          shipped_at?: string | null
+          status?: Database["public"]["Enums"]["inventory_transfer_status"]
+          to_warehouse_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          folio?: string
+          from_warehouse_id?: string
+          id?: string
+          notas?: string | null
+          organization_id?: string
+          received_at?: string | null
+          shipped_at?: string | null
+          status?: Database["public"]["Enums"]["inventory_transfer_status"]
+          to_warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_transfers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transfers_from_warehouse_id_fkey"
+            columns: ["from_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transfers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transfers_to_warehouse_id_fkey"
+            columns: ["to_warehouse_id"]
             isOneToOne: false
             referencedRelation: "warehouses"
             referencedColumns: ["id"]
@@ -1986,10 +2225,12 @@ export type Database = {
           p_ref_id?: string
           p_ref_type?: string
           p_type?: Database["public"]["Enums"]["movement_type"]
+          p_unit_cost?: number
           p_variant: string
           p_warehouse: string
         }
         Returns: {
+          avg_cost: number
           id: string
           max_stock: number
           min_stock: number
@@ -2006,11 +2247,75 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      aplicar_conteo: {
+        Args: { p_count: string }
+        Returns: {
+          applied_at: string | null
+          created_at: string
+          created_by: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["inventory_count_status"]
+          warehouse_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "inventory_counts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       assign_default_modules: {
         Args: { p_org: string; p_vertical: string }
         Returns: undefined
       }
+      cancelar_traspaso: {
+        Args: { p_motivo: string; p_transfer: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          folio: string
+          from_warehouse_id: string
+          id: string
+          notas: string | null
+          organization_id: string
+          received_at: string | null
+          shipped_at: string | null
+          status: Database["public"]["Enums"]["inventory_transfer_status"]
+          to_warehouse_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "inventory_transfers"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_org_id: { Args: never; Returns: string }
+      enviar_traspaso: {
+        Args: { p_transfer: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          folio: string
+          from_warehouse_id: string
+          id: string
+          notas: string | null
+          organization_id: string
+          received_at: string | null
+          shipped_at: string | null
+          status: Database["public"]["Enums"]["inventory_transfer_status"]
+          to_warehouse_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "inventory_transfers"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_perm: {
         Args: { p_action: string; p_module: string }
         Returns: boolean
@@ -2030,6 +2335,28 @@ export type Database = {
         Returns: string
       }
       org_has_module: { Args: { p_module: string }; Returns: boolean }
+      recibir_traspaso: {
+        Args: { p_transfer: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          folio: string
+          from_warehouse_id: string
+          id: string
+          notas: string | null
+          organization_id: string
+          received_at: string | null
+          shipped_at: string | null
+          status: Database["public"]["Enums"]["inventory_transfer_status"]
+          to_warehouse_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "inventory_transfers"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       record_delivery: {
         Args: { p_lines: Json; p_order_id: string }
         Returns: {
@@ -2129,6 +2456,16 @@ export type Database = {
     Enums: {
       ai_role: "user" | "agent"
       appointment_status: "agendada" | "confirmada" | "completada" | "cancelada"
+      inventory_count_status:
+        | "borrador"
+        | "en_conteo"
+        | "aplicado"
+        | "cancelada"
+      inventory_transfer_status:
+        | "borrador"
+        | "en_transito"
+        | "recibido"
+        | "cancelada"
       invoice_status:
         | "borrador"
         | "timbrada"
@@ -2838,6 +3175,18 @@ export const Constants = {
     Enums: {
       ai_role: ["user", "agent"],
       appointment_status: ["agendada", "confirmada", "completada", "cancelada"],
+      inventory_count_status: [
+        "borrador",
+        "en_conteo",
+        "aplicado",
+        "cancelada",
+      ],
+      inventory_transfer_status: [
+        "borrador",
+        "en_transito",
+        "recibido",
+        "cancelada",
+      ],
       invoice_status: [
         "borrador",
         "timbrada",
