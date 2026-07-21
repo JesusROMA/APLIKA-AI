@@ -9,7 +9,7 @@ const Body = z.object({
   password: z.string().min(1, 'Escribe tu contraseña'),
 });
 
-const clientRedirect = '/dc/Panel Cliente.dc.html';
+const clientRedirect = '/panel'; // panel ERP nuevo (React); reemplaza al panel dc
 const adminRedirect = '/dc/Panel Super-admin.dc.html';
 
 /**
