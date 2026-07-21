@@ -406,6 +406,44 @@ export type Database = {
           },
         ]
       }
+      document_links: {
+        Row: {
+          created_at: string
+          dst_id: string
+          dst_type: string
+          id: string
+          organization_id: string
+          src_id: string
+          src_type: string
+        }
+        Insert: {
+          created_at?: string
+          dst_id: string
+          dst_type: string
+          id?: string
+          organization_id: string
+          src_id: string
+          src_type: string
+        }
+        Update: {
+          created_at?: string
+          dst_id?: string
+          dst_type?: string
+          id?: string
+          organization_id?: string
+          src_id?: string
+          src_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_links_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incidents: {
         Row: {
           created_at: string
@@ -567,23 +605,192 @@ export type Database = {
           },
         ]
       }
+      invoice_items: {
+        Row: {
+          discount_pct: number
+          id: string
+          invoice_id: string
+          iva_rate: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id: string | null
+          qty: number
+          sku: string | null
+          unit_price: number
+        }
+        Insert: {
+          discount_pct?: number
+          id?: string
+          invoice_id: string
+          iva_rate?: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id?: string | null
+          qty: number
+          sku?: string | null
+          unit_price: number
+        }
+        Update: {
+          discount_pct?: number
+          id?: string
+          invoice_id?: string
+          iva_rate?: number
+          line_total?: number
+          name?: string
+          organization_id?: string
+          product_variant_id?: string | null
+          qty?: number
+          sku?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_payments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fecha: string
+          forma_pago: string
+          id: string
+          invoice_id: string
+          is_rep: boolean
+          monto: number
+          organization_id: string
+          uuid_rep: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fecha?: string
+          forma_pago: string
+          id?: string
+          invoice_id: string
+          is_rep?: boolean
+          monto: number
+          organization_id: string
+          uuid_rep?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fecha?: string
+          forma_pago?: string
+          id?: string
+          invoice_id?: string
+          is_rep?: boolean
+          monto?: number
+          organization_id?: string
+          uuid_rep?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_payments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_sales_notes: {
+        Row: {
+          invoice_id: string
+          organization_id: string
+          sales_note_id: string
+        }
+        Insert: {
+          invoice_id: string
+          organization_id: string
+          sales_note_id: string
+        }
+        Update: {
+          invoice_id?: string
+          organization_id?: string
+          sales_note_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_sales_notes_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_sales_notes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_sales_notes_sales_note_id_fkey"
+            columns: ["sales_note_id"]
+            isOneToOne: true
+            referencedRelation: "sales_notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           cancelada_at: string | null
           created_at: string
           customer_id: string | null
           folio: string
+          forma_pago: string | null
           id: string
+          metodo_pago: string | null
           order_id: string | null
           organization_id: string
           pdf_path: string | null
           regimen: string | null
+          saldo: number | null
           serie: string
           status: Database["public"]["Enums"]["invoice_status"]
           subtotal: number
           tax: number
           timbrada_at: string | null
           total: number
+          updated_at: string
           uso_cfdi: string | null
           uuid: string | null
           xml_path: string | null
@@ -593,17 +800,21 @@ export type Database = {
           created_at?: string
           customer_id?: string | null
           folio: string
+          forma_pago?: string | null
           id?: string
+          metodo_pago?: string | null
           order_id?: string | null
           organization_id: string
           pdf_path?: string | null
           regimen?: string | null
+          saldo?: number | null
           serie?: string
           status?: Database["public"]["Enums"]["invoice_status"]
           subtotal?: number
           tax?: number
           timbrada_at?: string | null
           total?: number
+          updated_at?: string
           uso_cfdi?: string | null
           uuid?: string | null
           xml_path?: string | null
@@ -613,17 +824,21 @@ export type Database = {
           created_at?: string
           customer_id?: string | null
           folio?: string
+          forma_pago?: string | null
           id?: string
+          metodo_pago?: string | null
           order_id?: string | null
           organization_id?: string
           pdf_path?: string | null
           regimen?: string | null
+          saldo?: number | null
           serie?: string
           status?: Database["public"]["Enums"]["invoice_status"]
           subtotal?: number
           tax?: number
           timbrada_at?: string | null
           total?: number
+          updated_at?: string
           uso_cfdi?: string | null
           uuid?: string | null
           xml_path?: string | null
@@ -742,6 +957,7 @@ export type Database = {
           organization_id: string
           product_variant_id: string | null
           qty: number
+          qty_delivered: number
           sku: string | null
           unit_price: number
         }
@@ -753,6 +969,7 @@ export type Database = {
           organization_id: string
           product_variant_id?: string | null
           qty?: number
+          qty_delivered?: number
           sku?: string | null
           unit_price?: number
         }
@@ -764,6 +981,7 @@ export type Database = {
           organization_id?: string
           product_variant_id?: string | null
           qty?: number
+          qty_delivered?: number
           sku?: string | null
           unit_price?: number
         }
@@ -896,6 +1114,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "org_counters_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_series: {
+        Row: {
+          doc_type: string
+          id: string
+          is_default: boolean
+          next_value: number
+          organization_id: string
+          prefix: string
+          serie: string
+        }
+        Insert: {
+          doc_type: string
+          id?: string
+          is_default?: boolean
+          next_value?: number
+          organization_id: string
+          prefix: string
+          serie?: string
+        }
+        Update: {
+          doc_type?: string
+          id?: string
+          is_default?: boolean
+          next_value?: number
+          organization_id?: string
+          prefix?: string
+          serie?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_series_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -1338,6 +1594,162 @@ export type Database = {
           },
         ]
       }
+      quote_items: {
+        Row: {
+          discount_pct: number
+          id: string
+          iva_rate: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id: string | null
+          qty: number
+          quote_id: string
+          sku: string | null
+          unit_price: number
+        }
+        Insert: {
+          discount_pct?: number
+          id?: string
+          iva_rate?: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id?: string | null
+          qty: number
+          quote_id: string
+          sku?: string | null
+          unit_price: number
+        }
+        Update: {
+          discount_pct?: number
+          id?: string
+          iva_rate?: number
+          line_total?: number
+          name?: string
+          organization_id?: string
+          product_variant_id?: string | null
+          qty?: number
+          quote_id?: string
+          sku?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          custom: Json
+          customer_id: string | null
+          descuento_global_pct: number
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          parent_quote_id: string | null
+          status: Database["public"]["Enums"]["quote_status"]
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+          valid_until: string | null
+          version: number
+          vigencia_dias: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          custom?: Json
+          customer_id?: string | null
+          descuento_global_pct?: number
+          folio: string
+          id?: string
+          notas?: string | null
+          organization_id: string
+          parent_quote_id?: string | null
+          status?: Database["public"]["Enums"]["quote_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+          valid_until?: string | null
+          version?: number
+          vigencia_dias?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          custom?: Json
+          customer_id?: string | null
+          descuento_global_pct?: number
+          folio?: string
+          id?: string
+          notas?: string | null
+          organization_id?: string
+          parent_quote_id?: string | null
+          status?: Database["public"]["Enums"]["quote_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+          valid_until?: string | null
+          version?: number
+          vigencia_dias?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_parent_quote_id_fkey"
+            columns: ["parent_quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           action: string
@@ -1373,7 +1785,193 @@ export type Database = {
           },
         ]
       }
+      sales_note_items: {
+        Row: {
+          discount_pct: number
+          id: string
+          iva_rate: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id: string | null
+          qty: number
+          sales_note_id: string
+          sku: string | null
+          unit_price: number
+        }
+        Insert: {
+          discount_pct?: number
+          id?: string
+          iva_rate?: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id?: string | null
+          qty: number
+          sales_note_id: string
+          sku?: string | null
+          unit_price: number
+        }
+        Update: {
+          discount_pct?: number
+          id?: string
+          iva_rate?: number
+          line_total?: number
+          name?: string
+          organization_id?: string
+          product_variant_id?: string | null
+          qty?: number
+          sales_note_id?: string
+          sku?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_note_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_note_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_note_items_sales_note_id_fkey"
+            columns: ["sales_note_id"]
+            isOneToOne: false
+            referencedRelation: "sales_notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_notes: {
+        Row: {
+          cancel_reason: string | null
+          canceled_at: string | null
+          created_at: string
+          created_by: string | null
+          custom: Json
+          customer_id: string | null
+          folio: string
+          id: string
+          organization_id: string
+          paid_at: string | null
+          payment_method: string | null
+          status: Database["public"]["Enums"]["sales_note_status"]
+          stock_applied: boolean
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+          warehouse_id: string | null
+        }
+        Insert: {
+          cancel_reason?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          custom?: Json
+          customer_id?: string | null
+          folio: string
+          id?: string
+          organization_id: string
+          paid_at?: string | null
+          payment_method?: string | null
+          status?: Database["public"]["Enums"]["sales_note_status"]
+          stock_applied?: boolean
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Update: {
+          cancel_reason?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          custom?: Json
+          customer_id?: string | null
+          folio?: string
+          id?: string
+          organization_id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          status?: Database["public"]["Enums"]["sales_note_status"]
+          stock_applied?: boolean
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_notes_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_notes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_notes_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sat_clave_unidad: {
+        Row: {
+          code: string
+          label: string
+        }
+        Insert: {
+          code: string
+          label: string
+        }
+        Update: {
+          code?: string
+          label?: string
+        }
+        Relationships: []
+      }
+      sat_forma_pago: {
+        Row: {
+          code: string
+          label: string
+        }
+        Insert: {
+          code: string
+          label: string
+        }
+        Update: {
+          code?: string
+          label?: string
+        }
+        Relationships: []
+      }
+      sat_metodo_pago: {
         Row: {
           code: string
           label: string
@@ -1608,13 +2206,120 @@ export type Database = {
         Args: { p_org: string; p_vertical: string }
         Returns: undefined
       }
+      cobrar_remision: {
+        Args: { p_id: string; p_method: string }
+        Returns: {
+          cancel_reason: string | null
+          canceled_at: string | null
+          created_at: string
+          created_by: string | null
+          custom: Json
+          customer_id: string | null
+          folio: string
+          id: string
+          organization_id: string
+          paid_at: string | null
+          payment_method: string | null
+          status: Database["public"]["Enums"]["sales_note_status"]
+          stock_applied: boolean
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+          warehouse_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "sales_notes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_org_id: { Args: never; Returns: string }
       has_perm: {
         Args: { p_action: string; p_module: string }
         Returns: boolean
       }
+      link_docs: {
+        Args: {
+          p_dst_id: string
+          p_dst_type: string
+          p_src_id: string
+          p_src_type: string
+        }
+        Returns: undefined
+      }
       next_folio: { Args: { p_entity: string; p_org: string }; Returns: number }
+      next_serie_folio: {
+        Args: { p_doc_type: string; p_org: string; p_serie?: string }
+        Returns: string
+      }
       org_has_module: { Args: { p_module: string }; Returns: boolean }
+      record_delivery: {
+        Args: { p_lines: Json; p_order_id: string }
+        Returns: {
+          channel: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          folio: string
+          id: string
+          items_count: number
+          notes: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["order_status"]
+          stock_applied: boolean
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+          warehouse_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      registrar_pago_factura: {
+        Args: {
+          p_forma: string
+          p_invoice: string
+          p_monto: number
+          p_uuid_rep?: string
+        }
+        Returns: {
+          cancelada_at: string | null
+          created_at: string
+          customer_id: string | null
+          folio: string
+          forma_pago: string | null
+          id: string
+          metodo_pago: string | null
+          order_id: string | null
+          organization_id: string
+          pdf_path: string | null
+          regimen: string | null
+          saldo: number | null
+          serie: string
+          status: Database["public"]["Enums"]["invoice_status"]
+          subtotal: number
+          tax: number
+          timbrada_at: string | null
+          total: number
+          updated_at: string
+          uso_cfdi: string | null
+          uuid: string | null
+          xml_path: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "invoices"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       transition_order: {
         Args: {
           p_new: Database["public"]["Enums"]["order_status"]
@@ -1649,7 +2354,12 @@ export type Database = {
     Enums: {
       ai_role: "user" | "agent"
       appointment_status: "agendada" | "confirmada" | "completada" | "cancelada"
-      invoice_status: "borrador" | "timbrada" | "cancelada"
+      invoice_status:
+        | "borrador"
+        | "timbrada"
+        | "cancelada"
+        | "pagada"
+        | "pago_parcial"
       lead_source: "contacto" | "agenda_demo"
       movement_type: "entrada" | "salida" | "ajuste"
       order_status:
@@ -1660,8 +2370,16 @@ export type Database = {
         | "facturado"
         | "enviado"
         | "cancelada"
+        | "surtido_parcial"
       org_status: "activo" | "prueba" | "suspendido"
       payment_status: "pendiente" | "exitoso" | "fallido" | "reembolsado"
+      quote_status:
+        | "borrador"
+        | "enviada"
+        | "aceptada"
+        | "rechazada"
+        | "vencida"
+      sales_note_status: "abierta" | "cobrada" | "facturada" | "cancelada"
       subscription_status: "activa" | "prueba" | "morosa" | "cancelada"
       user_role:
         | "super_admin"
@@ -2346,7 +3064,13 @@ export const Constants = {
     Enums: {
       ai_role: ["user", "agent"],
       appointment_status: ["agendada", "confirmada", "completada", "cancelada"],
-      invoice_status: ["borrador", "timbrada", "cancelada"],
+      invoice_status: [
+        "borrador",
+        "timbrada",
+        "cancelada",
+        "pagada",
+        "pago_parcial",
+      ],
       lead_source: ["contacto", "agenda_demo"],
       movement_type: ["entrada", "salida", "ajuste"],
       order_status: [
@@ -2357,9 +3081,12 @@ export const Constants = {
         "facturado",
         "enviado",
         "cancelada",
+        "surtido_parcial",
       ],
       org_status: ["activo", "prueba", "suspendido"],
       payment_status: ["pendiente", "exitoso", "fallido", "reembolsado"],
+      quote_status: ["borrador", "enviada", "aceptada", "rechazada", "vencida"],
+      sales_note_status: ["abierta", "cobrada", "facturada", "cancelada"],
       subscription_status: ["activa", "prueba", "morosa", "cancelada"],
       user_role: [
         "super_admin",
