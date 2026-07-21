@@ -9,10 +9,22 @@ select plan(7);
 create extension if not exists pgtap;
 
 -- --- Datos de prueba: 2 orgs, 2 usuarios, 1 producto en org A ----------------
-insert into plans (id, key, name) values ('00000000-0000-0000-0000-0000000000p1','t','Test') on conflict do nothing;
+-- (fix: el uuid original '...0000000000p1' no era hexadecimal válido y rompía
+--  todo el archivo antes de correr ningún assert)
+insert into plans (id, key, name) values ('00000000-0000-0000-0000-0000000000f1','t','Test') on conflict do nothing;
 insert into organizations (id, slug, name, allow_backorder) values
   ('aaaaaaaa-0000-0000-0000-000000000001','orga','Org A', false),
   ('bbbbbbbb-0000-0000-0000-000000000002','orgb','Org B', false);
+
+-- RLS 0010: el SELECT de inventory/inventory_movements exige el módulo
+-- 'inventario' activo en la org (org_has_module).
+insert into organization_modules (organization_id, module_id, enabled)
+select o.id, m.id, true
+  from organizations o
+ cross join modules m
+ where o.id in ('aaaaaaaa-0000-0000-0000-000000000001','bbbbbbbb-0000-0000-0000-000000000002')
+   and m.key in ('ordenes','inventario')
+on conflict do nothing;
 
 insert into auth.users (instance_id, id, aud, role, email)
 values
@@ -84,6 +96,7 @@ select is(
 select throws_ok(
   $$ select adjust_inventory('eeeeeeee-0000-0000-0000-000000000001','cccccccc-0000-0000-0000-000000000001',-100,'salida','venta','order',null) $$,
   'P0001',
+  NULL,
   'Bloquea salida sin stock cuando allow_backorder = false'
 );
 
