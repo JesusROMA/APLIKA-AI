@@ -300,6 +300,7 @@ export type Database = {
       }
       customers: {
         Row: {
+          active: boolean
           balance: number
           contact_name: string | null
           cp: string | null
@@ -322,6 +323,7 @@ export type Database = {
           uso_cfdi_code: string | null
         }
         Insert: {
+          active?: boolean
           balance?: number
           contact_name?: string | null
           cp?: string | null
@@ -344,6 +346,7 @@ export type Database = {
           uso_cfdi_code?: string | null
         }
         Update: {
+          active?: boolean
           balance?: number
           contact_name?: string | null
           cp?: string | null

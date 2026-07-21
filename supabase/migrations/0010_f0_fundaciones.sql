@@ -544,7 +544,8 @@ alter table customers
     references sat_regimen_fiscal(code) on update cascade,
   add column uso_cfdi_code text
     constraint customers_uso_cfdi_code_fkey
-    references sat_uso_cfdi(code) on update cascade;
+    references sat_uso_cfdi(code) on update cascade,
+  add column active boolean not null default true;      -- soft-inactivar (CustomerRow.active)
 
 -- Migración de datos existentes: extraer el código del formato
 -- "601 · Descripción" SOLO si existe en el catálogo; si no, queda NULL.
@@ -615,6 +616,7 @@ alter default privileges in schema public grant execute on functions to anon, au
 --
 -- -- 1) Maestros: constraints y columnas nuevas
 -- alter table customers drop constraint if exists customers_rfc_format;
+-- alter table customers drop column if exists active;
 -- alter table customers drop column if exists uso_cfdi_code;
 -- alter table customers drop column if exists regimen_code;
 -- alter table customers drop column if exists cp;

@@ -327,3 +327,115 @@ begin
     (org, conv,'agent','Con gusto. ¿Me confirmas tu nombre?'),
     (org, conv,'user','Gabriela Núñez');
 end $$;
+
+-- ============================================================================
+-- FASE 0 (F0) — EXTENSIONES QA-SEEDS
+-- Agregado por AGENTE-QA-SEEDS para demostrar RBAC por acción, precio-por-lista
+-- y maestros SAT completos. NO altera los datos demo previos (solo agrega /
+-- completa columnas nuevas de F0). Password de todos: Aplika2026!
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- F0.1 · Usuarios adicionales de refanorte (Operador y Solo-lectura)
+-- Calca EXACTO el patrón de alta de auth.users del seed (tokens en cadena vacía
+-- inline, como ana@vitalis.mx). El trigger handle_new_user crea el profile;
+-- luego asignamos organization_id + role explícitos.
+-- ---------------------------------------------------------------------------
+insert into auth.users (instance_id, id, aud, role, email, encrypted_password,
+  email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data,
+  confirmation_token, recovery_token, email_change, email_change_token_new,
+  email_change_token_current, phone_change, phone_change_token, reauthentication_token)
+values
+  ('00000000-0000-0000-0000-000000000000','d0000000-0000-0000-0000-0000000000b4',
+   'authenticated','authenticated','operador@refanorte.mx', crypt('Aplika2026!', gen_salt('bf')),
+   now(), now(), now(),
+   '{"provider":"email","providers":["email"]}', '{"full_name":"Operador Refanorte","role":"tenant_user"}',
+   '', '', '', '', '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000','d0000000-0000-0000-0000-0000000000b5',
+   'authenticated','authenticated','consulta@refanorte.mx', crypt('Aplika2026!', gen_salt('bf')),
+   now(), now(), now(),
+   '{"provider":"email","providers":["email"]}', '{"full_name":"Consulta Refanorte","role":"tenant_viewer"}',
+   '', '', '', '', '', '', '', '')
+on conflict (id) do nothing;
+
+update profiles set organization_id='11111111-1111-1111-1111-111111111111', role='tenant_user'
+ where id='d0000000-0000-0000-0000-0000000000b4';
+update profiles set organization_id='11111111-1111-1111-1111-111111111111', role='tenant_viewer'
+ where id='d0000000-0000-0000-0000-0000000000b5';
+
+-- ---------------------------------------------------------------------------
+-- F0.2 · PRICE_LIST_ITEMS de refanorte (Mayoreo A y Mayoreo B; B más barata)
+-- Se resuelven las variantes por SKU (sus ids son uuid_generate_v4() en el
+-- seed, así que NO se pueden hardcodear). Todos: B < A < base_price_mxn.
+-- ---------------------------------------------------------------------------
+insert into price_list_items (organization_id, price_list_id, product_variant_id, price_mxn)
+select '11111111-1111-1111-1111-111111111111', pl.list_id::uuid, v.id, pl.price
+from (values
+  -- Mayoreo A (lista por defecto)
+  ('33333333-0000-0000-0000-000000000001','BAL-1184', 400.00),
+  ('33333333-0000-0000-0000-000000000001','FIL-FX90', 180.00),
+  ('33333333-0000-0000-0000-000000000001','BUJ-NGK6',  90.00),
+  ('33333333-0000-0000-0000-000000000001','AMO-DEL1', 610.00),
+  ('33333333-0000-0000-0000-000000000001','ACE-2050', 940.00),
+  ('33333333-0000-0000-0000-000000000001','CLU-VAL', 2380.00),
+  -- Mayoreo B (más barata en toda la lista)
+  ('33333333-0000-0000-0000-000000000002','BAL-1184', 360.00),
+  ('33333333-0000-0000-0000-000000000002','FIL-FX90', 165.00),
+  ('33333333-0000-0000-0000-000000000002','BUJ-NGK6',  82.00),
+  ('33333333-0000-0000-0000-000000000002','AMO-DEL1', 560.00),
+  ('33333333-0000-0000-0000-000000000002','ACE-2050', 880.00),
+  ('33333333-0000-0000-0000-000000000002','CLU-VAL', 2200.00)
+) as pl(list_id, sku, price)
+join product_variants v
+  on v.organization_id = '11111111-1111-1111-1111-111111111111' and v.sku = pl.sku
+on conflict (price_list_id, product_variant_id) do nothing;
+
+-- Asigna Mayoreo B a 1-2 clientes (para probar precio-por-cliente de F1).
+-- (En el seed base ya venían en Mayoreo B; se re-afirma de forma idempotente.)
+update customers set price_list_id = '33333333-0000-0000-0000-000000000002'
+ where organization_id = '11111111-1111-1111-1111-111111111111'
+   and name in ('Ferretería La Herradura','Refaccionaria del Bajío');
+
+-- ---------------------------------------------------------------------------
+-- F0.3 · Completar datos SAT de clientes (regimen_code / uso_cfdi_code / cp)
+-- Extrae el código del formato "601 · Descripción" SOLO si existe en catálogo
+-- (misma lógica que la migración 0010, que corrió antes de sembrar clientes).
+-- ---------------------------------------------------------------------------
+update customers c
+   set regimen_code = split_part(c.regimen_fiscal, ' · ', 1)
+ where c.organization_id = '11111111-1111-1111-1111-111111111111'
+   and c.regimen_fiscal is not null
+   and exists (select 1 from sat_regimen_fiscal s
+                where s.code = split_part(c.regimen_fiscal, ' · ', 1));
+
+update customers c
+   set uso_cfdi_code = split_part(c.uso_cfdi, ' · ', 1)
+ where c.organization_id = '11111111-1111-1111-1111-111111111111'
+   and c.uso_cfdi is not null
+   and exists (select 1 from sat_uso_cfdi s
+                where s.code = split_part(c.uso_cfdi, ' · ', 1));
+
+-- CP del domicilio fiscal (CFDI 4.0) para algunos clientes (5 dígitos válidos).
+update customers set cp = '64000' where organization_id='11111111-1111-1111-1111-111111111111' and name='Autopartes Salinas';
+update customers set cp = '06000' where organization_id='11111111-1111-1111-1111-111111111111' and name='Distribuidora Centro';
+update customers set cp = '72000' where organization_id='11111111-1111-1111-1111-111111111111' and name='Ferretería La Herradura';
+update customers set cp = '42000' where organization_id='11111111-1111-1111-1111-111111111111' and name='Mayoreo Hidalgo';
+
+-- ---------------------------------------------------------------------------
+-- F0.4 · Producto de tipo 'servicio' + clave_prod_serv (maestro de productos)
+-- Una refaccionaria también vende mano de obra. clave_unidad 'E48' (Unidad de
+-- servicio) y clave_prod_serv SAT de reparación de vehículos.
+-- ---------------------------------------------------------------------------
+do $$
+declare
+  org uuid := '11111111-1111-1111-1111-111111111111';
+  pid uuid;
+begin
+  if not exists (select 1 from product_variants where organization_id = org and sku = 'SERV-INST') then
+    insert into products (organization_id, name, category, tipo, clave_prod_serv, iva_rate)
+      values (org, 'Servicio de instalación', 'Servicios', 'servicio', '78181500', 0.160)
+      returning id into pid;
+    insert into product_variants (organization_id, product_id, sku, name, base_price_mxn, clave_unidad)
+      values (org, pid, 'SERV-INST', 'Instalación / mano de obra', 350, 'E48');
+  end if;
+end $$;
