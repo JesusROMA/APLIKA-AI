@@ -1171,7 +1171,8 @@ class Component extends DCLogic {
         this.orgModules = r.modules;
         const agenda = r.vertical === 'servicios_agenda';
         const items = (r.modules || [])
-          .filter(m => m.route && m.route !== 'config')
+          // cotizaciones/remisiones (F1) viven en el panel React /panel, no en el dc.
+          .filter(m => m.route && m.route !== 'config' && m.route !== 'cotizaciones' && m.route !== 'remisiones')
           .map(m => ({
             key: m.route,
             label: agenda && m.key === 'crm' ? 'CRM Pacientes' : m.name,
@@ -1727,6 +1728,7 @@ class Component extends DCLogic {
     confirmado: { label: 'Confirmado', kind: 'info', i: 1 },
     pagado: { label: 'Pagado', kind: 'success', i: 2 },
     surtido: { label: 'Surtido', kind: 'info', i: 3 },
+    surtido_parcial: { label: 'Surtido parcial', kind: 'warn', i: 3 },
     facturado: { label: 'Facturado', kind: 'success', i: 4 },
     enviado: { label: 'Enviado', kind: 'info', i: 5 },
     cancelada: { label: 'Cancelada', kind: 'error', i: -1 }
@@ -1786,6 +1788,8 @@ class Component extends DCLogic {
   facStatusMeta = {
     borrador: { label: 'Borrador', kind: 'neutral' },
     timbrada: { label: 'Timbrada', kind: 'success' },
+    pagada: { label: 'Pagada', kind: 'success' },
+    pago_parcial: { label: 'Pago parcial', kind: 'warn' },
     cancelada: { label: 'Cancelada', kind: 'error' }
   };
   conceptos = [
