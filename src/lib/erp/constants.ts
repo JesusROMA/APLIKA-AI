@@ -5,6 +5,7 @@ export const ALL_MODULE_KEYS: ModuleKey[] = [
   'dashboard',
   'ordenes',
   'cotizaciones',
+  'compras',
   'inventario',
   'facturacion',
   'pagos',

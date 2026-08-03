@@ -11,6 +11,7 @@ export type ModuleKey =
   | 'dashboard'
   | 'ordenes'
   | 'cotizaciones' // F1 Ventas
+  | 'compras' // F5 Compras/Proveedores
   | 'inventario'
   | 'facturacion'
   | 'pagos'

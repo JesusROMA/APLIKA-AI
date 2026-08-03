@@ -34,6 +34,7 @@ const MODULE_ROUTES: Record<string, string> = {
   calendario: '/panel/agenda',
   expediente: '/panel/expediente',
   config: '/panel/config',
+  compras: '/panel/compras',
 };
 
 function isActive(pathname: string, href: string): boolean {
