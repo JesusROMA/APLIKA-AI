@@ -1,111 +1,106 @@
 'use client';
 
 /**
- * Cuentas por cobrar: facturas con saldo > 0, con antigüedad del saldo por
- * bucket y totales por tramo. Solo lectura (facturacion/ver).
+ * CUENTAS POR COBRAR (F7) — listado paginado de facturas de cliente con saldo
+ * vivo. Fila → detalle. "Registrar factura" (gated facturacion/crear) y acceso
+ * al reporte de antigüedad de saldos. Misma dinámica que CxP.
  */
 
-import { useMemo } from 'react';
 import Link from 'next/link';
-import type { CxcRow } from '@/lib/types/erp-ventas';
-import { getCxc } from '../../_lib/facturacion';
-import { useAsyncData } from '../../_lib/hooks';
+import { useRouter } from 'next/navigation';
+import type { InvoiceRow, InvoiceStatus } from '@/lib/types/erp-ventas';
+import { listReceivables } from '../../_lib/cxc';
+import { usePaginated } from '../../_lib/hooks';
 import { useCan } from '../../_components/session';
-import { Badge, Spinner, ErrorState, EmptyState } from '../../_components/States';
+import { DataTable, type Column } from '../../_components/DataTable';
+import { Badge, ReadOnlyBadge } from '../../_components/States';
 
 const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+const DATE = new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium' });
 
-const BUCKETS: CxcRow['bucket'][] = ['0-30', '31-60', '61-90', '90+'];
+const STATUS_LABEL: Record<InvoiceStatus, string> = {
+  borrador: 'Borrador',
+  timbrada: 'Timbrada',
+  pagada: 'Pagada',
+  pago_parcial: 'Pago parcial',
+  cancelada: 'Cancelada',
+};
 
-function bucketTone(b: CxcRow['bucket']): 'on' | 'off' | 'blue' | 'ro' {
-  if (b === '0-30') return 'on';
-  if (b === '90+') return 'ro';
+function statusTone(s: InvoiceStatus): 'on' | 'off' | 'blue' | 'ro' {
+  if (s === 'pagada') return 'on';
+  if (s === 'cancelada') return 'ro';
+  if (s === 'borrador') return 'off';
   return 'blue';
 }
 
-export default function CxcPage() {
+export default function CxcListPage() {
   const can = useCan();
-  const cxc = useAsyncData(getCxc);
+  const router = useRouter();
+  const list = usePaginated<InvoiceRow>(listReceivables);
 
-  const rows = useMemo(() => cxc.data ?? [], [cxc.data]);
-  const byBucket = useMemo(() => {
-    const acc: Record<string, number> = { '0-30': 0, '31-60': 0, '61-90': 0, '90+': 0 };
-    for (const r of rows) acc[r.bucket] += r.saldo;
-    return acc;
-  }, [rows]);
-  const totalSaldo = useMemo(() => rows.reduce((s, r) => s + r.saldo, 0), [rows]);
-
-  if (!can('facturacion', 'ver')) {
-    return <ErrorState title="Sin acceso" message="No tienes permiso para ver cuentas por cobrar." />;
-  }
+  const columns: Column<InvoiceRow>[] = [
+    { key: 'folio', header: 'Folio', render: (r) => <strong>{r.folio}</strong> },
+    { key: 'customer', header: 'Cliente', render: (r) => r.customerName ?? 'Público en general' },
+    {
+      key: 'status',
+      header: 'Estado',
+      render: (r) => <Badge tone={statusTone(r.status)}>{STATUS_LABEL[r.status]}</Badge>,
+    },
+    { key: 'fecha', header: 'Fecha', render: (r) => DATE.format(new Date(r.createdAt)) },
+    { key: 'total', header: 'Total', numeric: true, render: (r) => MXN.format(r.total) },
+    {
+      key: 'saldo',
+      header: 'Saldo',
+      numeric: true,
+      render: (r) => (r.saldo === null ? '—' : MXN.format(r.saldo)),
+    },
+  ];
 
   return (
     <div>
       <div className="panel-page-head">
         <div>
           <h2 className="panel-page-title">Cuentas por cobrar</h2>
-          <p className="panel-page-sub">Saldos pendientes por factura y antigüedad.</p>
+          <p className="panel-page-sub">Facturas de clientes con saldo pendiente y cobranza.</p>
         </div>
         <Link className="pbtn pbtn--ghost" href="/panel/facturacion">
-          Volver
+          Volver a Facturación
         </Link>
       </div>
 
-      <div className="panel-card" style={{ padding: 'var(--sp-4)', marginBottom: 'var(--sp-3)' }}>
-        <div className="print-meta" style={{ margin: 0 }}>
-          {BUCKETS.map((b) => (
-            <div className="print-meta-row" key={b}>
-              <dt>
-                <Badge tone={bucketTone(b)}>{b} días</Badge>
-              </dt>
-              <dd>{MXN.format(byBucket[b] ?? 0)}</dd>
-            </div>
-          ))}
-          <div className="print-meta-row">
-            <dt><strong>Total por cobrar</strong></dt>
-            <dd><strong>{MXN.format(totalSaldo)}</strong></dd>
-          </div>
-        </div>
-      </div>
-
-      {cxc.loading ? (
-        <Spinner label="Cargando cuentas por cobrar…" />
-      ) : cxc.error ? (
-        <ErrorState message={cxc.error} onRetry={cxc.reload} />
-      ) : rows.length === 0 ? (
-        <EmptyState title="Sin saldos" message="No hay facturas con saldo pendiente." />
-      ) : (
-        <div className="panel-table-wrap">
-          <table className="panel-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Folio</th>
-                <th className="panel-table-num">Total</th>
-                <th className="panel-table-num">Saldo</th>
-                <th className="panel-table-num">Días</th>
-                <th>Antigüedad</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.invoiceId}>
-                  <td>{r.customerName ?? 'Público en general'}</td>
-                  <td>
-                    <Link href={`/panel/facturacion/${r.invoiceId}`}>{r.folio}</Link>
-                  </td>
-                  <td className="panel-table-num">{MXN.format(r.total)}</td>
-                  <td className="panel-table-num">{MXN.format(r.saldo)}</td>
-                  <td className="panel-table-num">{r.daysOverdue}</td>
-                  <td>
-                    <Badge tone={bucketTone(r.bucket)}>{r.bucket}</Badge>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <DataTable
+        columns={columns}
+        rows={list.data?.data ?? []}
+        rowKey={(r) => r.id}
+        page={list.page}
+        pageSize={list.pageSize}
+        total={list.data?.total ?? 0}
+        onPageChange={list.setPage}
+        onPageSizeChange={list.setPageSize}
+        search={list.search}
+        onSearchChange={list.setSearch}
+        loading={list.loading}
+        error={list.error}
+        onRetry={list.reload}
+        onRowClick={(r) => router.push(`/panel/facturacion/cxc/${r.id}`)}
+        searchPlaceholder="Buscar por folio o cliente…"
+        emptyTitle="Sin saldos"
+        emptyMessage="No hay facturas con saldo pendiente."
+        toolbarActions={
+          <>
+            <Link className="pbtn pbtn--ghost" href="/panel/facturacion/cxc/aging">
+              Antigüedad de saldos
+            </Link>
+            {can('facturacion', 'crear') ? (
+              <Link className="pbtn pbtn--primary" href="/panel/facturacion/cxc/nueva">
+                + Registrar factura
+              </Link>
+            ) : (
+              <ReadOnlyBadge />
+            )}
+          </>
+        }
+      />
     </div>
   );
 }
