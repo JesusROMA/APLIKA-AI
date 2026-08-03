@@ -6,15 +6,15 @@ import { erpClientFor } from '@/lib/erp/db';
 
 export const dynamic = 'force-dynamic';
 
-// Cantidades enteras. `qty` es la magnitud capturada; entrada/salida exigen > 0,
-// 'ajuste' admite signo (merma negativa / sobrante positivo) pero no 0.
+// Cantidades enteras. Las ENTRADAS de inventario ya NO se registran aquí: pasan
+// exclusivamente por Órdenes de entrada (F6). Aquí solo salidas y ajustes.
+// 'salida' exige > 0; 'ajuste' admite signo (merma −/sobrante +) pero no 0.
 const movementSchema = z
   .object({
     productVariantId: z.string().uuid(),
     warehouseId: z.string().uuid(),
-    type: z.enum(['entrada', 'salida', 'ajuste']),
+    type: z.enum(['salida', 'ajuste']),
     qty: z.number().int('La cantidad debe ser un número entero'),
-    unitCost: z.number().nonnegative().optional(),
     reason: z
       .string()
       .trim()
@@ -35,13 +35,12 @@ export const POST = handle(async (req) => {
 
   const body = movementSchema.parse(await req.json());
 
-  // entrada → +qty · salida → −qty · ajuste → qty tal cual (con signo).
-  const signedQty =
-    body.type === 'entrada' ? body.qty : body.type === 'salida' ? -body.qty : body.qty;
+  // salida → −qty · ajuste → qty tal cual (con signo). Sin costo: las salidas
+  // salen al costo promedio (COGS) y los ajustes no lo alteran.
+  const signedQty = body.type === 'salida' ? -body.qty : body.qty;
 
-  // p_reason / p_ref_id / p_unit_cost son opcionales con default NULL en la
-  // función (0014). Se OMITEN cuando no aplican para respetar los tipos
-  // generados (que no admiten `null`); el efecto en BD es idéntico a NULL.
+  // p_reason / p_ref_id son opcionales con default NULL en la función (0014);
+  // se OMITEN cuando no aplican (los tipos generados no admiten `null`).
   const { error } = await supabase.rpc('adjust_inventory', {
     p_variant: body.productVariantId,
     p_warehouse: body.warehouseId,
@@ -49,7 +48,6 @@ export const POST = handle(async (req) => {
     p_type: body.type,
     p_ref_type: 'manual',
     ...(body.reason ? { p_reason: body.reason } : {}),
-    ...(body.unitCost != null ? { p_unit_cost: body.unitCost } : {}),
   });
   if (error) {
     if (error.code === '42501') throw new ApiError(403, 'Sin permiso: inventario/crear');

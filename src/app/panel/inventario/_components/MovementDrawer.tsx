@@ -1,9 +1,8 @@
 'use client';
 
 /**
- * Drawer de alta de movimiento manual de inventario. Selecciona variante
- * (ProductPicker), almacén (listWarehouses), tipo (entrada/salida/ajuste),
- * cantidad, costo unitario (sólo en entrada) y motivo → POST movimiento.
+ * Drawer de alta de movimiento manual de inventario: SALIDAS y AJUSTES.
+ * Las ENTRADAS ya no se registran aquí — pasan por Órdenes de entrada (F6).
  * El servidor es la autoridad (RBAC inventario/crear + costeo/kardex).
  */
 
@@ -20,7 +19,6 @@ import { SelectField, NumberField, TextField } from '../../_components/Field';
 import { ReadOnlyBadge } from '../../_components/States';
 
 const TYPE_OPTIONS = [
-  { value: 'entrada', label: 'Entrada (+)' },
   { value: 'salida', label: 'Salida (−)' },
   { value: 'ajuste', label: 'Ajuste (±)' },
 ];
@@ -38,9 +36,8 @@ export function MovementDrawer({
 
   const [variant, setVariant] = useState<VariantPick | null>(null);
   const [warehouseId, setWarehouseId] = useState('');
-  const [type, setType] = useState<MovementType>('entrada');
+  const [type, setType] = useState<MovementType>('salida');
   const [qty, setQty] = useState<number | ''>('');
-  const [unitCost, setUnitCost] = useState<number | ''>('');
   const [reason, setReason] = useState('');
   const [saving, setSaving] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -78,7 +75,6 @@ export function MovementDrawer({
         warehouseId,
         type,
         qty: Number(qty),
-        unitCost: type === 'entrada' && unitCost !== '' ? Number(unitCost) : undefined,
         reason: reason.trim() || undefined,
       });
       onSaved();
@@ -173,18 +169,6 @@ export function MovementDrawer({
           error={qtyError}
           hint={isAjuste ? 'Entero con signo (− merma / + sobrante).' : 'Entero mayor a 0.'}
         />
-
-        {type === 'entrada' && (
-          <NumberField
-            label="Costo unitario (MXN)"
-            name="unitCost"
-            value={unitCost}
-            onChange={setUnitCost}
-            min={0}
-            step={0.01}
-            hint="Opcional. Recalcula el costo promedio ponderado."
-          />
-        )}
 
         <TextField
           label="Motivo"

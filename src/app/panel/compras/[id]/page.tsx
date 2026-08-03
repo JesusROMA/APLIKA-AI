@@ -13,11 +13,10 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import type { ReceiveLineInput } from '@/lib/types/erp-compras';
+import { useRouter } from 'next/navigation';
 import {
   getPurchaseOrder,
   confirmarPurchaseOrder,
-  recibirPurchaseOrder,
   cancelarPurchaseOrder,
   PO_STATUS_LABEL,
   poStatusTone,
@@ -26,7 +25,6 @@ import { listWarehouses } from '../../_lib/api';
 import { useAsyncData } from '../../_lib/hooks';
 import { useCan } from '../../_components/session';
 import { Badge, Spinner, ErrorState, ReadOnlyBadge } from '../../_components/States';
-import { ReceiveDrawer } from '../_components/ReceiveDrawer';
 import { ComprasNav } from '../_components/ComprasNav';
 
 const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
@@ -42,12 +40,12 @@ const CARD: React.CSSProperties = { padding: 'var(--sp-3)', marginBottom: 'var(-
 
 export default function OrdenCompraDetallePage({ params }: { params: { id: string } }) {
   const can = useCan();
+  const router = useRouter();
   const { data: po, loading, error, reload } = useAsyncData(() => getPurchaseOrder(params.id));
   const warehouses = useAsyncData(() => listWarehouses({ pageSize: 100 }));
 
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [receiveOpen, setReceiveOpen] = useState(false);
 
   const warehouseName = useMemo(() => {
     if (!po?.warehouseId) return '—';
@@ -64,11 +62,13 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
   const hasReceipts = po.items.some((it) => Number(it.qtyReceived ?? 0) > 0);
 
   const showConfirmar = po.status === 'borrador' && canEdit;
-  const showRecibir =
-    (po.status === 'confirmada' || po.status === 'recibida_parcial') && canEdit;
+  // La recepción ya no es directa: se genera una Orden de Entrada (F6), que el
+  // operador aplica en Inventario → Órdenes de entrada (único camino de entrada).
+  const showGenerarEntrada =
+    (po.status === 'confirmada' || po.status === 'recibida_parcial') && can('inventario', 'crear');
   const showCancelar =
     canCancel && po.status !== 'cancelada' && po.status !== 'recibida' && !hasReceipts;
-  const noActions = !showConfirmar && !showRecibir && !showCancelar;
+  const noActions = !showConfirmar && !showGenerarEntrada && !showCancelar;
 
   async function runAction(fn: () => Promise<unknown>) {
     setBusy(true);
@@ -78,20 +78,6 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
       reload();
     } catch (e) {
       setActionError(e instanceof Error ? e.message : 'La acción no se pudo completar.');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function submitReceive(lines: ReceiveLineInput[]) {
-    setBusy(true);
-    setActionError(null);
-    try {
-      await recibirPurchaseOrder(params.id, lines);
-      setReceiveOpen(false);
-      reload();
-    } catch (e) {
-      setActionError(e instanceof Error ? e.message : 'No se pudo registrar la recepción.');
     } finally {
       setBusy(false);
     }
@@ -144,10 +130,11 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
         <h3 className="panel-page-sub" style={{ marginTop: 0, fontWeight: 700 }}>
           Acciones
         </h3>
-        {showRecibir && (
+        {showGenerarEntrada && (
           <p className="panel-field-hint" style={{ marginTop: 0 }}>
-            Recibir <strong>suma al inventario con el costo de la OC</strong> y afecta el costo
-            promedio del producto.
+            La mercancía entra al inventario mediante una <strong>Orden de entrada</strong>: se
+            genera desde esta OC y el operador la <strong>aplica</strong> (sube el stock con costo
+            y afecta el costo promedio).
           </p>
         )}
         <div style={{ display: 'flex', gap: 'var(--sp-1)', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -162,14 +149,14 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
               Confirmar orden
             </button>
           )}
-          {showRecibir && (
+          {showGenerarEntrada && (
             <button
               type="button"
               className="pbtn pbtn--primary"
               disabled={busy}
-              onClick={() => setReceiveOpen(true)}
+              onClick={() => router.push(`/panel/inventario/entradas/nueva?poId=${params.id}`)}
             >
-              Recibir mercancía
+              Generar orden de entrada
             </button>
           )}
           {showCancelar && (
@@ -236,14 +223,6 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
           </table>
         </div>
       </div>
-
-      <ReceiveDrawer
-        open={receiveOpen}
-        items={po.items}
-        busy={busy}
-        onClose={() => setReceiveOpen(false)}
-        onSubmit={submitReceive}
-      />
     </div>
   );
 }

@@ -99,14 +99,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   ];
   const compras: Item[] = has('compras')
     ? [
-        { href: '/panel/compras/requisiciones', label: 'Requisiciones', d: IC.doc, soon: true },
+        { href: '/panel/compras/requisiciones', label: 'Requisiciones', d: IC.doc },
         { href: '/panel/compras', label: 'Órdenes de compra', d: IC.compras, exact: true },
       ]
     : [];
   const inventario: Item[] = has('inventario')
     ? [
         { href: '/panel/inventario', label: 'Existencias', d: IC.inventario, exact: true },
-        { href: '/panel/inventario/entradas', label: 'Órdenes de entrada', d: IC.entrada, soon: true },
+        { href: '/panel/inventario/entradas', label: 'Órdenes de entrada', d: IC.entrada },
         { href: '/panel/inventario/conteos', label: 'Conteos', d: IC.listas },
         { href: '/panel/inventario/traspasos', label: 'Traspasos', d: IC.entrada },
         { href: '/panel/inventario/valuacion', label: 'Valuación', d: IC.finanzas },
