@@ -136,3 +136,85 @@ export interface CxpRow {
   daysOverdue: number;
   bucket: '0-30' | '31-60' | '61-90' | '90+';
 }
+
+// ===== F6 · Requisiciones =====
+
+export type RequisitionStatus =
+  | 'borrador'
+  | 'aprobada'
+  | 'rechazada'
+  | 'convertida'
+  | 'cancelada';
+
+export interface RequisitionItem {
+  id?: string;
+  productVariantId: string | null;
+  sku: string | null;
+  name: string;
+  qty: number;
+  estimatedCost: number;
+}
+
+export interface RequisitionItemInput {
+  productVariantId?: string | null;
+  sku?: string | null;
+  name?: string;
+  qty: number;
+  estimatedCost?: number;
+}
+
+export interface RequisitionRow {
+  id: string;
+  folio: string;
+  status: RequisitionStatus;
+  notas: string | null;
+  itemCount: number;
+  createdAt: string;
+}
+
+export interface RequisitionDetail extends RequisitionRow {
+  items: RequisitionItem[];
+  /** OC generada al convertir (trazabilidad). */
+  purchaseOrderId?: string | null;
+}
+
+// ===== F6 · Órdenes de entrada (único camino de entrada de inventario) =====
+
+export type EntryOrderStatus = 'borrador' | 'aplicada' | 'cancelada';
+export type EntryOrigin = 'compra' | 'manual' | 'ajuste' | 'devolucion';
+
+export interface EntryOrderItem {
+  id?: string;
+  purchaseOrderItemId: string | null;
+  productVariantId: string | null;
+  sku: string | null;
+  name: string;
+  qty: number;
+  unitCost: number;
+}
+
+export interface EntryOrderItemInput {
+  productVariantId?: string | null;
+  sku?: string | null;
+  name?: string;
+  qty: number;
+  unitCost: number;
+  purchaseOrderItemId?: string | null;
+}
+
+export interface EntryOrderRow {
+  id: string;
+  folio: string;
+  warehouseId: string;
+  warehouseName: string | null;
+  origin: EntryOrigin;
+  purchaseOrderId: string | null;
+  status: EntryOrderStatus;
+  appliedAt: string | null;
+  createdAt: string;
+}
+
+export interface EntryOrderDetail extends EntryOrderRow {
+  notas: string | null;
+  items: EntryOrderItem[];
+}
