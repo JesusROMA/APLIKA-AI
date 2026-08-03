@@ -41,7 +41,7 @@ export default function FacturacionPage() {
     {
       key: 'folio',
       header: 'Folio',
-      render: (r) => <strong>{`${r.serie}-${r.folio}`}</strong>,
+      render: (r) => <strong>{r.folio}</strong>,
     },
     { key: 'customer', header: 'Cliente', render: (r) => r.customerName ?? 'Público en general' },
     {

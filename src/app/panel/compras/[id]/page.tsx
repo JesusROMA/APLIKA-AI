@@ -25,7 +25,6 @@ import { listWarehouses } from '../../_lib/api';
 import { useAsyncData } from '../../_lib/hooks';
 import { useCan } from '../../_components/session';
 import { Badge, Spinner, ErrorState, ReadOnlyBadge } from '../../_components/States';
-import { ComprasNav } from '../_components/ComprasNav';
 
 const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 const DATE = new Intl.DateTimeFormat('es-MX', { dateStyle: 'long' });
@@ -98,7 +97,6 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
         </Link>
       </div>
 
-      <ComprasNav />
 
       {actionError && (
         <p className="panel-field-error" role="alert" style={{ marginBottom: 'var(--sp-2)' }}>

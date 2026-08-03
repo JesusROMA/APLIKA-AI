@@ -46,7 +46,7 @@ export default function FacturaPrintPage() {
     brandColor: session.organization?.brandColor ?? undefined,
     logoUrl: session.organization?.logoUrl ?? undefined,
     docTitle: 'Factura',
-    folio: `${inv.serie}-${inv.folio}`,
+    folio: inv.folio,
     status: STATUS_LABEL[inv.status] ?? inv.status,
     date: inv.createdAt,
     customer: inv.customerName ? { name: inv.customerName } : null,

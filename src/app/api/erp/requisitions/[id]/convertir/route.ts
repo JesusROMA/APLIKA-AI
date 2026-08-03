@@ -54,6 +54,7 @@ export const POST = handle(async (req, { params }) => {
       subtotal,
       tax,
       total,
+      requisition_id: params.id, // trazabilidad requisición↔OC (FK real, F7)
       notas: convertNoteFor(detail.folio),
       created_by: session.userId,
     })

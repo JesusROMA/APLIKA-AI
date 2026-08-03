@@ -104,7 +104,7 @@ function FacturaDetail({
       <div className="panel-page-head">
         <div>
           <h2 className="panel-page-title">
-            Factura {inv.serie}-{inv.folio}
+            Factura {inv.folio}
           </h2>
           <p className="panel-page-sub">{inv.customerName ?? 'Público en general'}</p>
         </div>
@@ -279,7 +279,7 @@ function FacturaDetail({
       )}
 
       <h3 className="panel-page-title" style={{ fontSize: '1rem', margin: 'var(--sp-4) 0 var(--sp-2)' }}>Cadena documental</h3>
-      <DocumentFlow type="invoice" id={inv.id} currentLabel={`${inv.serie}-${inv.folio}`} />
+      <DocumentFlow type="invoice" id={inv.id} currentLabel={inv.folio} />
 
       {/* Totales de referencia */}
       <div className="f1-totals" style={{ marginTop: 'var(--sp-3)' }}>

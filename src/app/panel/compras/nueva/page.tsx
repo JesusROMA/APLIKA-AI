@@ -17,7 +17,6 @@ import { useCan } from '../../_components/session';
 import { SelectField, TextField, type SelectOption } from '../../_components/Field';
 import { ReadOnlyBadge } from '../../_components/States';
 import { POLinesEditor, type POEditorLine } from '../_components/POLinesEditor';
-import { ComprasNav } from '../_components/ComprasNav';
 
 export default function NuevaOrdenCompraPage() {
   const router = useRouter();
@@ -98,7 +97,6 @@ export default function NuevaOrdenCompraPage() {
         </Link>
       </div>
 
-      <ComprasNav />
 
       {error && (
         <p className="panel-field-error" role="alert" style={{ marginBottom: 'var(--sp-2)' }}>

@@ -11,7 +11,22 @@ import { getSeries, createSeries, updateSeries } from '../../_lib/config';
 import { useAsyncData } from '../../_lib/hooks';
 import { LoadingState, ErrorState, Badge, ReadOnlyBadge } from '../../_components/States';
 import { Drawer } from '../../_components/Drawer';
-import { TextField, NumberField } from '../../_components/Field';
+import { TextField, NumberField, SelectField } from '../../_components/Field';
+
+/** Etiquetas legibles por tipo de documento (folios administrables). */
+const DOC_TYPE_LABEL: Record<string, string> = {
+  quote: 'Cotización',
+  order: 'Pedido',
+  invoice: 'Factura / CxC',
+  supplier_invoice: 'Factura de proveedor / CxP',
+  purchase: 'Orden de compra',
+  requisition: 'Requisición',
+  entry: 'Orden de entrada',
+  count: 'Conteo físico',
+  transfer: 'Traspaso',
+};
+const DOC_TYPE_OPTIONS = Object.entries(DOC_TYPE_LABEL).map(([value, label]) => ({ value, label }));
+const docTypeLabel = (t: string) => DOC_TYPE_LABEL[t] ?? t;
 
 type Draft = 'new' | ConfigSeriesRow | null;
 
@@ -65,7 +80,7 @@ export function SeriesTab({ canWrite }: { canWrite: boolean }) {
                   onClick={canWrite ? () => setDraft(s) : undefined}
                   style={canWrite ? { cursor: 'pointer' } : undefined}
                 >
-                  <td>{s.docType}</td>
+                  <td>{docTypeLabel(s.docType)}</td>
                   <td>
                     <strong>{s.serie}</strong>
                   </td>
@@ -163,20 +178,20 @@ function SeriesDrawer({
         </p>
       )}
       {isNew ? (
-        <TextField
+        <SelectField
           label="Tipo de documento"
           name="docType"
           value={docType}
           onChange={setDocType}
+          options={DOC_TYPE_OPTIONS}
           required
           error={docTypeError}
-          hint="Ej. invoice, quote, order."
         />
       ) : (
         <div className="panel-field">
           <span className="panel-field-label">Tipo de documento</span>
           <p style={{ margin: 0 }}>
-            <strong>{docType}</strong>
+            <strong>{docTypeLabel(docType)}</strong>
           </p>
         </div>
       )}

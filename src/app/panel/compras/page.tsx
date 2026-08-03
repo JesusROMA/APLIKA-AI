@@ -15,7 +15,6 @@ import { usePaginated } from '../_lib/hooks';
 import { useCan } from '../_components/session';
 import { DataTable, type Column } from '../_components/DataTable';
 import { Badge, ReadOnlyBadge } from '../_components/States';
-import { ComprasNav } from './_components/ComprasNav';
 
 const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 const DATE = new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium' });
@@ -59,7 +58,6 @@ export default function ComprasPage() {
         </div>
       </div>
 
-      <ComprasNav />
 
       <DataTable
         columns={columns}
