@@ -174,7 +174,7 @@ async function fetchNodeHeader(
       return {
         type: 'invoice',
         id: node.id,
-        folio: `${data.serie}-${data.folio}`,
+        folio: data.folio, // factura ahora usa folio de serie (FAC-A-0001)
         status: data.status,
         total: Number(data.total),
       };

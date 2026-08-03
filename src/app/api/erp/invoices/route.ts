@@ -5,6 +5,7 @@ import { requireAccess } from '@/lib/erp/guards';
 import { erpClientFor } from '@/lib/erp/db';
 import { parseListParams, rangeFor, paginated } from '@/lib/erp/pagination';
 import { buildLines, computeTotals } from '@/lib/erp/documents';
+import { nextSerieFolio } from '@/lib/erp/folios';
 import { fetchVentasCatalogs } from '@/lib/erp/catalogs';
 import type { InvoiceStatus } from '@/lib/types/erp-ventas';
 import { LIST_SELECT, toInvoiceRow, type RawInvoiceHeader } from './_shared';
@@ -103,9 +104,8 @@ export const POST = handle(async (req) => {
     .eq('id', b.customerId)
     .maybeSingle();
 
-  const folioNum = await supabase.rpc('next_folio', { p_org: orgId, p_entity: 'invoice' });
-  if (folioNum.error) throw new ApiError(400, folioNum.error.message);
-  const folio = String(folioNum.data);
+  // Folio de factura por SERIE configurable (Config → Folios): 'FAC-A-0001'.
+  const folio = await nextSerieFolio(supabase, orgId, 'invoice');
 
   const lines = await buildLines(supabase, b.customerId, b.lines);
   const totals = computeTotals(lines, 0);

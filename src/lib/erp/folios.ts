@@ -2,7 +2,14 @@ import type { ErpClient } from '@/lib/erp/db';
 import type { DocType } from '@/lib/types/erp-ventas';
 
 /** Tipos de documento que numeran por serie (ventas F1 + inventario F2 + compras F5). */
-export type FolioDocType = DocType | 'count' | 'transfer' | 'purchase' | 'requisition' | 'entry';
+export type FolioDocType =
+  | DocType
+  | 'count'
+  | 'transfer'
+  | 'purchase'
+  | 'requisition'
+  | 'entry'
+  | 'supplier_invoice';
 
 /**
  * Folio consecutivo por serie (C1.1). Envuelve la RPC `next_serie_folio`, que es

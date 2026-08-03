@@ -115,9 +115,11 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   // Operación · entradas sueltas (no-grupo)
   const opDirect: Item[] = [
+    ...(has('crm') ? [{ href: '/panel/crm', label: 'CRM Clientes', d: IC.clientes }] : []),
     ...(has('calendario') ? [{ href: '/panel/agenda', label: 'Agenda / Citas', d: IC.agenda }] : []),
     ...(has('expediente') ? [{ href: '/panel/expediente', label: 'Expediente clínico', d: IC.expediente }] : []),
     ...(has('facturacion') ? [{ href: '/panel/facturacion', label: 'Facturación', d: IC.facturacion, exact: true }] : []),
+    ...(has('pagos') ? [{ href: '/panel/pagos', label: 'Pagos', d: IC.finanzas }] : []),
   ];
 
   const finanzas: Item[] = [

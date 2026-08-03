@@ -35,6 +35,8 @@ const TITLES: Record<string, string> = {
   '/panel/config': 'Configuración',
   '/panel/auditoria': 'Bitácora',
   '/panel/compras': 'Compras',
+  '/panel/crm': 'CRM Clientes',
+  '/panel/pagos': 'Pagos',
 };
 
 function titleFromPath(pathname: string): string {

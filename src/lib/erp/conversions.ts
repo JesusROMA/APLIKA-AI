@@ -191,12 +191,7 @@ async function createInvoice(
     .eq('id', args.customerId)
     .maybeSingle();
 
-  const { data: n, error: fErr } = await supabase.rpc('next_folio', {
-    p_org: orgId,
-    p_entity: 'invoice',
-  });
-  if (fErr) throw fErr;
-  const folio = String(n);
+  const folio = await nextSerieFolio(supabase, orgId, 'invoice'); // 'FAC-A-0001'
 
   const { data: invoice, error: iErr } = await supabase
     .from('invoices')
