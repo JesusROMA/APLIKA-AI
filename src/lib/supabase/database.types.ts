@@ -405,6 +405,76 @@ export type Database = {
           },
         ]
       }
+      crm_prospects: {
+        Row: {
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          email: string | null
+          id: string
+          name: string
+          notas: string | null
+          organization_id: string
+          phone: string | null
+          source: string | null
+          stage: Database["public"]["Enums"]["prospect_stage"]
+          updated_at: string
+        }
+        Insert: {
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          notas?: string | null
+          organization_id: string
+          phone?: string | null
+          source?: string | null
+          stage?: Database["public"]["Enums"]["prospect_stage"]
+          updated_at?: string
+        }
+        Update: {
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          notas?: string | null
+          organization_id?: string
+          phone?: string | null
+          source?: string | null
+          stage?: Database["public"]["Enums"]["prospect_stage"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_prospects_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_prospects_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_prospects_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custom_field_defs: {
         Row: {
           active: boolean
@@ -2162,6 +2232,7 @@ export type Database = {
           id: string
           notas: string | null
           organization_id: string
+          requisition_id: string | null
           status: Database["public"]["Enums"]["purchase_order_status"]
           subtotal: number
           supplier_id: string
@@ -2178,6 +2249,7 @@ export type Database = {
           id?: string
           notas?: string | null
           organization_id: string
+          requisition_id?: string | null
           status?: Database["public"]["Enums"]["purchase_order_status"]
           subtotal?: number
           supplier_id: string
@@ -2194,6 +2266,7 @@ export type Database = {
           id?: string
           notas?: string | null
           organization_id?: string
+          requisition_id?: string | null
           status?: Database["public"]["Enums"]["purchase_order_status"]
           subtotal?: number
           supplier_id?: string
@@ -2215,6 +2288,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "requisitions"
             referencedColumns: ["id"]
           },
           {
@@ -2713,6 +2793,7 @@ export type Database = {
           folio: string
           forma_pago: string | null
           id: string
+          internal_folio: string | null
           metodo_pago: string | null
           organization_id: string
           purchase_order_id: string | null
@@ -2732,6 +2813,7 @@ export type Database = {
           folio: string
           forma_pago?: string | null
           id?: string
+          internal_folio?: string | null
           metodo_pago?: string | null
           organization_id: string
           purchase_order_id?: string | null
@@ -2751,6 +2833,7 @@ export type Database = {
           folio?: string
           forma_pago?: string | null
           id?: string
+          internal_folio?: string | null
           metodo_pago?: string | null
           organization_id?: string
           purchase_order_id?: string | null
@@ -3144,6 +3227,7 @@ export type Database = {
           id: string
           notas: string | null
           organization_id: string
+          requisition_id: string | null
           status: Database["public"]["Enums"]["purchase_order_status"]
           subtotal: number
           supplier_id: string
@@ -3217,6 +3301,7 @@ export type Database = {
           folio: string
           forma_pago: string | null
           id: string
+          internal_folio: string | null
           metodo_pago: string | null
           organization_id: string
           purchase_order_id: string | null
@@ -3352,6 +3437,12 @@ export type Database = {
         | "surtido_parcial"
       org_status: "activo" | "prueba" | "suspendido"
       payment_status: "pendiente" | "exitoso" | "fallido" | "reembolsado"
+      prospect_stage:
+        | "nuevo"
+        | "contactado"
+        | "propuesta"
+        | "ganado"
+        | "perdido"
       purchase_order_status:
         | "borrador"
         | "confirmada"
@@ -4101,6 +4192,7 @@ export const Constants = {
       ],
       org_status: ["activo", "prueba", "suspendido"],
       payment_status: ["pendiente", "exitoso", "fallido", "reembolsado"],
+      prospect_stage: ["nuevo", "contactado", "propuesta", "ganado", "perdido"],
       purchase_order_status: [
         "borrador",
         "confirmada",
