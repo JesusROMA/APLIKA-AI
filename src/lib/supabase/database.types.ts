@@ -461,6 +461,7 @@ export type Database = {
           created_at: string
           credit_days: number
           credit_limit: number
+          custom: Json
           discount_pct: number
           email: string | null
           id: string
@@ -484,6 +485,7 @@ export type Database = {
           created_at?: string
           credit_days?: number
           credit_limit?: number
+          custom?: Json
           discount_pct?: number
           email?: string | null
           id?: string
@@ -507,6 +509,7 @@ export type Database = {
           created_at?: string
           credit_days?: number
           credit_limit?: number
+          custom?: Json
           discount_pct?: number
           email?: string | null
           id?: string
@@ -2576,6 +2579,14 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      set_org_branding: {
+        Args: { p_brand_color: string; p_logo_url: string }
+        Returns: undefined
+      }
+      set_org_module: {
+        Args: { p_enabled: boolean; p_module_key: string }
+        Returns: undefined
       }
       transition_order: {
         Args: {
