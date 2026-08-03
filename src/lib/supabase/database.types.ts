@@ -1950,6 +1950,150 @@ export type Database = {
           },
         ]
       }
+      purchase_order_items: {
+        Row: {
+          id: string
+          iva_rate: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id: string | null
+          purchase_order_id: string
+          qty: number
+          qty_received: number
+          sku: string | null
+          unit_cost: number
+        }
+        Insert: {
+          id?: string
+          iva_rate?: number
+          line_total: number
+          name: string
+          organization_id: string
+          product_variant_id?: string | null
+          purchase_order_id: string
+          qty: number
+          qty_received?: number
+          sku?: string | null
+          unit_cost: number
+        }
+        Update: {
+          id?: string
+          iva_rate?: number
+          line_total?: number
+          name?: string
+          organization_id?: string
+          product_variant_id?: string | null
+          purchase_order_id?: string
+          qty?: number
+          qty_received?: number
+          sku?: string | null
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_items_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expected_date: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["purchase_order_status"]
+          subtotal: number
+          supplier_id: string
+          tax: number
+          total: number
+          updated_at: string
+          warehouse_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expected_date?: string | null
+          folio: string
+          id?: string
+          notas?: string | null
+          organization_id: string
+          status?: Database["public"]["Enums"]["purchase_order_status"]
+          subtotal?: number
+          supplier_id: string
+          tax?: number
+          total?: number
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expected_date?: string | null
+          folio?: string
+          id?: string
+          notas?: string | null
+          organization_id?: string
+          status?: Database["public"]["Enums"]["purchase_order_status"]
+          subtotal?: number
+          supplier_id?: string
+          tax?: number
+          total?: number
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_items: {
         Row: {
           discount_pct: number
@@ -2264,6 +2408,219 @@ export type Database = {
           },
         ]
       }
+      supplier_invoice_payments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fecha: string
+          forma_pago: string
+          id: string
+          monto: number
+          organization_id: string
+          supplier_invoice_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fecha?: string
+          forma_pago: string
+          id?: string
+          monto: number
+          organization_id: string
+          supplier_invoice_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fecha?: string
+          forma_pago?: string
+          id?: string
+          monto?: number
+          organization_id?: string
+          supplier_invoice_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoice_payments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_payments_supplier_invoice_id_fkey"
+            columns: ["supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_invoices: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fecha: string
+          folio: string
+          forma_pago: string | null
+          id: string
+          metodo_pago: string | null
+          organization_id: string
+          purchase_order_id: string | null
+          saldo: number | null
+          status: Database["public"]["Enums"]["supplier_invoice_status"]
+          subtotal: number
+          supplier_id: string
+          tax: number
+          total: number
+          updated_at: string
+          uuid: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fecha?: string
+          folio: string
+          forma_pago?: string | null
+          id?: string
+          metodo_pago?: string | null
+          organization_id: string
+          purchase_order_id?: string | null
+          saldo?: number | null
+          status?: Database["public"]["Enums"]["supplier_invoice_status"]
+          subtotal?: number
+          supplier_id: string
+          tax?: number
+          total?: number
+          updated_at?: string
+          uuid?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fecha?: string
+          folio?: string
+          forma_pago?: string | null
+          id?: string
+          metodo_pago?: string | null
+          organization_id?: string
+          purchase_order_id?: string | null
+          saldo?: number | null
+          status?: Database["public"]["Enums"]["supplier_invoice_status"]
+          subtotal?: number
+          supplier_id?: string
+          tax?: number
+          total?: number
+          updated_at?: string
+          uuid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoices_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_invoices_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_invoices_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      suppliers: {
+        Row: {
+          active: boolean
+          address: string | null
+          balance: number
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          custom: Json
+          email: string | null
+          id: string
+          name: string
+          organization_id: string
+          payment_days: number
+          phone: string | null
+          rfc: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          address?: string | null
+          balance?: number
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          custom?: Json
+          email?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          payment_days?: number
+          phone?: string | null
+          rfc?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          address?: string | null
+          balance?: number
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          custom?: Json
+          email?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          payment_days?: number
+          phone?: string | null
+          rfc?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suppliers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suppliers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       verticals: {
         Row: {
           created_at: string
@@ -2493,6 +2850,31 @@ export type Database = {
         Returns: string
       }
       org_has_module: { Args: { p_module: string }; Returns: boolean }
+      recibir_compra: {
+        Args: { p_lines: Json; p_po: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          expected_date: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["purchase_order_status"]
+          subtotal: number
+          supplier_id: string
+          tax: number
+          total: number
+          updated_at: string
+          warehouse_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "purchase_orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       recibir_traspaso: {
         Args: { p_transfer: string }
         Returns: {
@@ -2538,6 +2920,34 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      registrar_pago_compra: {
+        Args: { p_forma: string; p_invoice: string; p_monto: number }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          fecha: string
+          folio: string
+          forma_pago: string | null
+          id: string
+          metodo_pago: string | null
+          organization_id: string
+          purchase_order_id: string | null
+          saldo: number | null
+          status: Database["public"]["Enums"]["supplier_invoice_status"]
+          subtotal: number
+          supplier_id: string
+          tax: number
+          total: number
+          updated_at: string
+          uuid: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "supplier_invoices"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -2657,6 +3067,12 @@ export type Database = {
         | "surtido_parcial"
       org_status: "activo" | "prueba" | "suspendido"
       payment_status: "pendiente" | "exitoso" | "fallido" | "reembolsado"
+      purchase_order_status:
+        | "borrador"
+        | "confirmada"
+        | "recibida_parcial"
+        | "recibida"
+        | "cancelada"
       quote_status:
         | "borrador"
         | "enviada"
@@ -2664,6 +3080,12 @@ export type Database = {
         | "rechazada"
         | "vencida"
       subscription_status: "activa" | "prueba" | "morosa" | "cancelada"
+      supplier_invoice_status:
+        | "borrador"
+        | "registrada"
+        | "pagada"
+        | "pago_parcial"
+        | "cancelada"
       user_role:
         | "super_admin"
         | "tenant_admin"
@@ -3387,8 +3809,22 @@ export const Constants = {
       ],
       org_status: ["activo", "prueba", "suspendido"],
       payment_status: ["pendiente", "exitoso", "fallido", "reembolsado"],
+      purchase_order_status: [
+        "borrador",
+        "confirmada",
+        "recibida_parcial",
+        "recibida",
+        "cancelada",
+      ],
       quote_status: ["borrador", "enviada", "aceptada", "rechazada", "vencida"],
       subscription_status: ["activa", "prueba", "morosa", "cancelada"],
+      supplier_invoice_status: [
+        "borrador",
+        "registrada",
+        "pagada",
+        "pago_parcial",
+        "cancelada",
+      ],
       user_role: [
         "super_admin",
         "tenant_admin",
