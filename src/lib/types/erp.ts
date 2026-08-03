@@ -16,6 +16,7 @@ export type ModuleKey =
   | 'pagos'
   | 'crm'
   | 'calendario'
+  | 'expediente' // F3 Clínicas
   | 'reservas_whatsapp'
   | 'ia_agente'
   | 'config'

@@ -10,6 +10,7 @@ export const ALL_MODULE_KEYS: ModuleKey[] = [
   'pagos',
   'crm',
   'calendario',
+  'expediente',
   'reservas_whatsapp',
   'ia_agente',
   'config',

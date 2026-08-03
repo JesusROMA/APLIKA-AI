@@ -31,6 +31,8 @@ const MODULE_ROUTES: Record<string, string> = {
   cotizaciones: '/panel/cotizaciones',
   facturacion: '/panel/facturacion',
   inventario: '/panel/inventario',
+  calendario: '/panel/agenda',
+  expediente: '/panel/expediente',
 };
 
 function isActive(pathname: string, href: string): boolean {
