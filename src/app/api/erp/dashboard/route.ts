@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic';
 interface RawInventory {
   stock: number;
   min_stock: number;
+  avg_cost: number;
   product_variants: {
     sku: string;
     products: { name: string } | null;
@@ -29,18 +30,37 @@ export const GET = handle(async () => {
   const since = new Date(startMs).toISOString();
   const has = (k: ModuleKey) => session.modules.some((m) => m.key === k);
 
+  // Rango del mes en curso (server-side, según la fecha del servidor).
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
   const kpis: DashboardKpi[] = [];
   const out: DashboardData = { kpis };
 
+  // KPI base (siempre): nº de clientes del tenant. RLS aplica; si no hay
+  // acceso al padrón se reporta 0 en vez de romper el dashboard.
+  {
+    const { count } = await supabase
+      .from('customers')
+      .select('id', { count: 'exact', head: true });
+    kpis.push({ key: 'clientes', label: 'Clientes', value: count ?? 0, unit: 'count' });
+  }
+
   if (has('ordenes')) {
-    const [{ data: ordersPeriod }, { data: pending }, { data: aiOrders }] = await Promise.all([
-      supabase.from('orders').select('total, created_at').gte('created_at', since).neq('status', 'cancelada'),
-      supabase.from('orders').select('id').in('status', ['borrador', 'confirmado', 'pagado', 'surtido']),
-      supabase.from('orders').select('id').ilike('channel', '%Agente IA%'),
-    ]);
+    const [{ data: ordersPeriod }, { data: ordersMonth }, { data: pending }, { data: aiOrders }] =
+      await Promise.all([
+        supabase.from('orders').select('total, created_at').gte('created_at', since).neq('status', 'cancelada'),
+        supabase.from('orders').select('total').gte('created_at', monthStart).neq('status', 'cancelada'),
+        supabase.from('orders').select('id').in('status', ['borrador', 'confirmado', 'pagado', 'surtido']),
+        supabase.from('orders').select('id').ilike('channel', '%Agente IA%'),
+      ]);
     const rows = ordersPeriod ?? [];
     const ventas = rows.reduce((a, o) => a + Number(o.total), 0);
     const n = rows.length;
+    const monthRows = ordersMonth ?? [];
+    const ventasMes = monthRows.reduce((a, o) => a + Number(o.total), 0);
+    kpis.push({ key: 'ventas_mes', label: 'Ventas del mes', value: Math.round(ventasMes), unit: 'mxn' });
+    kpis.push({ key: 'pedidos_mes', label: 'Pedidos del mes', value: monthRows.length, unit: 'count' });
     kpis.push({ key: 'ventas_periodo', label: 'Ventas del periodo', value: Math.round(ventas), unit: 'mxn' });
     kpis.push({ key: 'ticket_promedio', label: 'Ticket promedio', value: n ? Math.round(ventas / n) : 0, unit: 'mxn' });
     kpis.push({ key: 'pedidos_pendientes', label: 'Pedidos pendientes', value: (pending ?? []).length, unit: 'count' });
@@ -61,9 +81,11 @@ export const GET = handle(async () => {
   if (has('inventario')) {
     const { data: inv } = await supabase
       .from('inventory')
-      .select('stock, min_stock, product_variants ( sku, products ( name ) )');
+      .select('stock, min_stock, avg_cost, product_variants ( sku, products ( name ) )');
     const invRows = (inv ?? []) as unknown as RawInventory[];
     const low = invRows.filter((r) => semaforo(r.stock, r.min_stock) !== 'ok');
+    const valorInventario = invRows.reduce((a, r) => a + Number(r.stock) * Number(r.avg_cost), 0);
+    kpis.push({ key: 'valor_inventario', label: 'Valor de inventario', value: Math.round(valorInventario), unit: 'mxn' });
     kpis.push({ key: 'stock_bajo', label: 'Stock bajo', value: low.length, unit: 'count' });
     out.stockAlerts = low.map((r) => ({
       sku: r.product_variants?.sku ?? '',
@@ -74,8 +96,13 @@ export const GET = handle(async () => {
   }
 
   if (has('facturacion')) {
-    const { data: draftInv } = await supabase.from('invoices').select('id').eq('status', 'borrador');
+    const [{ data: draftInv }, { data: openInv }] = await Promise.all([
+      supabase.from('invoices').select('id').eq('status', 'borrador'),
+      supabase.from('invoices').select('saldo').in('status', ['timbrada', 'pago_parcial']),
+    ]);
+    const cxc = (openInv ?? []).reduce((a, i) => a + Number(i.saldo ?? 0), 0);
     kpis.push({ key: 'facturas_por_timbrar', label: 'Facturas por timbrar', value: (draftInv ?? []).length, unit: 'count' });
+    kpis.push({ key: 'cuentas_por_cobrar', label: 'Cuentas por cobrar', value: Math.round(cxc), unit: 'mxn' });
   }
 
   if (has('pagos')) {
