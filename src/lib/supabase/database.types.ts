@@ -601,6 +601,145 @@ export type Database = {
           },
         ]
       }
+      entry_order_items: {
+        Row: {
+          entry_order_id: string
+          id: string
+          name: string
+          organization_id: string
+          product_variant_id: string | null
+          purchase_order_item_id: string | null
+          qty: number
+          sku: string | null
+          unit_cost: number | null
+        }
+        Insert: {
+          entry_order_id: string
+          id?: string
+          name: string
+          organization_id: string
+          product_variant_id?: string | null
+          purchase_order_item_id?: string | null
+          qty: number
+          sku?: string | null
+          unit_cost?: number | null
+        }
+        Update: {
+          entry_order_id?: string
+          id?: string
+          name?: string
+          organization_id?: string
+          product_variant_id?: string | null
+          purchase_order_item_id?: string | null
+          qty?: number
+          sku?: string | null
+          unit_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entry_order_items_entry_order_id_fkey"
+            columns: ["entry_order_id"]
+            isOneToOne: false
+            referencedRelation: "entry_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_order_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_order_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_order_items_purchase_order_item_id_fkey"
+            columns: ["purchase_order_item_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entry_orders: {
+        Row: {
+          applied_at: string | null
+          created_at: string
+          created_by: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          origin: string
+          purchase_order_id: string | null
+          status: Database["public"]["Enums"]["entry_order_status"]
+          updated_at: string
+          warehouse_id: string
+        }
+        Insert: {
+          applied_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          folio: string
+          id?: string
+          notas?: string | null
+          organization_id: string
+          origin?: string
+          purchase_order_id?: string | null
+          status?: Database["public"]["Enums"]["entry_order_status"]
+          updated_at?: string
+          warehouse_id: string
+        }
+        Update: {
+          applied_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          folio?: string
+          id?: string
+          notas?: string | null
+          organization_id?: string
+          origin?: string
+          purchase_order_id?: string | null
+          status?: Database["public"]["Enums"]["entry_order_status"]
+          updated_at?: string
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entry_orders_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_orders_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_orders_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_orders_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incidents: {
         Row: {
           created_at: string
@@ -2250,6 +2389,109 @@ export type Database = {
           },
         ]
       }
+      requisition_items: {
+        Row: {
+          estimated_cost: number | null
+          id: string
+          name: string
+          organization_id: string
+          product_variant_id: string | null
+          qty: number
+          requisition_id: string
+          sku: string | null
+        }
+        Insert: {
+          estimated_cost?: number | null
+          id?: string
+          name: string
+          organization_id: string
+          product_variant_id?: string | null
+          qty: number
+          requisition_id: string
+          sku?: string | null
+        }
+        Update: {
+          estimated_cost?: number | null
+          id?: string
+          name?: string
+          organization_id?: string
+          product_variant_id?: string | null
+          qty?: number
+          requisition_id?: string
+          sku?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requisition_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requisition_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requisition_items_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "requisitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requisitions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["requisition_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          folio: string
+          id?: string
+          notas?: string | null
+          organization_id: string
+          status?: Database["public"]["Enums"]["requisition_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          folio?: string
+          id?: string
+          notas?: string | null
+          organization_id?: string
+          status?: Database["public"]["Enums"]["requisition_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requisitions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requisitions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           action: string
@@ -2781,6 +3023,48 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      aplicar_entrada: {
+        Args: { p_eo: string }
+        Returns: {
+          applied_at: string | null
+          created_at: string
+          created_by: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          origin: string
+          purchase_order_id: string | null
+          status: Database["public"]["Enums"]["entry_order_status"]
+          updated_at: string
+          warehouse_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "entry_orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      aprobar_requisicion: {
+        Args: { p_req: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          folio: string
+          id: string
+          notas: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["requisition_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "requisitions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       assign_default_modules: {
         Args: { p_org: string; p_vertical: string }
         Returns: undefined
@@ -3038,6 +3322,7 @@ export type Database = {
         | "completada"
         | "cancelada"
         | "no_asistio"
+      entry_order_status: "borrador" | "aplicada" | "cancelada"
       inventory_count_status:
         | "borrador"
         | "en_conteo"
@@ -3079,6 +3364,12 @@ export type Database = {
         | "aceptada"
         | "rechazada"
         | "vencida"
+      requisition_status:
+        | "borrador"
+        | "aprobada"
+        | "rechazada"
+        | "convertida"
+        | "cancelada"
       subscription_status: "activa" | "prueba" | "morosa" | "cancelada"
       supplier_invoice_status:
         | "borrador"
@@ -3776,6 +4067,7 @@ export const Constants = {
         "cancelada",
         "no_asistio",
       ],
+      entry_order_status: ["borrador", "aplicada", "cancelada"],
       inventory_count_status: [
         "borrador",
         "en_conteo",
@@ -3817,6 +4109,13 @@ export const Constants = {
         "cancelada",
       ],
       quote_status: ["borrador", "enviada", "aceptada", "rechazada", "vencida"],
+      requisition_status: [
+        "borrador",
+        "aprobada",
+        "rechazada",
+        "convertida",
+        "cancelada",
+      ],
       subscription_status: ["activa", "prueba", "morosa", "cancelada"],
       supplier_invoice_status: [
         "borrador",
