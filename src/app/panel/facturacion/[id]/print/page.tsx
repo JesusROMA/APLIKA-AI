@@ -43,6 +43,8 @@ export default function FacturaPrintPage() {
 
   const doc: PrintableDoc = {
     orgName: session.organization?.name ?? '',
+    brandColor: session.organization?.brandColor ?? undefined,
+    logoUrl: session.organization?.logoUrl ?? undefined,
     docTitle: 'Factura',
     folio: `${inv.serie}-${inv.folio}`,
     status: STATUS_LABEL[inv.status] ?? inv.status,

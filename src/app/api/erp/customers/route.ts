@@ -6,13 +6,14 @@ import { erpClientFor } from '@/lib/erp/db';
 import { parseListParams, rangeFor, paginated } from '@/lib/erp/pagination';
 import { fetchCatalogCodes } from '@/lib/erp/catalogs';
 import type { CustomerRow } from '@/lib/types/erp';
+import type { Json } from '@/lib/supabase/database.types';
 
 export const dynamic = 'force-dynamic';
 
 const RFC_RE = /^([A-ZÑ&]{3,4})[0-9]{6}[A-Z0-9]{3}$/i;
 
 const SELECT =
-  'id, name, rfc, regimen_code, uso_cfdi_code, cp, contact_name, phone, email, price_list_id, credit_limit, credit_days, discount_pct, balance, active, created_at, price_lists ( name )';
+  'id, name, rfc, regimen_code, uso_cfdi_code, cp, contact_name, phone, email, price_list_id, credit_limit, credit_days, discount_pct, balance, active, custom, created_at, price_lists ( name )';
 
 function toRow(c: {
   id: string;
@@ -30,6 +31,7 @@ function toRow(c: {
   discount_pct: number;
   balance: number;
   active: boolean;
+  custom: Json | null;
   created_at: string;
   price_lists: { name: string } | null;
 }): CustomerRow {
@@ -50,6 +52,7 @@ function toRow(c: {
     discountPct: Number(c.discount_pct),
     balance: Number(c.balance),
     active: c.active,
+    custom: (c.custom ?? {}) as Record<string, unknown>,
     createdAt: c.created_at,
   };
 }
@@ -92,6 +95,7 @@ const NewCustomer = z.object({
   creditLimit: z.number().nonnegative().default(0),
   creditDays: z.number().int().min(0).default(0),
   discountPct: z.number().min(0).max(100).default(0),
+  custom: z.record(z.unknown()).optional(), // campos personalizados (F4)
 });
 
 // POST /api/erp/customers — alta (maestros/crear); valida RFC/CP/catálogos SAT
@@ -131,6 +135,7 @@ export const POST = handle(async (req) => {
       credit_limit: b.creditLimit,
       credit_days: b.creditDays,
       discount_pct: b.discountPct,
+      ...(b.custom ? { custom: b.custom as Json } : {}),
     })
     .select('id')
     .single();

@@ -37,7 +37,7 @@ export async function getErpSession(): Promise<SessionInfo> {
     const [{ data: org }, { data: mods }] = await Promise.all([
       supabase
         .from('organizations')
-        .select('id, slug, name, verticals ( key )')
+        .select('id, slug, name, logo_url, brand_color, verticals ( key )')
         .eq('id', effectiveOrgId)
         .maybeSingle(),
       supabase
@@ -48,7 +48,14 @@ export async function getErpSession(): Promise<SessionInfo> {
 
     if (org) {
       const vertical = org.verticals?.key ?? null;
-      organization = { id: org.id, slug: org.slug, name: org.name, vertical };
+      organization = {
+        id: org.id,
+        slug: org.slug,
+        name: org.name,
+        vertical,
+        logoUrl: org.logo_url ?? null,
+        brandColor: org.brand_color ?? null,
+      };
       if (impersonatedOrgId) {
         impersonating = { id: org.id, slug: org.slug, name: org.name };
       }

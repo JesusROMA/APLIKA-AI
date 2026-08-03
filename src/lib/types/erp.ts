@@ -47,6 +47,8 @@ export interface SessionInfo {
     slug: string;
     name: string;
     vertical: string | null;
+    logoUrl: string | null; // branding del tenant (F4)
+    brandColor: string | null;
   } | null;
   /** Presente cuando un super_admin está impersonando un tenant (C1.3). */
   impersonating: { id: string; slug: string; name: string } | null;
@@ -89,6 +91,7 @@ export interface CustomerRow {
   discountPct: number;
   balance: number;
   active: boolean;
+  custom: Record<string, unknown>; // valores de campos personalizados (F4)
   createdAt: string;
 }
 

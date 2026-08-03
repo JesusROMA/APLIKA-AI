@@ -27,7 +27,8 @@ export default function PedidoPrintPage({ params }: { params: { id: string } }) 
 
   const doc: PrintableDoc = {
     orgName: session.organization?.name ?? '',
-    logoUrl: null,
+    brandColor: session.organization?.brandColor ?? undefined,
+    logoUrl: session.organization?.logoUrl ?? undefined,
     docTitle: 'Pedido',
     folio: order.folio,
     status: ORDER_STATUS_LABEL[order.status],

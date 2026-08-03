@@ -37,6 +37,8 @@ export default function CotizacionPrintPage() {
 
   const doc: PrintableDoc = {
     orgName: session.organization?.name ?? 'Aplika.ai',
+    brandColor: session.organization?.brandColor ?? undefined,
+    logoUrl: session.organization?.logoUrl ?? undefined,
     docTitle: 'Cotización',
     folio: quote.folio,
     status: QUOTE_STATUS_LABEL[quote.status],

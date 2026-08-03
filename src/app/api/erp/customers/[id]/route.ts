@@ -44,6 +44,7 @@ const Patch = z.object({
   creditDays: z.number().int().min(0).optional(),
   discountPct: z.number().min(0).max(100).optional(),
   active: z.boolean().optional(), // soft-inactivar (columna customers.active)
+  custom: z.record(z.unknown()).optional(), // campos personalizados (F4)
 });
 
 // PATCH /api/erp/customers/[id] — edición parcial (maestros/editar)
@@ -81,6 +82,7 @@ export const PATCH = handle(async (req, { params }) => {
   if (b.creditDays !== undefined) update.credit_days = b.creditDays;
   if (b.discountPct !== undefined) update.discount_pct = b.discountPct;
   if (b.active !== undefined) update.active = b.active;
+  if (b.custom !== undefined) update.custom = b.custom as TablesUpdate<'customers'>['custom'];
 
   if (Object.keys(update).length === 0) return ok({ ok: true });
 

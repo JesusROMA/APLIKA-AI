@@ -9,11 +9,13 @@
 
 import { useMemo, useState } from 'react';
 import type { CustomerRow } from '@/lib/types/erp';
-import { listCustomers, createCustomer, updateCustomer, getCatalogs, listPriceLists } from '../_lib/api';
+import type { CustomFieldDef } from '@/lib/types/erp-config';
+import { listCustomers, createCustomer, updateCustomer, getCatalogs, listPriceLists, getCustomFields } from '../_lib/api';
 import { useAsyncData, usePaginated } from '../_lib/hooks';
 import { useCan } from '../_components/session';
 import { DataTable, type Column } from '../_components/DataTable';
 import { Drawer } from '../_components/Drawer';
+import { CustomFields } from '../_components/CustomFields';
 import { TextField, SelectField, NumberField, CheckboxField, type SelectOption } from '../_components/Field';
 import { Badge, ReadOnlyBadge } from '../_components/States';
 import { validateRfc, validateCp, isBlank } from '../_lib/validation';
@@ -27,6 +29,7 @@ export default function ClientesPage() {
   const list = usePaginated<CustomerRow>(listCustomers);
   const catalogs = useAsyncData(getCatalogs);
   const priceLists = useAsyncData(() => listPriceLists({ pageSize: 100 }));
+  const customFields = useAsyncData(() => getCustomFields('maestros'));
   const [draft, setDraft] = useState<Draft>(null);
 
   const regimenOpts: SelectOption[] = useMemo(
@@ -108,6 +111,7 @@ export default function ClientesPage() {
           regimenOpts={regimenOpts}
           usoOpts={usoOpts}
           priceListOpts={priceListOpts}
+          customFieldDefs={customFields.data ?? []}
           canEdit={draft === 'new' ? can('maestros', 'crear') : can('maestros', 'editar')}
           onClose={() => setDraft(null)}
           onSaved={() => {
@@ -133,6 +137,7 @@ interface FormState {
   creditLimit: number | '';
   creditDays: number | '';
   active: boolean;
+  custom: Record<string, unknown>;
 }
 
 function seed(draft: Draft): FormState {
@@ -140,6 +145,7 @@ function seed(draft: Draft): FormState {
     return {
       name: '', rfc: '', regimenCode: '', usoCfdiCode: '', cp: '', contactName: '',
       phone: '', email: '', priceListId: '', creditLimit: '', creditDays: '', active: true,
+      custom: {},
     };
   }
   return {
@@ -155,6 +161,7 @@ function seed(draft: Draft): FormState {
     creditLimit: draft.creditLimit ?? '',
     creditDays: draft.creditDays ?? '',
     active: draft.active,
+    custom: (draft.custom ?? {}) as Record<string, unknown>,
   };
 }
 
@@ -163,6 +170,7 @@ function CustomerDrawer({
   regimenOpts,
   usoOpts,
   priceListOpts,
+  customFieldDefs,
   canEdit,
   onClose,
   onSaved,
@@ -171,6 +179,7 @@ function CustomerDrawer({
   regimenOpts: SelectOption[];
   usoOpts: SelectOption[];
   priceListOpts: SelectOption[];
+  customFieldDefs: CustomFieldDef[];
   canEdit: boolean;
   onClose: () => void;
   onSaved: () => void;
@@ -204,6 +213,7 @@ function CustomerDrawer({
       creditLimit: form.creditLimit === '' ? 0 : form.creditLimit,
       creditDays: form.creditDays === '' ? 0 : form.creditDays,
       active: form.active,
+      custom: form.custom,
     };
     try {
       if (isNew) await createCustomer(body);
@@ -333,6 +343,19 @@ function CustomerDrawer({
           checked={form.active}
           onChange={(v) => set('active', v)}
         />
+        {customFieldDefs.length > 0 && (
+          <div style={{ marginTop: 'var(--sp-3)', borderTop: '1px solid var(--border, #E6F1FB)', paddingTop: 'var(--sp-2)' }}>
+            <p className="panel-field-label" style={{ marginBottom: 'var(--sp-1)' }}>
+              Campos personalizados
+            </p>
+            <CustomFields
+              defs={customFieldDefs}
+              value={form.custom}
+              onChange={(v) => set('custom', v)}
+              readOnly={!canEdit}
+            />
+          </div>
+        )}
       </fieldset>
     </Drawer>
   );

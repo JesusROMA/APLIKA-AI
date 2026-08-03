@@ -20,6 +20,7 @@ import type {
   PriceListItemRow,
   SatCatalogEntry,
 } from '@/lib/types/erp';
+import type { CustomFieldDef } from '@/lib/types/erp-config';
 
 /** Error de API con status HTTP para que la UI distinga 401 / 403 / 4xx. */
 export class ApiError extends Error {
@@ -94,6 +95,10 @@ function query(params?: ListParams): string {
 export const getMe = () => request<SessionInfo>('/me');
 export const getDashboard = () => request<DashboardData>('/dashboard');
 export const getCatalogs = () => request<CatalogsResponse>('/catalogs');
+
+// ===== Campos personalizados (F4) — defs activas para formularios =====
+export const getCustomFields = (moduleKey = 'maestros') =>
+  request<{ data: CustomFieldDef[] }>(`/custom-fields?moduleKey=${moduleKey}`).then((r) => r.data);
 
 // ===== Clientes =====
 
