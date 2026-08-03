@@ -129,6 +129,89 @@ export type Database = {
           },
         ]
       }
+      appointment_series: {
+        Row: {
+          active: boolean
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          duration_min: number
+          freq: Database["public"]["Enums"]["appointment_freq"]
+          id: string
+          organization_id: string
+          patient_name: string | null
+          price_mxn: number | null
+          professional_id: string
+          resource: string | null
+          start_time: string
+          until: string
+          weekday: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          duration_min?: number
+          freq?: Database["public"]["Enums"]["appointment_freq"]
+          id?: string
+          organization_id: string
+          patient_name?: string | null
+          price_mxn?: number | null
+          professional_id: string
+          resource?: string | null
+          start_time: string
+          until: string
+          weekday: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          duration_min?: number
+          freq?: Database["public"]["Enums"]["appointment_freq"]
+          id?: string
+          organization_id?: string
+          patient_name?: string | null
+          price_mxn?: number | null
+          professional_id?: string
+          resource?: string | null
+          start_time?: string
+          until?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_series_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_series_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_series_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_series_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           created_at: string
@@ -139,7 +222,10 @@ export type Database = {
           notes: string | null
           organization_id: string
           patient_name: string
+          price_mxn: number | null
           professional_id: string | null
+          resource: string | null
+          series_id: string | null
           starts_at: string
           status: Database["public"]["Enums"]["appointment_status"]
           updated_at: string
@@ -153,7 +239,10 @@ export type Database = {
           notes?: string | null
           organization_id: string
           patient_name: string
+          price_mxn?: number | null
           professional_id?: string | null
+          resource?: string | null
+          series_id?: string | null
           starts_at: string
           status?: Database["public"]["Enums"]["appointment_status"]
           updated_at?: string
@@ -167,7 +256,10 @@ export type Database = {
           notes?: string | null
           organization_id?: string
           patient_name?: string
+          price_mxn?: number | null
           professional_id?: string | null
+          resource?: string | null
+          series_id?: string | null
           starts_at?: string
           status?: Database["public"]["Enums"]["appointment_status"]
           updated_at?: string
@@ -247,6 +339,68 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinical_notes: {
+        Row: {
+          appointment_id: string | null
+          body: string
+          created_at: string
+          customer_id: string | null
+          id: string
+          organization_id: string
+          professional_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          body: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          organization_id: string
+          professional_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          body?: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          organization_id?: string
+          professional_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_notes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2316,6 +2470,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      generar_serie: { Args: { p_series: string }; Returns: number }
       has_perm: {
         Args: { p_action: string; p_module: string }
         Returns: boolean
@@ -2455,7 +2610,13 @@ export type Database = {
     }
     Enums: {
       ai_role: "user" | "agent"
-      appointment_status: "agendada" | "confirmada" | "completada" | "cancelada"
+      appointment_freq: "semanal" | "quincenal" | "mensual"
+      appointment_status:
+        | "agendada"
+        | "confirmada"
+        | "completada"
+        | "cancelada"
+        | "no_asistio"
       inventory_count_status:
         | "borrador"
         | "en_conteo"
@@ -3174,7 +3335,14 @@ export const Constants = {
   public: {
     Enums: {
       ai_role: ["user", "agent"],
-      appointment_status: ["agendada", "confirmada", "completada", "cancelada"],
+      appointment_freq: ["semanal", "quincenal", "mensual"],
+      appointment_status: [
+        "agendada",
+        "confirmada",
+        "completada",
+        "cancelada",
+        "no_asistio",
+      ],
       inventory_count_status: [
         "borrador",
         "en_conteo",
