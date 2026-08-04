@@ -8,10 +8,9 @@ import { PanelShell } from './_components/PanelShell';
  * monta la CSS del brand kit y delega el shell interactivo a <PanelShell>,
  * que es Client (necesita fetch de sesión + estado de nav/impersonación).
  *
- * NOTA (Tanda C · orquestador): el login existente
- * (public/dc/Login.dc.html) hoy redirige a /dc/Panel Cliente.dc.html. El
- * cambio del destino de login hacia /panel es DECISIÓN DEL ORQUESTADOR, no de
- * AGENTE-UI. Este panel queda accesible directamente en /panel.
+ * Este ES el panel cliente (el panel dc anterior fue retirado): el login de
+ * tenants redirige aquí; el super_admin conserva su panel dc de administración
+ * y entra a este panel vía impersonación (cookie firmada multitenant).
  */
 
 export const metadata: Metadata = {

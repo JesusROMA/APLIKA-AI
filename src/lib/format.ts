@@ -29,7 +29,7 @@ export function initials(name: string): string {
     .join('');
 }
 
-/** Semáforo de inventario (idéntico a la lógica del Panel Cliente). */
+/** Semáforo de inventario (compartido con el ERP). */
 export function semaforo(stock: number, min: number): 'agotado' | 'bajo' | 'ok' {
   if (stock === 0) return 'agotado';
   if (stock < min) return 'bajo';

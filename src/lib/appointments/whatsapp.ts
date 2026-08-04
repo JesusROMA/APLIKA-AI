@@ -2,7 +2,7 @@
 // Aplika.ai — Parser de mensajes de WhatsApp para reserva de citas.
 // Extrae fecha y hora de un texto en español coloquial (mensaje del paciente)
 // y devuelve el ISO de inicio propuesto. Se usa en el endpoint
-// POST /api/appointments/whatsapp; el Panel Cliente replica esta lógica en JS
+// Usada por el webhook de WhatsApp (el flujo determinista de reservas).
 // para el modo demo (sin backend).
 // ============================================================================
 
