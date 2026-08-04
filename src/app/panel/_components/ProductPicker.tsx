@@ -12,13 +12,17 @@ import { searchVariants } from '../_lib/ventas-api';
 
 interface Props {
   customerId?: string | null;
+  /** F8: lista de precios seleccionada en el documento (manda sobre la del cliente). */
+  priceListId?: string | null;
+  /** F8: almacén del documento — el stock mostrado es el de ese almacén. */
+  warehouseId?: string | null;
   onPick: (v: VariantPick) => void;
   disabled?: boolean;
 }
 
 const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 
-export function ProductPicker({ customerId, onPick, disabled = false }: Props) {
+export function ProductPicker({ customerId, priceListId, warehouseId, onPick, disabled = false }: Props) {
   const [term, setTerm] = useState('');
   const [results, setResults] = useState<VariantPick[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +44,7 @@ export function ProductPicker({ customerId, onPick, disabled = false }: Props) {
     setLoading(true);
     const t = setTimeout(() => {
       let alive = true;
-      searchVariants(q, customerId)
+      searchVariants(q, customerId, { priceListId, warehouseId })
         .then((rows) => {
           if (alive) setResults(rows.slice(0, 8));
         })
@@ -55,7 +59,7 @@ export function ProductPicker({ customerId, onPick, disabled = false }: Props) {
       };
     }, 300);
     return () => clearTimeout(t);
-  }, [term, open, customerId]);
+  }, [term, open, customerId, priceListId, warehouseId]);
 
   // Cierra el dropdown al hacer click fuera.
   useEffect(() => {

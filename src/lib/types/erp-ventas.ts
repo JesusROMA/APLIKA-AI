@@ -90,6 +90,9 @@ export interface QuoteRow {
   subtotal: number;
   tax: number;
   total: number;
+  /** F8: almacén de salida y lista de precios seleccionados en el documento. */
+  warehouseId: string | null;
+  priceListId: string | null;
   createdAt: string;
 }
 

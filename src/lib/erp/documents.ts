@@ -21,14 +21,15 @@ export { round2, lineTotalOf, computeTotals } from '@/lib/erp/totals';
 
 /**
  * Normaliza partidas de entrada a `DocLine[]` calculadas en servidor: resuelve
- * SKU/nombre/IVA desde la variante y el precio desde la lista del cliente
- * (`resolveVariantPrice`) cuando no vienen dados, y calcula `lineTotal`.
- * Los endpoints validan (p.ej. `name` requerido en línea libre) antes de llamar.
+ * SKU/nombre/IVA desde la variante y el precio desde la lista SELECCIONADA del
+ * documento (F8) o la del cliente (`resolveVariantPrice`) cuando no vienen
+ * dados, y calcula `lineTotal`. Los endpoints validan antes de llamar.
  */
 export async function buildLines(
   supabase: ErpClient,
   customerId: string | null | undefined,
   inputs: DocLineInput[],
+  priceListId?: string | null,
 ): Promise<DocLine[]> {
   const out: DocLine[] = [];
   for (const inp of inputs) {
@@ -51,7 +52,12 @@ export async function buildLines(
           ivaRate = Number(prod?.iva_rate ?? 0.16);
         }
         if (unitPrice === undefined) {
-          const p = await resolveVariantPrice(supabase, inp.productVariantId, customerId ?? null);
+          const p = await resolveVariantPrice(
+            supabase,
+            inp.productVariantId,
+            customerId ?? null,
+            priceListId ?? null,
+          );
           unitPrice = p ?? Number(v.base_price_mxn);
         }
       }

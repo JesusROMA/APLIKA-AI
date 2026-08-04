@@ -66,6 +66,8 @@ export async function convertQuoteToOrder(
       organization_id: orgId,
       folio,
       customer_id: quote.customer_id,
+      // F8: la salida de stock ocurre en el almacén elegido al cotizar.
+      warehouse_id: quote.warehouse_id ?? null,
       status: 'borrador',
       channel: `Cotización ${quote.folio}`,
       subtotal: Number(quote.subtotal),

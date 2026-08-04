@@ -17,7 +17,7 @@ import {
 export const dynamic = 'force-dynamic';
 
 const SELECT =
-  'id, folio, customer_id, status, vigencia_dias, valid_until, version, parent_quote_id, descuento_global_pct, subtotal, tax, total, created_at, customers ( name )';
+  'id, folio, customer_id, status, vigencia_dias, valid_until, version, parent_quote_id, descuento_global_pct, subtotal, tax, total, warehouse_id, price_list_id, created_at, customers ( name )';
 
 /** Estados reales en BD (para filtrar; 'vencida' es display-only). */
 const DB_STATUSES = new Set(['borrador', 'enviada', 'aceptada', 'rechazada']);
@@ -67,9 +67,10 @@ export const POST = handle(async (req) => {
   const body = quoteBodySchema.parse(await req.json());
   const customerId = body.customerId ?? null;
 
-  // Folio + partidas normalizadas + totales, TODO en servidor.
+  // Folio + partidas normalizadas + totales, TODO en servidor. El precio se
+  // resuelve con la lista SELECCIONADA (F8) → lista del cliente → base.
   const folio = await nextSerieFolio(supabase, orgId, 'quote');
-  const lines = await buildLines(supabase, customerId, body.lines);
+  const lines = await buildLines(supabase, customerId, body.lines, body.priceListId ?? null);
   const totals = computeTotals(lines, body.descuentoGlobalPct);
 
   const { data: quote, error } = await supabase
@@ -85,6 +86,8 @@ export const POST = handle(async (req) => {
       subtotal: totals.subtotal,
       tax: totals.tax,
       total: totals.total,
+      warehouse_id: body.warehouseId ?? null,
+      price_list_id: body.priceListId ?? null,
       notas: body.notas ?? null,
       created_by: session.userId,
     })

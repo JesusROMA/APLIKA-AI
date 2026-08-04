@@ -65,6 +65,9 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
   // operador aplica en Inventario → Órdenes de entrada (único camino de entrada).
   const showGenerarEntrada =
     (po.status === 'confirmada' || po.status === 'recibida_parcial') && can('inventario', 'crear');
+  // F8: cerrar el ciclo compra→pago sin recaptura (CxP prellenada desde la OC).
+  const showRegistrarFactura =
+    (po.status === 'recibida' || po.status === 'recibida_parcial') && can('compras', 'crear');
   const showCancelar =
     canCancel && po.status !== 'cancelada' && po.status !== 'recibida' && !hasReceipts;
   const noActions = !showConfirmar && !showGenerarEntrada && !showCancelar;
@@ -155,6 +158,16 @@ export default function OrdenCompraDetallePage({ params }: { params: { id: strin
               onClick={() => router.push(`/panel/inventario/entradas/nueva?poId=${params.id}`)}
             >
               Generar orden de entrada
+            </button>
+          )}
+          {showRegistrarFactura && (
+            <button
+              type="button"
+              className="pbtn pbtn--primary"
+              disabled={busy}
+              onClick={() => router.push(`/panel/compras/cxp/nueva?poId=${params.id}`)}
+            >
+              Registrar factura de proveedor
             </button>
           )}
           {showCancelar && (

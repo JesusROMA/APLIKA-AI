@@ -38,8 +38,8 @@ export const PATCH = handle(async (req, { params }) => {
   const body = quoteBodySchema.parse(await req.json());
   const customerId = body.customerId ?? null;
 
-  // Reconstruye partidas + totales en servidor.
-  const lines = await buildLines(supabase, customerId, body.lines);
+  // Reconstruye partidas + totales en servidor (lista seleccionada F8).
+  const lines = await buildLines(supabase, customerId, body.lines, body.priceListId ?? null);
   const totals = computeTotals(lines, body.descuentoGlobalPct);
 
   const { error: updErr } = await supabase
@@ -52,6 +52,8 @@ export const PATCH = handle(async (req, { params }) => {
       subtotal: totals.subtotal,
       tax: totals.tax,
       total: totals.total,
+      warehouse_id: body.warehouseId ?? null,
+      price_list_id: body.priceListId ?? null,
       notas: body.notas ?? null,
     })
     .eq('id', params.id);

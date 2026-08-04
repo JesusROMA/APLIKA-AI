@@ -104,6 +104,8 @@ export default function CotizacionDetallePage() {
             descuentoGlobalPct: quote.descuentoGlobalPct,
             vigenciaDias: quote.vigenciaDias,
             notas: quote.notas ?? '',
+            warehouseId: quote.warehouseId,
+            priceListId: quote.priceListId,
           }}
           onSubmit={async (body) => {
             await updateQuote(id, body);

@@ -2,17 +2,22 @@
 
 /**
  * Formulario de cotización (alta y edición de borrador). Reúne las piezas
- * compartidas F1: CustomerPicker + DocLinesEditor (con descuento global) y los
- * campos de vigencia/notas. Los totales los pinta DocLinesEditor con las mismas
- * fórmulas del servidor; el guardado real lo hace el padre vía `onSubmit`.
+ * compartidas: CustomerPicker + DocLinesEditor (con descuento global) y los
+ * campos de vigencia/notas. F8: selección explícita de LISTA DE PRECIOS
+ * (default: la del cliente al elegirlo) y de ALMACÉN de salida (default: el
+ * predeterminado del tenant); ambos fluyen al picker (precio de la lista +
+ * stock del almacén) y se heredan al pedido al convertir. Los totales los
+ * pinta DocLinesEditor con las mismas fórmulas del servidor.
  */
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { DocLineInput } from '@/lib/types/erp-ventas';
 import type { QuoteInput } from '../../_lib/cotizaciones';
+import { listPriceLists, listWarehouses } from '../../_lib/api';
+import { useAsyncData } from '../../_lib/hooks';
 import { CustomerPicker } from '../../_components/CustomerPicker';
 import { DocLinesEditor } from '../../_components/DocLinesEditor';
-import { NumberField } from '../../_components/Field';
+import { NumberField, SelectField } from '../../_components/Field';
 import { ReadOnlyBadge } from '../../_components/States';
 
 export interface QuoteFormInitial {
@@ -21,6 +26,8 @@ export interface QuoteFormInitial {
   descuentoGlobalPct: number;
   vigenciaDias: number;
   notas: string;
+  warehouseId?: string | null;
+  priceListId?: string | null;
 }
 
 const EMPTY: QuoteFormInitial = {
@@ -29,6 +36,8 @@ const EMPTY: QuoteFormInitial = {
   descuentoGlobalPct: 0,
   vigenciaDias: 15,
   notas: '',
+  warehouseId: null,
+  priceListId: null,
 };
 
 interface Props {
@@ -42,12 +51,32 @@ interface Props {
 export function QuoteForm({ initial, canEdit, submitLabel, onSubmit, onCancel }: Props) {
   const seed = initial ?? EMPTY;
   const [customerId, setCustomerId] = useState<string | null>(seed.customerId);
+  const [warehouseId, setWarehouseId] = useState<string>(seed.warehouseId ?? '');
+  const [priceListId, setPriceListId] = useState<string>(seed.priceListId ?? '');
   const [lines, setLines] = useState<DocLineInput[]>(seed.lines);
   const [descuentoGlobalPct, setDescuentoGlobalPct] = useState<number>(seed.descuentoGlobalPct);
   const [vigenciaDias, setVigenciaDias] = useState<number | ''>(seed.vigenciaDias);
   const [notas, setNotas] = useState<string>(seed.notas);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const warehouses = useAsyncData(() => listWarehouses({ pageSize: 100 }));
+  const priceLists = useAsyncData(() => listPriceLists({ pageSize: 100 }));
+
+  // Default de almacén: el predeterminado del tenant (o el primero).
+  const whList = useMemo(() => warehouses.data?.data ?? [], [warehouses.data]);
+  useEffect(() => {
+    if (!warehouseId && whList.length > 0) {
+      setWarehouseId((whList.find((w) => w.isDefault) ?? whList[0]).id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [whList.length]);
+
+  const whOptions = useMemo(() => whList.map((w) => ({ value: w.id, label: w.name })), [whList]);
+  const plOptions = useMemo(
+    () => (priceLists.data?.data ?? []).map((p) => ({ value: p.id, label: p.name })),
+    [priceLists.data],
+  );
 
   const hasLines = lines.length > 0;
   const freeLineMissingName = lines.some((l) => !l.productVariantId && !(l.name && l.name.trim()));
@@ -69,6 +98,8 @@ export function QuoteForm({ initial, canEdit, submitLabel, onSubmit, onCancel }:
     try {
       await onSubmit({
         customerId,
+        warehouseId: warehouseId || null,
+        priceListId: priceListId || null,
         // Narrowed a number por la guarda `if (!canSubmit) return`.
         vigenciaDias: Number(vigenciaDias),
         descuentoGlobalPct,
@@ -91,7 +122,15 @@ export function QuoteForm({ initial, canEdit, submitLabel, onSubmit, onCancel }:
 
       <fieldset disabled={!canEdit} style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="panel-form-grid">
-          <CustomerPicker value={customerId} onChange={(id) => setCustomerId(id)} allowPublico />
+          <CustomerPicker
+            value={customerId}
+            onChange={(id, row) => {
+              setCustomerId(id);
+              // Default de lista: la del cliente al elegirlo (editable después).
+              if (row && row.priceListId) setPriceListId(row.priceListId);
+            }}
+            allowPublico
+          />
           <NumberField
             label="Vigencia (días)"
             name="vigenciaDias"
@@ -101,8 +140,31 @@ export function QuoteForm({ initial, canEdit, submitLabel, onSubmit, onCancel }:
           />
         </div>
 
+        <div className="panel-form-grid">
+          <SelectField
+            label="Lista de precios"
+            name="priceListId"
+            value={priceListId}
+            onChange={setPriceListId}
+            options={plOptions}
+            placeholder="Precio base (sin lista)"
+            hint="Default: la lista del cliente. Define el precio de las partidas."
+          />
+          <SelectField
+            label="Almacén de salida"
+            name="warehouseId"
+            value={warehouseId}
+            onChange={setWarehouseId}
+            options={whOptions}
+            placeholder="Selecciona almacén…"
+            hint="El stock mostrado y la salida del pedido usan este almacén."
+          />
+        </div>
+
         <DocLinesEditor
           customerId={customerId}
+          priceListId={priceListId || null}
+          warehouseId={warehouseId || null}
           lines={lines}
           onChange={setLines}
           descuentoGlobalPct={descuentoGlobalPct}

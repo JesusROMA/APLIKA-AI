@@ -53,6 +53,9 @@ function query(params?: ListParams): string {
 /** Cuerpo de alta/edición de cotización (cabecera + partidas). */
 export interface QuoteInput {
   customerId?: string | null;
+  /** F8: almacén de salida y lista de precios seleccionados. */
+  warehouseId?: string | null;
+  priceListId?: string | null;
   vigenciaDias?: number;
   descuentoGlobalPct?: number;
   notas?: string;

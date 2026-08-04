@@ -14,6 +14,10 @@ import { ProductPicker } from './ProductPicker';
 
 interface Props {
   customerId: string | null;
+  /** F8: lista de precios seleccionada (manda sobre la del cliente en el picker). */
+  priceListId?: string | null;
+  /** F8: almacén del documento — el picker muestra el stock de ese almacén. */
+  warehouseId?: string | null;
   lines: DocLineInput[];
   onChange: (lines: DocLineInput[]) => void;
   descuentoGlobalPct?: number;
@@ -40,6 +44,8 @@ function isFreeLine(l: DocLineInput): boolean {
 
 export function DocLinesEditor({
   customerId,
+  priceListId,
+  warehouseId,
   lines,
   onChange,
   descuentoGlobalPct = 0,
@@ -97,7 +103,12 @@ export function DocLinesEditor({
       {!readOnly && (
         <div className="f1-lines-tools">
           <div className="f1-lines-tools-picker">
-            <ProductPicker customerId={customerId} onPick={addFromVariant} />
+            <ProductPicker
+              customerId={customerId}
+              priceListId={priceListId}
+              warehouseId={warehouseId}
+              onPick={addFromVariant}
+            />
           </div>
           <button type="button" className="pbtn pbtn--ghost" onClick={addFreeLine}>
             + Línea libre

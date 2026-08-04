@@ -2389,6 +2389,7 @@ export type Database = {
           notas: string | null
           organization_id: string
           parent_quote_id: string | null
+          price_list_id: string | null
           status: Database["public"]["Enums"]["quote_status"]
           subtotal: number
           tax: number
@@ -2397,6 +2398,7 @@ export type Database = {
           valid_until: string | null
           version: number
           vigencia_dias: number
+          warehouse_id: string | null
         }
         Insert: {
           created_at?: string
@@ -2409,6 +2411,7 @@ export type Database = {
           notas?: string | null
           organization_id: string
           parent_quote_id?: string | null
+          price_list_id?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           subtotal?: number
           tax?: number
@@ -2417,6 +2420,7 @@ export type Database = {
           valid_until?: string | null
           version?: number
           vigencia_dias?: number
+          warehouse_id?: string | null
         }
         Update: {
           created_at?: string
@@ -2429,6 +2433,7 @@ export type Database = {
           notas?: string | null
           organization_id?: string
           parent_quote_id?: string | null
+          price_list_id?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           subtotal?: number
           tax?: number
@@ -2437,6 +2442,7 @@ export type Database = {
           valid_until?: string | null
           version?: number
           vigencia_dias?: number
+          warehouse_id?: string | null
         }
         Relationships: [
           {
@@ -2465,6 +2471,20 @@ export type Database = {
             columns: ["parent_quote_id"]
             isOneToOne: false
             referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_price_list_id_fkey"
+            columns: ["price_list_id"]
+            isOneToOne: false
+            referencedRelation: "price_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
             referencedColumns: ["id"]
           },
         ]

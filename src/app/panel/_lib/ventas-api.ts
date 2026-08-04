@@ -40,11 +40,20 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** Busca variantes con precio ya resuelto para el cliente (fuente del picker). */
-export function searchVariants(search: string, customerId?: string | null) {
+/**
+ * Busca variantes con precio ya resuelto (lista seleccionada → lista del
+ * cliente → base) y stock del almacén indicado (o agregado). Fuente del picker.
+ */
+export function searchVariants(
+  search: string,
+  customerId?: string | null,
+  opts?: { priceListId?: string | null; warehouseId?: string | null },
+) {
   const q = new URLSearchParams();
   if (search) q.set('search', search);
   if (customerId) q.set('customerId', customerId);
+  if (opts?.priceListId) q.set('priceListId', opts.priceListId);
+  if (opts?.warehouseId) q.set('warehouseId', opts.warehouseId);
   return req<{ data: VariantPick[] }>(`/variants?${q.toString()}`).then((r) => r.data);
 }
 

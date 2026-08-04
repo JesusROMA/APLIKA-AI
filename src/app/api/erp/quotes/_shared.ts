@@ -32,6 +32,9 @@ export const lineInputSchema = z
 /** Cuerpo de alta/edición de cotización (cabecera + partidas). */
 export const quoteBodySchema = z.object({
   customerId: z.string().uuid().nullable().optional(),
+  // F8: almacén de salida y lista de precios seleccionados en el documento.
+  warehouseId: z.string().uuid().nullable().optional(),
+  priceListId: z.string().uuid().nullable().optional(),
   vigenciaDias: z.number().int().positive().default(15),
   descuentoGlobalPct: z.number().min(0).max(100).default(0),
   notas: z.string().optional(),
@@ -85,6 +88,8 @@ export type QuoteHeaderRow = Pick<
   | 'subtotal'
   | 'tax'
   | 'total'
+  | 'warehouse_id'
+  | 'price_list_id'
   | 'created_at'
 > & { customers: { name: string } | null };
 
@@ -103,6 +108,8 @@ export function mapQuoteRow(r: QuoteHeaderRow): QuoteRow {
     subtotal: Number(r.subtotal),
     tax: Number(r.tax),
     total: Number(r.total),
+    warehouseId: r.warehouse_id,
+    priceListId: r.price_list_id,
     createdAt: r.created_at,
   };
 }

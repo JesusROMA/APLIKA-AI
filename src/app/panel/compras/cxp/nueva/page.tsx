@@ -6,14 +6,15 @@
  * partidas solo alimentan los totales; el servidor recalcula y las descarta.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { SupplierRow } from '@/lib/types/erp-compras';
 import { createSupplierInvoice, listSuppliers, type SupplierInvoiceLineInput } from '../../../_lib/cxp';
+import { getPurchaseOrder } from '../../../_lib/compras';
 import { useCan } from '../../../_components/session';
 import { TextField, SelectField, type SelectOption } from '../../../_components/Field';
-import { ReadOnlyBadge } from '../../../_components/States';
+import { ReadOnlyBadge, Spinner } from '../../../_components/States';
 
 const MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 
@@ -29,12 +30,25 @@ const emptyLine: LineDraft = { name: '', qty: 1, unitCost: 0, ivaRate: 0.16 };
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
 export default function NuevaSupplierInvoicePage() {
+  // useSearchParams exige Suspense en App Router.
+  return (
+    <Suspense fallback={<Spinner label="Cargando…" />}>
+      <NuevaSupplierInvoice />
+    </Suspense>
+  );
+}
+
+function NuevaSupplierInvoice() {
   const can = useCan();
   const canCreate = can('compras', 'crear');
   const router = useRouter();
+  // F8: ?poId= prellenar desde la Orden de Compra (proveedor + partidas + liga).
+  const poId = useSearchParams().get('poId');
 
   const [suppliers, setSuppliers] = useState<SupplierRow[]>([]);
   const [supplierId, setSupplierId] = useState('');
+  const [purchaseOrderId, setPurchaseOrderId] = useState<string | null>(null);
+  const [poFolio, setPoFolio] = useState<string | null>(null);
   const [folio, setFolio] = useState('');
   const [uuid, setUuid] = useState('');
   const [fecha, setFecha] = useState('');
@@ -49,6 +63,26 @@ export default function NuevaSupplierInvoicePage() {
       .then((res) => setSuppliers(res.data))
       .catch(() => setSuppliers([]));
   }, []);
+
+  // Prellenado desde la OC: proveedor, partidas (costo pactado) y liga.
+  useEffect(() => {
+    if (!poId) return;
+    getPurchaseOrder(poId)
+      .then((po) => {
+        setPurchaseOrderId(po.id);
+        setPoFolio(po.folio);
+        setSupplierId(po.supplierId);
+        setLines(
+          po.items.map((it) => ({
+            name: it.sku ? `${it.sku} · ${it.name}` : it.name,
+            qty: Number(it.qty),
+            unitCost: Number(it.unitCost),
+            ivaRate: Number(it.ivaRate),
+          })),
+        );
+      })
+      .catch(() => setError('No se pudo cargar la orden de compra para prellenar.'));
+  }, [poId]);
 
   const supplierOpts: SelectOption[] = useMemo(
     () => suppliers.map((s) => ({ value: s.id, label: s.name })),
@@ -94,6 +128,7 @@ export default function NuevaSupplierInvoicePage() {
       }));
       const { id } = await createSupplierInvoice({
         supplierId,
+        purchaseOrderId: purchaseOrderId ?? undefined,
         folio: folio.trim(),
         uuid: uuid.trim() || undefined,
         fecha: fecha || undefined,
@@ -123,6 +158,12 @@ export default function NuevaSupplierInvoicePage() {
       {error && (
         <p className="panel-field-error" role="alert" style={{ marginBottom: 'var(--sp-2)' }}>
           {error}
+        </p>
+      )}
+
+      {poFolio && (
+        <p className="panel-field-hint" style={{ marginBottom: 'var(--sp-2)' }}>
+          Prellenada desde la orden de compra <strong>{poFolio}</strong> (quedará ligada).
         </p>
       )}
 

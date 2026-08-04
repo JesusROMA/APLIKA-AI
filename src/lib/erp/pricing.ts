@@ -1,13 +1,11 @@
 import type { ErpClient } from '@/lib/erp/db';
 
 /**
- * Resuelve el precio de una variante para un cliente (C1.6 / C3):
- *   1. Si el cliente tiene lista de precios y hay item para la variante ⇒ ese precio.
- *   2. Si no ⇒ `base_price_mxn` de la variante.
- *
- * DESVIACIÓN CONTROLADA (reportada): en F0 el POST de pedidos vive en el panel
- * dc (`/api/orders`) y NO se toca para no romperlo. Este helper deja la lógica
- * lista para que F1 la use en el nuevo `/api/erp/orders`. RLS aplica sola.
+ * Resuelve el precio de una variante (F1 C1.6 / F8):
+ *   1. Si viene `priceListId` (lista seleccionada en el documento) ⇒ esa lista.
+ *   2. Si no, la lista del cliente (si tiene y hay item para la variante).
+ *   3. Fallback: `base_price_mxn` de la variante.
+ * RLS aplica sola.
  *
  * @returns precio en MXN, o `null` si la variante no existe / no es visible.
  */
@@ -15,25 +13,26 @@ export async function resolveVariantPrice(
   supabase: ErpClient,
   variantId: string,
   customerId?: string | null,
+  priceListId?: string | null,
 ): Promise<number | null> {
-  // 1) Lista del cliente
-  if (customerId) {
+  // 1) Lista explícita del documento (F8) o, en su defecto, la del cliente.
+  let listId = priceListId ?? null;
+  if (!listId && customerId) {
     const { data: customer } = await supabase
       .from('customers')
       .select('price_list_id')
       .eq('id', customerId)
       .maybeSingle();
-
-    const priceListId = customer?.price_list_id ?? null;
-    if (priceListId) {
-      const { data: item } = await supabase
-        .from('price_list_items')
-        .select('price_mxn')
-        .eq('price_list_id', priceListId)
-        .eq('product_variant_id', variantId)
-        .maybeSingle();
-      if (item) return Number(item.price_mxn);
-    }
+    listId = customer?.price_list_id ?? null;
+  }
+  if (listId) {
+    const { data: item } = await supabase
+      .from('price_list_items')
+      .select('price_mxn')
+      .eq('price_list_id', listId)
+      .eq('product_variant_id', variantId)
+      .maybeSingle();
+    if (item) return Number(item.price_mxn);
   }
 
   // 2) Fallback al precio base de la variante
