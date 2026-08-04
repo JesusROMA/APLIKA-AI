@@ -12,8 +12,9 @@
  *    el backend aún no exista; el build no depende de ello).
  */
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SessionInfo } from '@/lib/types/erp';
 import { getMe, ApiError } from '../_lib/api';
 import { SessionProvider } from './session';
@@ -171,12 +172,7 @@ export function PanelShell({ children }: { children: React.ReactNode }) {
                 </button>
                 <h1 className="panel-topbar-title">{titleFromPath(pathname)}</h1>
               </div>
-              <div className="panel-user">
-                <span>{session.fullName ?? session.email}</span>
-                <span className="panel-avatar" aria-hidden="true">
-                  {(session.fullName ?? session.email ?? '?').charAt(0).toUpperCase()}
-                </span>
-              </div>
+              <UserMenu session={session} />
             </header>
 
             <main className="panel-content">{children}</main>
@@ -184,6 +180,121 @@ export function PanelShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     </SessionProvider>
+  );
+}
+
+/**
+ * Menú del usuario (topbar): Panel admin (solo super_admin), Configuración y
+ * Cerrar sesión. Réplica del desplegable del panel anterior, sobre la sesión
+ * multitenant nueva. Cierra con click-fuera y Escape.
+ */
+function UserMenu({ session }: { session: SessionInfo }) {
+  const [open, setOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const logout = async () => {
+    setLeaving(true);
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+      const body = (await res.json().catch(() => null)) as { redirect?: string } | null;
+      window.location.href = body?.redirect ?? '/dc/Login.dc.html';
+    } catch {
+      window.location.href = '/dc/Login.dc.html';
+    }
+  };
+
+  const itemStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    width: '100%',
+    textAlign: 'left',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    font: 'inherit',
+    fontSize: 13.5,
+    fontWeight: 600,
+    color: 'inherit',
+    padding: '9px 12px',
+    borderRadius: 8,
+    textDecoration: 'none',
+  };
+
+  return (
+    <div ref={rootRef} style={{ position: 'relative' }}>
+      <button
+        type="button"
+        className="panel-user"
+        style={{ background: 'transparent', border: 'none', cursor: 'pointer', font: 'inherit' }}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span>{session.fullName ?? session.email}</span>
+        <span className="panel-avatar" aria-hidden="true">
+          {(session.fullName ?? session.email ?? '?').charAt(0).toUpperCase()}
+        </span>
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="panel-card"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 'calc(100% + 8px)',
+            minWidth: 210,
+            padding: 6,
+            zIndex: 40,
+            boxShadow: '0 18px 44px -18px rgba(2,18,38,0.35)',
+          }}
+        >
+          <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid var(--border, #E6F1FB)' }}>
+            <div style={{ fontWeight: 700, fontSize: 13.5 }}>{session.fullName ?? session.email}</div>
+            <div style={{ fontSize: 12, opacity: 0.65 }}>{session.email}</div>
+          </div>
+          {session.role === 'super_admin' && (
+            <a role="menuitem" href="/dc/Panel Super-admin.dc.html" style={itemStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.5 19 5V11C19 16 15.8 19.4 12 21.5C8.2 19.4 5 16 5 11V5Z" /></svg>
+              Panel admin
+            </a>
+          )}
+          <Link role="menuitem" href="/panel/config" style={itemStyle} onClick={() => setOpen(false)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" /><path d="M19.4 13a7.5 7.5 0 0 0 .1-1 7.5 7.5 0 0 0-.1-1l1.9-1.4-1.9-3.3-2.2.9a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.2a7 7 0 0 0-1.7 1l-2.2-.9-1.9 3.3L6.7 10a7.5 7.5 0 0 0 0 2l-1.9 1.4 1.9 3.3 2.2-.9a7 7 0 0 0 1.7 1L11 21h4l.4-2.2a7 7 0 0 0 1.7-1l2.2.9 1.9-3.3Z" /></svg>
+            Configuración
+          </Link>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={logout}
+            disabled={leaving}
+            style={{ ...itemStyle, color: 'var(--error, #D24545)' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
+            {leaving ? 'Cerrando…' : 'Cerrar sesión'}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 

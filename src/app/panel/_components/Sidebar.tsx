@@ -219,9 +219,27 @@ export function SidebarBrand() {
   const roleLabel = ROLE_LABELS[session.role] ?? session.role;
   return (
     <>
-      <div className="panel-brand">
-        <span>Aplika</span>
-        <span className="panel-brand-dot">.ai</span>
+      <div className="panel-brand" style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+        {/* Logo Aplika (retícula 2×2 del brand kit) + wordmark, juntos. */}
+        <span
+          aria-hidden="true"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 2.5,
+            width: 24,
+            height: 24,
+            flex: 'none',
+          }}
+        >
+          <span style={{ background: '#378ADD', borderRadius: 4 }} />
+          <span style={{ background: '#B5D4F4', borderRadius: 4 }} />
+          <span style={{ background: '#B5D4F4', borderRadius: 4 }} />
+          <span style={{ background: '#378ADD', borderRadius: 4 }} />
+        </span>
+        <span>
+          Aplika<span className="panel-brand-dot">.ai</span>
+        </span>
       </div>
       {org && (
         <div className="panel-org">

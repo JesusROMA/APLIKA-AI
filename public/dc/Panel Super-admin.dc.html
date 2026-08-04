@@ -79,7 +79,7 @@ button,input,select{font-family:inherit;}
               </div>
               <div style="padding:6px;">
                 <sc-if value="{{ isSuperAdmin }}" hint-placeholder-val="{{ true }}">
-                  <a href="Panel Cliente.dc.html" style="display:flex;align-items:center;gap:11px;width:100%;text-align:left;text-decoration:none;font-size:13.5px;font-weight:600;color:var(--text,#042C53);padding:10px 12px;border-radius:9px;box-sizing:border-box;" style-hover="background:var(--surface-2,#F5F8FC);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 5l8 7M6 10v10h12V10"></path></svg>Panel cliente</a>
+                  <a href="/panel" style="display:flex;align-items:center;gap:11px;width:100%;text-align:left;text-decoration:none;font-size:13.5px;font-weight:600;color:var(--text,#042C53);padding:10px 12px;border-radius:9px;box-sizing:border-box;" style-hover="background:var(--surface-2,#F5F8FC);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 5l8 7M6 10v10h12V10"></path></svg>Panel cliente</a>
                 </sc-if>
               </div>
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-top:1px solid var(--border,#E6F1FB);">
@@ -393,7 +393,7 @@ button,input,select{font-family:inherit;}
         <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border-radius:14px;margin-bottom:16px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg></span>
         <h3 style="font-size:19px;font-weight:700;margin:0 0 8px;color:var(--text,#042C53);">Entrar como {{ impersonateName }}</h3>
         <p style="font-size:14px;line-height:1.55;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 22px;">Verás el panel de este tenant en modo soporte. La sesión queda registrada en la bitácora.</p>
-        <div style="display:flex;gap:10px;"><button onClick="{{ closeImpersonate }}" style="flex:1;background:var(--surface,#FFFFFF);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button><button onClick="{{ closeImpersonate }}" style="flex:1;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Entrar al panel</button></div>
+        <div style="display:flex;gap:10px;"><button onClick="{{ closeImpersonate }}" style="flex:1;background:var(--surface,#FFFFFF);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button><button onClick="{{ goImpersonate }}" style="flex:1;background:var(--accent,#378ADD);color:#FFFFFF;border:none;border-radius:11px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Entrar al panel</button></div>
       </div>
     </div>
   </sc-if>
@@ -708,7 +708,7 @@ class Component extends DCLogic {
       vertBg: t.vertical === 'servicios_agenda' ? 'var(--success-weak,#E4F6EC)' : 'var(--accent-weak,#E6F1FB)',
       vertFg: t.vertical === 'servicios_agenda' ? 'var(--success,#1FA85A)' : 'var(--accent,#378ADD)',
       onModules: () => this.openTenantModules(t),
-      onImpersonate: () => this.setState({ impersonate: t.name })
+      onImpersonate: () => this.setState({ impersonate: t.name, impersonateId: t.id })
     }));
 
     // Drawer módulos del tenant
@@ -851,7 +851,15 @@ class Component extends DCLogic {
       ntSubmit: () => this.submitNewTenant(),
       planes, incidents, health,
       impersonateOpen: !!this.state.impersonate, impersonateName: this.state.impersonate || '',
-      closeImpersonate: () => this.setState({ impersonate: null }),
+      closeImpersonate: () => this.setState({ impersonate: null, impersonateId: null }),
+      // Impersonación REAL: fija la cookie firmada (multi-tenant) y abre /panel.
+      goImpersonate: () => {
+        const id = this.state.impersonateId;
+        if (!id) { this.setState({ impersonate: null }); return; }
+        fetch('/api/admin/tenants/' + id + '/impersonate', { method: 'POST', credentials: 'same-origin' })
+          .then(() => { window.location.href = '/panel'; })
+          .catch(() => alert('No se pudo entrar como el tenant.'));
+      },
       stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); }
     };
   }
