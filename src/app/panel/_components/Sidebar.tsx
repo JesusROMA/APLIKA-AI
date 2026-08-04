@@ -59,10 +59,13 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const has = (key: string) => activeKeys.has(key);
   const canVer = (mod: ModuleKey) => session.perms?.[mod]?.ver !== false;
 
-  const link = (it: Item) => {
+  // sub=true solo para hijos de un grupo plegable (Cotizaciones dentro de Ventas…);
+  // el resto de módulos van al nivel superior, todos alineados al mismo margen.
+  const link = (it: Item, sub = false) => {
+    const cls = `panel-nav-link${sub ? ' panel-nav-sub' : ''}`;
     if (it.soon) {
       return (
-        <span key={it.href} className="panel-nav-link panel-nav-sub" style={{ opacity: 0.45, cursor: 'default' }} title="Próximamente">
+        <span key={it.href} className={cls} style={{ opacity: 0.45, cursor: 'default' }} title="Próximamente">
           <Icon d={it.d} />
           <span>{it.label}</span>
           <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, opacity: 0.8 }}>PRONTO</span>
@@ -73,7 +76,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         key={it.href}
         href={it.href}
-        className="panel-nav-link panel-nav-sub"
+        className={cls}
         aria-current={isActive(pathname, it.href, it.exact) ? 'page' : undefined}
         onClick={onNavigate}
         title={it.label}
@@ -147,29 +150,29 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       {canVer('maestros') && (
         <>
           <div className="panel-nav-group-label">Maestros</div>
-          {maestros.map(link)}
+          {maestros.map((it) => link(it))}
         </>
       )}
 
       {(ventas.length > 0 || compras.length > 0 || inventario.length > 0 || opDirect.length > 0) && (
         <div className="panel-nav-group-label">Operación</div>
       )}
-      {ventas.length > 0 && <Group label="Ventas" d={IC.ventas} items={ventas} pathname={pathname} render={link} />}
-      {compras.length > 0 && <Group label="Compras" d={IC.compras} items={compras} pathname={pathname} render={link} />}
-      {inventario.length > 0 && <Group label="Inventario" d={IC.inventario} items={inventario} pathname={pathname} render={link} />}
-      {opDirect.map(link)}
+      {ventas.length > 0 && <Group label="Ventas" d={IC.ventas} items={ventas} pathname={pathname} render={(it) => link(it, true)} />}
+      {compras.length > 0 && <Group label="Compras" d={IC.compras} items={compras} pathname={pathname} render={(it) => link(it, true)} />}
+      {inventario.length > 0 && <Group label="Inventario" d={IC.inventario} items={inventario} pathname={pathname} render={(it) => link(it, true)} />}
+      {opDirect.map((it) => link(it))}
 
       {finanzas.length > 0 && (
         <>
           <div className="panel-nav-group-label">Finanzas</div>
-          {finanzas.map(link)}
+          {finanzas.map((it) => link(it))}
         </>
       )}
 
       {canVer('config') && (
         <>
           <div className="panel-nav-group-label">Administración</div>
-          {admin.map(link)}
+          {admin.map((it) => link(it))}
         </>
       )}
     </nav>
