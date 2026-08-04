@@ -137,12 +137,12 @@ export const createPriceList = (body: Partial<PriceListRow>) =>
   request<PriceListRow>('/price-lists', { method: 'POST', body: JSON.stringify(body) });
 export const getPriceListItems = (id: string) =>
   request<PriceListItemRow[]>(`/price-lists/${id}/items`);
-/** PUT masivo: reemplaza los items de la lista (upsert). */
+/** PUT: reemplazo real de los items de la lista (agrega/actualiza/elimina). */
 export const putPriceListItems = (
   id: string,
   items: { productVariantId: string; priceMxn: number }[],
 ) =>
-  request<PriceListItemRow[]>(`/price-lists/${id}/items`, {
+  request<{ ok: boolean; count: number }>(`/price-lists/${id}/items`, {
     method: 'PUT',
     body: JSON.stringify({ items }),
   });

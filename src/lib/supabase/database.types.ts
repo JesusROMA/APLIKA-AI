@@ -3359,6 +3359,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      replace_price_list_items: {
+        Args: { p_items: Json; p_list: string }
+        Returns: number
+      }
       set_org_branding: {
         Args: { p_brand_color: string; p_logo_url: string }
         Returns: undefined
