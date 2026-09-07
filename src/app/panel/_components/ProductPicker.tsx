@@ -2,8 +2,10 @@
 
 /**
  * ProductPicker — buscador de variante para AGREGAR una partida (compartido F1).
- * Debounce ~300ms sobre searchVariants; el precio ya viene resuelto para el
- * cliente. Al elegir, llama onPick(variant) y limpia el input.
+ * Al enfocar (o con el botón ▾) muestra el catálogo de inmediato (primeros 20
+ * por SKU, sin escribir); al teclear filtra con debounce ~300ms. El precio ya
+ * viene resuelto para el cliente/lista. Al elegir, llama onPick(variant) y
+ * limpia el input.
  */
 
 import { useEffect, useId, useRef, useState } from 'react';
@@ -32,21 +34,17 @@ export function ProductPicker({ customerId, priceListId, warehouseId, onPick, di
   const rootRef = useRef<HTMLDivElement>(null);
   const listId = useId();
 
-  // Búsqueda con debounce.
+  // Búsqueda con debounce; con el término vacío trae el catálogo de inmediato
+  // (el endpoint sin `search` regresa los primeros 20 por SKU).
   useEffect(() => {
     if (!open) return;
     const q = term.trim();
-    if (!q) {
-      setResults([]);
-      setLoading(false);
-      return;
-    }
+    let alive = true;
     setLoading(true);
-    const t = setTimeout(() => {
-      let alive = true;
+    const run = () =>
       searchVariants(q, customerId, { priceListId, warehouseId })
         .then((rows) => {
-          if (alive) setResults(rows.slice(0, 8));
+          if (alive) setResults(rows.slice(0, 20));
         })
         .catch(() => {
           if (alive) setResults([]);
@@ -54,11 +52,11 @@ export function ProductPicker({ customerId, priceListId, warehouseId, onPick, di
         .finally(() => {
           if (alive) setLoading(false);
         });
-      return () => {
-        alive = false;
-      };
-    }, 300);
-    return () => clearTimeout(t);
+    const t = setTimeout(run, q ? 300 : 0);
+    return () => {
+      alive = false;
+      clearTimeout(t);
+    };
   }, [term, open, customerId, priceListId, warehouseId]);
 
   // Cierra el dropdown al hacer click fuera.
@@ -125,19 +123,37 @@ export function ProductPicker({ customerId, priceListId, warehouseId, onPick, di
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
         />
+        <button
+          type="button"
+          className="f1-picker-toggle"
+          tabIndex={-1}
+          disabled={disabled}
+          aria-label={open ? 'Cerrar catálogo' : 'Ver catálogo de productos'}
+          title={open ? 'Cerrar catálogo' : 'Ver catálogo de productos'}
+          onMouseDown={(e) => {
+            // mousedown (no click) para ganarle al blur del input.
+            e.preventDefault();
+            setOpen((o) => !o);
+            setActive(-1);
+          }}
+        >
+          ▾
+        </button>
 
         {open && (
           <ul className="f1-picker-menu" id={`${listId}-list`} role="listbox" aria-label="Productos">
             {results.length === 0 ? (
               <li className="f1-picker-empty" role="presentation">
-                {loading
-                  ? 'Buscando…'
-                  : term.trim()
-                    ? 'Sin resultados'
-                    : 'Escribe para buscar…'}
+                {loading ? 'Buscando…' : term.trim() ? 'Sin resultados' : 'Sin productos en el catálogo'}
               </li>
             ) : (
-              results.map((v, i) => {
+              <>
+                {!term.trim() && (
+                  <li className="f1-picker-hint" role="presentation">
+                    Catálogo (primeros {results.length} por SKU) — escribe para filtrar
+                  </li>
+                )}
+                {results.map((v, i) => {
                 const id = `${listId}-opt-${i}`;
                 const isActive = i === active;
                 return (
@@ -166,8 +182,9 @@ export function ProductPicker({ customerId, priceListId, warehouseId, onPick, di
                       </span>
                     </span>
                   </li>
-                );
-              })
+                  );
+                })}
+              </>
             )}
           </ul>
         )}

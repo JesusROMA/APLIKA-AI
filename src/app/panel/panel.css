@@ -495,6 +495,17 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+/* Los th numéricos se alinean con sus datos (gana a la regla thead th de arriba). */
+.panel-table thead th.panel-table-num {
+  text-align: right;
+}
+/* Fila de totales (tfoot): mismo tamaño y padding que las filas del cuerpo,
+   separada con borde y fondo suave. */
+.panel-table tfoot td {
+  padding: var(--sp-2);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
 
 .panel-toolbar {
   display: flex;
@@ -1355,4 +1366,39 @@ a.f1-flow-node:hover {
    sin el min-width de las tablas de listado (que aquí clipea columnas). */
 .chart-table .panel-table {
   min-width: 0;
+}
+
+/* Toggle del catálogo en el ProductPicker (botón ▾ dentro del input). */
+.f1-picker-box .panel-input {
+  padding-right: 40px;
+}
+.f1-picker-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-55);
+  font-size: var(--fs-small);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.f1-picker-toggle:hover:not(:disabled) {
+  background: var(--blue-100);
+  color: var(--navy);
+}
+.f1-picker-toggle:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.f1-picker-hint {
+  padding: 6px 10px;
+  font-size: var(--fs-caption);
+  color: var(--ink-45);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 4px;
 }
