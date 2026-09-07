@@ -12,16 +12,18 @@ import { useState } from 'react';
 import { useCan } from '../_components/session';
 import { EmptyState } from '../_components/States';
 import { MaestrosTab } from './_components/MaestrosTab';
+import { UsersTab } from './_components/UsersTab';
 import { PermissionsTab } from './_components/PermissionsTab';
 import { ModulesTab } from './_components/ModulesTab';
 import { SeriesTab } from './_components/SeriesTab';
 import { BrandingTab } from './_components/BrandingTab';
 import { CustomFieldsTab } from './_components/CustomFieldsTab';
 
-type TabKey = 'maestros' | 'permisos' | 'modulos' | 'folios' | 'branding' | 'campos';
+type TabKey = 'maestros' | 'usuarios' | 'permisos' | 'modulos' | 'folios' | 'branding' | 'campos';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'maestros', label: 'Maestros' },
+  { key: 'usuarios', label: 'Usuarios' },
   { key: 'permisos', label: 'Permisos' },
   { key: 'modulos', label: 'Módulos' },
   { key: 'folios', label: 'Folios' },
@@ -87,6 +89,7 @@ export default function ConfigPage() {
       </div>
 
       {tab === 'maestros' && <MaestrosTab />}
+      {tab === 'usuarios' && <UsersTab canWrite={canWrite} />}
       {tab === 'permisos' && <PermissionsTab canWrite={canWrite} />}
       {tab === 'modulos' && <ModulesTab canWrite={canWrite} />}
       {tab === 'folios' && <SeriesTab canWrite={canWrite} />}

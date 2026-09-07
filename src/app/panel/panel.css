@@ -1461,3 +1461,42 @@ a.f1-flow-node:hover {
   transform: translateX(3px);
   color: var(--blue);
 }
+
+/* Configuración → Usuarios */
+.users-issued {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  background: var(--green-bg);
+  border: 1px solid var(--green);
+  border-radius: var(--r-md);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-small);
+}
+.users-issued p { margin: 4px 0 0; }
+.users-issued-pass {
+  font-size: var(--fs-body);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: var(--white);
+  border: 1px solid var(--green);
+  border-radius: var(--r-sm);
+  padding: 2px 10px;
+}
+.users-issued-note { color: var(--ink-55); font-size: var(--fs-caption); }
+.users-invite {
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+.users-invite-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.users-email { font-size: var(--fs-caption); color: var(--ink-55); }
+.users-self { font-size: var(--fs-caption); color: var(--ink-45); font-weight: 600; }
+.users-role { width: auto; padding: 6px 10px; font-size: var(--fs-caption); }
+.users-actions { display: inline-flex; gap: var(--sp-1); }
