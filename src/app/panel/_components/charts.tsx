@@ -430,6 +430,62 @@ export function TopProductsBars({
   );
 }
 
+// ===== Barras horizontales genéricas (una serie, valor en la punta) =====
+
+export function HBarList({
+  items,
+  format = (v: number) => NUM.format(v),
+}: {
+  items: { label: string; sub?: string; value: number; hint?: string }[];
+  format?: (v: number) => string;
+}) {
+  const max = Math.max(...items.map((i) => i.value), 1);
+  return (
+    <div className="hbar-list">
+      {items.map((it) => (
+        <div key={it.label + (it.sub ?? '')} className="hbar-row" title={it.hint}>
+          <div className="hbar-label">
+            <span className="hbar-name">{it.label}</span>
+            {it.sub && <span className="hbar-sku">{it.sub}</span>}
+          </div>
+          <div className="hbar-track">
+            <div className="hbar-fill" style={{ width: `${Math.max(2, (it.value / max) * 100)}%` }} />
+            <span className="hbar-value">{format(it.value)}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ===== Columnas simples (una serie, azul, valor en el tope) =====
+
+export function MiniColumns({
+  data,
+  format = (v: number) => NUM.format(v),
+}: {
+  data: { label: string; value: number }[];
+  format?: (v: number) => string;
+}) {
+  const max = Math.max(...data.map((d) => d.value), 1);
+  return (
+    <div className="aging-chart" style={{ gridTemplateColumns: `repeat(${data.length}, 1fr)` }}>
+      {data.map((d) => (
+        <div key={d.label} className="aging-col">
+          <span className="aging-value">{d.value > 0 ? format(d.value) : '—'}</span>
+          <div className="aging-track">
+            <div
+              className="aging-fill"
+              style={{ height: `${Math.max(d.value > 0 ? 4 : 0, (d.value / max) * 100)}%`, background: SERIES_1 }}
+            />
+          </div>
+          <span className="aging-bucket">{d.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ===== Antigüedad de cartera (rampa ordinal, valor en el tope) =====
 
 export function AgingChart({

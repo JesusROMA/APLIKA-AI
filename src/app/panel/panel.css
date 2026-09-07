@@ -1500,3 +1500,90 @@ a.f1-flow-node:hover {
 .users-self { font-size: var(--fs-caption); color: var(--ink-45); font-weight: 600; }
 .users-role { width: auto; padding: 6px 10px; font-size: var(--fs-caption); }
 .users-actions { display: inline-flex; gap: var(--sp-1); }
+
+/* ===================== Torre de control (/admin) ===================== */
+.admin-shell {
+  min-height: 100vh;
+  background: var(--surface);
+  font-family: var(--font);
+  color: var(--ink);
+}
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-4);
+  height: var(--panel-topbar-h);
+  background: var(--navy);
+  color: var(--white);
+}
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 800;
+  font-size: var(--fs-body);
+}
+.admin-brand-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5px;
+  width: 22px;
+  height: 22px;
+}
+.admin-brand-logo span { border-radius: 4px; background: var(--blue-200); }
+.admin-brand-logo span:first-child,
+.admin-brand-logo span:last-child { background: var(--blue); }
+.admin-brand-sep { color: var(--w-55); font-weight: 400; }
+.admin-brand-title { color: var(--w-85); font-weight: 600; font-size: var(--fs-small); }
+.admin-topbar-nav { display: flex; gap: var(--sp-1); }
+.admin-topbar-nav .chart-viewbtn {
+  background: transparent;
+  border-color: var(--w-22);
+  color: var(--w-85);
+}
+.admin-topbar-nav .chart-viewbtn:hover { border-color: var(--white); color: var(--white); }
+.admin-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--sp-4) var(--sp-3) var(--sp-8);
+}
+.admin-health {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-3);
+}
+.admin-health-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--ink-66);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  padding: 6px 14px;
+}
+.admin-health-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.admin-health-chip.is-bad { color: var(--amber); border-color: var(--amber); }
+.admin-health-chip.is-bad .admin-health-dot { background: var(--amber); }
+.admin-err-route {
+  font-size: var(--fs-caption);
+  background: var(--surface);
+  border-radius: var(--r-xs);
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+.admin-err-msg {
+  font-size: var(--fs-caption);
+  color: var(--ink-66);
+  max-width: 380px;
+}

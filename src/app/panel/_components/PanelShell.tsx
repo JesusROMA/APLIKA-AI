@@ -273,7 +273,7 @@ function UserMenu({ session }: { session: SessionInfo }) {
             <div style={{ fontSize: 12, opacity: 0.65 }}>{session.email}</div>
           </div>
           {session.role === 'super_admin' && (
-            <a role="menuitem" href="/dc/Panel Super-admin.dc.html" style={itemStyle}>
+            <a role="menuitem" href="/admin" style={itemStyle}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.5 19 5V11C19 16 15.8 19.4 12 21.5C8.2 19.4 5 16 5 11V5Z" /></svg>
               Panel admin
             </a>
