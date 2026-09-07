@@ -39,12 +39,19 @@ tipo 0023 + ediciones puntuales en piezas propias: `pricing.ts`, `documents.ts`,
 CxP nueva [prefill] y PO detalle [botón]). pgTAP no requiere cambios de RLS; el
 QA es e2e HTTP + typecheck/lint/build + regresión `supabase test db`.
 
-## Aceptación
-- [ ] Cotizar con lista "Mayoreo B" pone los precios de esa lista aunque el
+## Aceptación (verificada 2026-09-07, QA e2e HTTP contra Supabase local)
+- [x] Cotizar con lista "Mayoreo B" pone los precios de esa lista aunque el
       cliente tenga otra; sin selección usa la del cliente; sin lista, el base.
-- [ ] El picker muestra el stock del almacén elegido.
-- [ ] Cotización aceptada → pedido hereda el almacén; al pagar, el stock sale de
-      ese almacén (kardex lo confirma).
-- [ ] Desde una OC recibida se registra la factura de proveedor prellenada
-      (proveedor+partidas+OC ligada) y el CxP sube.
-- [ ] `tsc`/`lint`/`build`/`supabase test db` verdes; sin regresiones.
+      (COT-A-0003: BAL-1184 a $360 de lista B, no $100 del cliente ni $420 base;
+      COT-A-0002: BAL-S220 sin lista cayó al base $380.)
+- [x] El picker muestra el stock del almacén elegido (`/variants?warehouseId`:
+      BAL-S220 58 pzas en Bodega 2, BAL-1184 0 ahí y 6 en Matriz).
+- [x] Cotización aceptada → pedido hereda el almacén; al pagar, el stock sale de
+      ese almacén (PED-A-0002 heredó Matriz; kardex: salida -2 ref order,
+      stock 6→4).
+- [x] Desde una OC recibida se registra la factura de proveedor prellenada
+      (proveedor+partidas+OC ligada) y el CxP sube (REQ-A-0001→OC-A-0002
+      recibida con avg cost 107.1429; factura PROV-QA-001 ligada, saldo 1740→0
+      al pagar).
+- [x] `tsc`/`build`/`vitest 15/15`/`supabase test db 116/116` verdes; sin
+      regresiones.
