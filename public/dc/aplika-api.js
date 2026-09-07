@@ -123,6 +123,11 @@
     },
     adminHealth: () => get('/api/admin/health'),
     adminIncidents: () => get('/api/admin/incidents'),
+    // Torre de control: agregados de plataforma + bitácora de errores 5xx
+    adminDashboard: (days) => get('/api/admin/dashboard?days=' + (days || 30)),
+    adminErrors: (days, route) =>
+      get('/api/admin/errors?days=' + (days || 7) + (route ? '&route=' + encodeURIComponent(route) : '')),
+    adminSetTenantStatus: (id, status) => patch('/api/admin/tenants/' + id + '/status', { status }),
     impersonate: (id) => post('/api/admin/tenants/' + id + '/impersonate'),
   };
 })();

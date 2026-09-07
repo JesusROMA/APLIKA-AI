@@ -101,9 +101,17 @@ button,input,select{font-family:inherit;}
     <main style="flex:1;padding:clamp(20px,3vw,32px);">
       <!-- ===== DASHBOARD GLOBAL ===== -->
       <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
-        <div style="margin-bottom:22px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Torre de control</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Vista global de todos los tenants</p></div>
-        <!-- TODO backend: GET /api/admin/metrics -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:18px;">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
+          <div><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Torre de control</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">{{ dashSub }}</p></div>
+          <div style="display:inline-flex;gap:4px;padding:4px;background:var(--surface-2,#F5F8FC);border:1px solid var(--border,#E6F1FB);border-radius:999px;">
+            <sc-for list="{{ dashRange }}" as="r" hint-placeholder-count="3">
+              <button onClick="{{ r.onClick }}" style="border:0;background:{{ r.bg }};color:{{ r.color }};font:inherit;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;cursor:pointer;box-shadow:{{ r.shadow }};">{{ r.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- KPIs reales · GET /api/admin/dashboard -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:16px;">
           <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
             <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));">{{ k.label }}</span><span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:{{ k.iconBg }};color:{{ k.iconFg }};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ k.d }}"></path></svg></span></div>
@@ -112,23 +120,123 @@ button,input,select{font-family:inherit;}
             </div>
           </sc-for>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;">
-          <div style="grid-column:span 2;min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><div><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Crecimiento de MRR</p><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:3px 0 0;">Últimos 6 meses</p></div><span style="font-size:12.5px;font-weight:600;color:var(--success,#1FA85A);background:var(--success-weak,#E4F6EC);padding:5px 11px;border-radius:999px;">▲ 32% YTD</span></div>
-            <svg viewBox="0 0 600 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0,140 100,124 200,110 300,82 400,66 500,40 600,18" fill="none" stroke="var(--accent,#378ADD)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="0,140 100,124 200,110 300,82 400,66 500,40 600,18 600,160 0,160" fill="var(--accent-weak,#E6F1FB)" stroke="none" opacity="0.6"></polyline></svg>
-            <div style="display:flex;justify-content:space-between;margin-top:8px;"><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">Ene</span><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">Mar</span><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">May</span><span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">Jun</span></div>
+
+        <!-- Salud de la plataforma -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">
+          <sc-for list="{{ healthChips }}" as="h" hint-placeholder-count="4">
+            <span style="display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:{{ h.color }};background:var(--surface,#FFFFFF);border:1px solid {{ h.border }};border-radius:999px;padding:6px 14px;"><span style="width:8px;height:8px;border-radius:50%;background:{{ h.dot }};"></span>{{ h.text }}</span>
+          </sc-for>
+        </div>
+
+        <!-- Ventas de los tenants por día (GMV de la plataforma) -->
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;margin-bottom:14px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px;">
+            <div><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Ventas de los tenants por día</p><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:3px 0 0;">{{ gmvSub }}</p></div>
+            <span style="font-size:12.5px;font-weight:700;color:var(--accent,#378ADD);background:var(--accent-weak,#E6F1FB);padding:5px 11px;border-radius:999px;white-space:nowrap;">{{ gmvTotal }}</span>
           </div>
+          <div style="position:relative;">
+            <svg viewBox="0 0 600 170" width="100%" height="170" preserveAspectRatio="none">
+              <line x1="0" y1="5" x2="600" y2="5" stroke="var(--border,#E6F1FB)" stroke-width="1"></line>
+              <line x1="0" y1="75" x2="600" y2="75" stroke="var(--border,#E6F1FB)" stroke-width="1"></line>
+              <line x1="0" y1="145" x2="600" y2="145" stroke="var(--border,#D8E6F5)" stroke-width="1"></line>
+              <polyline points="{{ gmvArea }}" fill="var(--accent-weak,#E6F1FB)" stroke="none" opacity="0.7"></polyline>
+              <polyline points="{{ gmvLine }}" fill="none" stroke="var(--accent,#378ADD)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            </svg>
+            <span style="position:absolute;top:-2px;left:0;font-size:11px;color:var(--faint,rgba(4,44,83,0.45));font-variant-numeric:tabular-nums;background:var(--surface,#FFFFFF);padding-right:4px;">{{ gmvMax }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;">
+            <span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">{{ gmvFrom }}</span>
+            <span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">{{ gmvMid }}</span>
+            <span style="font-size:11.5px;color:var(--faint,rgba(4,44,83,0.4));">{{ gmvTo }}</span>
+          </div>
+        </div>
+
+        <!-- Top tenants + altas por mes -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:14px;">
           <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
-            <p style="font-size:15px;font-weight:600;margin:0 0 18px;color:var(--text,#042C53);">Tenants por plan</p>
-            <div style="display:flex;align-items:center;gap:18px;">
-              <div style="width:104px;height:104px;border-radius:50%;background:conic-gradient(var(--accent,#378ADD) 0 41%,var(--detail,#B5D4F4) 41% 86%,#0C447C 86% 100%);display:flex;align-items:center;justify-content:center;flex:none;"><div style="width:62px;height:62px;border-radius:50%;background:var(--surface,#FFFFFF);display:flex;align-items:center;justify-content:center;"><span style="font-size:18px;font-weight:700;color:var(--text,#042C53);">142</span></div></div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--accent,#378ADD);"></span>Pro · 58</span>
-                <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:var(--detail,#B5D4F4);"></span>Básico · 64</span>
-                <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));"><span style="width:10px;height:10px;border-radius:3px;background:#0C447C;"></span>Enterprise · 20</span>
+            <p style="font-size:15px;font-weight:600;margin:0 0 4px;color:var(--text,#042C53);">Top tenants por ventas</p>
+            <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 18px;">{{ rangeLabel }}</p>
+            <sc-if value="{{ hasTopTenants }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:13px;">
+                <sc-for list="{{ topTenants }}" as="t" hint-placeholder-count="5">
+                  <div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px;"><span style="font-size:12.5px;font-weight:600;color:var(--text,#042C53);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ t.name }}</span><span style="font-size:12.5px;font-weight:700;color:var(--text,#042C53);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ t.value }}</span></div>
+                    <div style="height:8px;background:var(--surface-2,#F5F8FC);border-radius:4px;overflow:hidden;"><div style="height:100%;width:{{ t.pct }};background:var(--accent,#378ADD);border-radius:4px;"></div></div>
+                    <p style="font-size:11px;color:var(--faint,rgba(4,44,83,0.45));margin:4px 0 0;">{{ t.hint }}</p>
+                  </div>
+                </sc-for>
               </div>
+            </sc-if>
+            <sc-if value="{{ noTopTenants }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));text-align:center;padding:26px 0;margin:0;">Ningún tenant registró ventas en el periodo.</p>
+            </sc-if>
+          </div>
+
+          <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+            <p style="font-size:15px;font-weight:600;margin:0 0 4px;color:var(--text,#042C53);">Altas de tenants por mes</p>
+            <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 18px;">Últimos 6 meses</p>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end;">
+              <sc-for list="{{ altas }}" as="a" hint-placeholder-count="6">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <span style="font-size:12px;font-weight:700;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ a.count }}</span>
+                  <div style="height:96px;width:100%;max-width:44px;display:flex;align-items:flex-end;justify-content:center;"><div style="width:22px;height:{{ a.h }};background:var(--accent,#378ADD);border-radius:4px 4px 0 0;"></div></div>
+                  <span style="font-size:11px;color:var(--faint,rgba(4,44,83,0.45));">{{ a.month }}</span>
+                </div>
+              </sc-for>
             </div>
           </div>
+        </div>
+
+        <!-- Distribución por vertical y por plan -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:14px;">
+          <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+            <p style="font-size:15px;font-weight:600;margin:0 0 4px;color:var(--text,#042C53);">Tenants por vertical</p>
+            <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 18px;">{{ totalTenantsLabel }}</p>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ porVertical }}" as="v" hint-placeholder-count="2">
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12.5px;font-weight:600;color:var(--text,#042C53);">{{ v.label }}</span><span style="font-size:12.5px;font-weight:700;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ v.count }}</span></div>
+                  <div style="height:8px;background:var(--surface-2,#F5F8FC);border-radius:4px;overflow:hidden;"><div style="height:100%;width:{{ v.pct }};background:var(--accent,#378ADD);border-radius:4px;"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+            <p style="font-size:15px;font-weight:600;margin:0 0 4px;color:var(--text,#042C53);">Tenants por plan</p>
+            <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 18px;">Distribución comercial</p>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ porPlan }}" as="p" hint-placeholder-count="3">
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12.5px;font-weight:600;color:var(--text,#042C53);">{{ p.label }}</span><span style="font-size:12.5px;font-weight:700;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ p.count }}</span></div>
+                  <div style="height:8px;background:var(--surface-2,#F5F8FC);border-radius:4px;overflow:hidden;"><div style="height:100%;width:{{ p.pct }};background:#0C447C;border-radius:4px;"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <!-- Errores recientes (detalle completo en Monitoreo) -->
+        <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px;">
+            <div><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Errores recientes de la aplicación</p><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:3px 0 0;">Cada error 5xx de la API se registra con su ruta y tenant.</p></div>
+            <button onClick="{{ goMonitoreo }}" style="background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;">Ver monitoreo</button>
+          </div>
+          <sc-if value="{{ hasDashErrors }}" hint-placeholder-val="{{ true }}">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+                <thead><tr><th style="text-align:left;padding:9px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));background:var(--surface-2,#F5F8FC);border-radius:8px 0 0 8px;">Cuándo</th><th style="text-align:left;padding:9px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));background:var(--surface-2,#F5F8FC);">Ruta</th><th style="text-align:left;padding:9px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));background:var(--surface-2,#F5F8FC);">Tenant</th><th style="text-align:left;padding:9px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));background:var(--surface-2,#F5F8FC);border-radius:0 8px 8px 0;">Mensaje</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ dashErrors }}" as="e" hint-placeholder-count="5">
+                    <tr><td style="padding:11px 12px;border-bottom:1px solid var(--border,#E6F1FB);color:var(--muted,rgba(4,44,83,0.6));white-space:nowrap;">{{ e.at }}</td><td style="padding:11px 12px;border-bottom:1px solid var(--border,#E6F1FB);"><code style="background:var(--surface-2,#F5F8FC);border-radius:5px;padding:2px 7px;font-size:11.5px;white-space:nowrap;">{{ e.route }}</code></td><td style="padding:11px 12px;border-bottom:1px solid var(--border,#E6F1FB);color:var(--text,#042C53);">{{ e.org }}</td><td style="padding:11px 12px;border-bottom:1px solid var(--border,#E6F1FB);color:var(--muted,rgba(4,44,83,0.6));">{{ e.message }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noDashErrors }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size:13px;color:var(--success,#1FA85A);text-align:center;padding:22px 0;margin:0;font-weight:600;">✓ Sin errores registrados. La API está sana.</p>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -151,6 +259,9 @@ button,input,select{font-family:inherit;}
             <button onClick="{{ v.onClick }}" style="flex:none;border:1px solid {{ v.border }};cursor:pointer;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;white-space:nowrap;background:{{ v.bg }};color:{{ v.color }};">{{ v.label }}</button>
           </sc-for>
         </div>
+        <div style="margin-bottom:16px;">
+          <input value="{{ tSearch }}" onInput="{{ onTSearch }}" placeholder="Buscar tenant por nombre o plan…" style="width:100%;max-width:380px;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:10px;padding:10px 14px;font:inherit;font-size:13.5px;color:var(--text,#042C53);" />
+        </div>
         <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
           <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:940px;">
             <thead><tr style="background:var(--surface-2,#F5F8FC);"><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Empresa</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Vertical</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Plan</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Alta</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;width:150px;">Uso</th><th style="text-align:left;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Estado</th><th style="text-align:right;font-size:11.5px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));padding:12px 20px;">Acciones</th></tr></thead>
@@ -162,7 +273,7 @@ button,input,select{font-family:inherit;}
                 <td style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));padding:13px 20px;">{{ t.alta }}</td>
                 <td style="padding:13px 20px;"><div style="display:flex;align-items:center;gap:9px;"><div style="flex:1;height:6px;background:var(--surface-2,#F5F8FC);border-radius:5px;overflow:hidden;"><div style="height:100%;width:{{ t.uso }};background:{{ t.usoColor }};border-radius:5px;"></div></div><span style="font-size:12px;font-weight:600;color:var(--muted,rgba(4,44,83,0.6));font-variant-numeric:tabular-nums;flex:none;">{{ t.uso }}</span></div></td>
                 <td style="padding:13px 20px;"><span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ t.fg }};"></span>{{ t.status }}</span></td>
-                <td style="padding:13px 20px;text-align:right;white-space:nowrap;"><button onClick="{{ t.onModules }}" style="display:inline-flex;align-items:center;gap:6px;background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-right:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"></path></svg>Módulos</button><button onClick="{{ t.onImpersonate }}" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border:none;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>Impersonar</button></td>
+                <td style="padding:13px 20px;text-align:right;white-space:nowrap;"><button onClick="{{ t.onModules }}" style="display:inline-flex;align-items:center;gap:6px;background:var(--surface-2,#F5F8FC);color:var(--text,#042C53);border:1px solid var(--border,#E6F1FB);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-right:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"></path></svg>Módulos</button><button onClick="{{ t.onImpersonate }}" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-weak,#E6F1FB);color:var(--accent,#378ADD);border:none;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;margin-right:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>Impersonar</button><button onClick="{{ t.onToggleStatus }}" style="display:inline-flex;align-items:center;gap:6px;background:transparent;color:{{ t.statusBtnColor }};border:1px solid {{ t.statusBtnColor }};border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;">{{ t.statusBtnLabel }}</button></td>
               </tr>
             </sc-for></tbody>
           </table></div>
@@ -249,11 +360,12 @@ button,input,select{font-family:inherit;}
             <div style="background:{{ p.cardBg }};border:1.5px solid {{ p.cardBorder }};border-radius:18px;padding:26px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:18px;font-weight:700;margin:0;color:{{ p.titleColor }};">{{ p.name }}</p><sc-if value="{{ p.highlight }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:#FFFFFF;background:rgba(255,255,255,0.22);padding:3px 10px;border-radius:999px;">Popular</span></sc-if></div>
               <p style="margin:0 0 4px;"><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em;color:{{ p.titleColor }};">{{ p.price }}</span><span style="font-size:14px;color:{{ p.subColor }};">{{ p.period }}</span></p>
-              <p style="font-size:13px;color:{{ p.subColor }};margin:0 0 20px;">{{ p.tenants }} tenants activos</p>
+              <p style="font-size:13px;color:{{ p.subColor }};margin:0 0 14px;">{{ p.tenantsLabel }}</p>
+              <div style="display:flex;align-items:baseline;gap:8px;padding:11px 14px;border-radius:11px;background:{{ p.mrrBg }};margin:0 0 20px;"><span style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:{{ p.subColor }};">MRR</span><span style="font-size:17px;font-weight:700;color:{{ p.textColor }};font-variant-numeric:tabular-nums;">{{ p.mrr }}</span><span style="font-size:11.5px;color:{{ p.subColor }};">{{ p.subsLabel }}</span></div>
               <div style="display:flex;flex-direction:column;gap:11px;">
-                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.productos }} productos</span></div>
+                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.productos }}</span></div>
                 <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.pedidos }}</span></div>
-                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.usuarios }} usuarios</span></div>
+                <div style="display:flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ p.checkColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"></path></svg><span style="font-size:13.5px;color:{{ p.textColor }};">{{ p.usuarios }}</span></div>
               </div>
             </div>
           </sc-for>
@@ -262,16 +374,77 @@ button,input,select{font-family:inherit;}
 
       <!-- ===== MONITOREO ===== -->
       <sc-if value="{{ isMonitoreo }}" hint-placeholder-val="{{ false }}">
-        <div style="margin-bottom:20px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Monitoreo</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Salud del sistema e integraciones</p></div>
-        <!-- TODO backend: GET /api/admin/health -->
+        <div style="margin-bottom:20px;"><h2 style="font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--text,#042C53);">Monitoreo</h2><p style="font-size:14px;color:var(--muted,rgba(4,44,83,0.6));margin:5px 0 0;">Salud del sistema, errores de la aplicación e incidencias</p></div>
+
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px;">
           <sc-for list="{{ health }}" as="h" hint-placeholder-count="4">
             <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><span style="font-size:13px;color:var(--muted,rgba(4,44,83,0.6));">{{ h.label }}</span><span style="width:9px;height:9px;border-radius:50%;background:{{ h.dot }};animation:pulseDot 2s ease-in-out infinite;"></span></div><p style="font-size:22px;font-weight:700;margin:0;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ h.value }}</p><p style="font-size:12px;color:{{ h.color }};margin:6px 0 0;font-weight:600;">{{ h.note }}</p></div>
           </sc-for>
         </div>
+
+        <!-- Bitácora de errores 5xx · GET /api/admin/errors -->
+        <div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;margin-bottom:14px;" class="mon-grid">
+          <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--border,#E6F1FB);">
+              <div style="min-width:0;">
+                <p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Errores de la aplicación</p>
+                <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:3px 0 0;">{{ errWindow }}</p>
+              </div>
+              <div style="display:inline-flex;gap:6px;">
+                <sc-for list="{{ monRangeBtns }}" as="b" hint-placeholder-count="3">
+                  <button onClick="{{ b.onClick }}" style="background:{{ b.bg }};color:{{ b.color }};border:1px solid {{ b.border }};border-radius:999px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ hasRouteFilter }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:10px 20px;background:var(--accent-weak,#E6F1FB);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <span style="font-size:12.5px;color:var(--text,#042C53);">Filtrado por ruta: <strong>{{ monRouteFilter }}</strong></span>
+                <button onClick="{{ clearRouteFilter }}" style="background:transparent;border:0;color:var(--accent,#378ADD);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Quitar filtro</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasErrRows }}" hint-placeholder-val="{{ true }}">
+              <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+                  <thead><tr><th style="text-align:left;padding:10px 20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));border-bottom:1px solid var(--border,#E6F1FB);">Cuándo</th><th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));border-bottom:1px solid var(--border,#E6F1FB);">Ruta</th><th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));border-bottom:1px solid var(--border,#E6F1FB);">Tenant</th><th style="text-align:left;padding:10px 20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));border-bottom:1px solid var(--border,#E6F1FB);">Mensaje</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ errRows }}" as="e" hint-placeholder-count="8">
+                      <tr onClick="{{ e.onOpen }}" style="cursor:pointer;">
+                        <td style="padding:11px 20px;border-bottom:1px solid var(--border,#E6F1FB);color:var(--muted,rgba(4,44,83,0.6));white-space:nowrap;">{{ e.at }}</td>
+                        <td style="padding:11px 12px;border-bottom:1px solid var(--border,#E6F1FB);"><code style="background:var(--surface-2,#F5F8FC);border-radius:5px;padding:2px 7px;font-size:11.5px;white-space:nowrap;">{{ e.route }}</code></td>
+                        <td style="padding:11px 12px;border-bottom:1px solid var(--border,#E6F1FB);color:var(--text,#042C53);">{{ e.org }}</td>
+                        <td style="padding:11px 20px;border-bottom:1px solid var(--border,#E6F1FB);color:var(--muted,rgba(4,44,83,0.6));">{{ e.message }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noErrRows }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:13px;color:var(--success,#1FA85A);text-align:center;padding:34px 0;margin:0;font-weight:600;">✓ Sin errores en el periodo. La API está sana.</p>
+            </sc-if>
+          </div>
+
+          <div style="min-width:0;background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;padding:20px;">
+            <p style="font-size:15px;font-weight:600;margin:0 0 4px;color:var(--text,#042C53);">Rutas con más errores</p>
+            <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:0 0 16px;">Toca una para filtrar la bitácora</p>
+            <sc-if value="{{ hasErrByRoute }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ errByRoute }}" as="r" hint-placeholder-count="5">
+                  <button onClick="{{ r.onClick }}" style="text-align:left;background:{{ r.bg }};border:0;border-radius:9px;padding:8px;cursor:pointer;font:inherit;width:100%;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px;"><span style="font-size:11.5px;color:var(--text,#042C53);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">{{ r.route }}</span><span style="font-size:12px;font-weight:700;color:var(--text,#042C53);font-variant-numeric:tabular-nums;">{{ r.count }}</span></div>
+                    <div style="height:6px;background:var(--surface-2,#F5F8FC);border-radius:3px;overflow:hidden;"><div style="height:100%;width:{{ r.pct }};background:var(--error,#D24545);border-radius:3px;"></div></div>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noErrRows }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));text-align:center;padding:20px 0;margin:0;">Nada que reportar.</p>
+            </sc-if>
+          </div>
+        </div>
+
         <div style="background:var(--surface,#FFFFFF);border:1px solid var(--border,#E6F1FB);border-radius:14px;overflow:hidden;">
-          <div style="padding:16px 20px;border-bottom:1px solid var(--border,#E6F1FB);"><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Eventos recientes</p></div>
-          <!-- TODO backend: GET /api/admin/incidents -->
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border,#E6F1FB);"><p style="font-size:15px;font-weight:600;margin:0;color:var(--text,#042C53);">Incidencias de integraciones</p></div>
           <sc-for list="{{ incidents }}" as="i" hint-placeholder-count="4">
             <div style="display:flex;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid var(--border,#E6F1FB);">
               <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:11px;background:{{ i.iconBg }};color:{{ i.iconFg }};"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ i.d }}"></path></svg></span>
@@ -280,6 +453,23 @@ button,input,select{font-family:inherit;}
             </div>
           </sc-for>
         </div>
+
+        <!-- Detalle del error (stack) -->
+        <sc-if value="{{ errDetailOpen }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeErrDetail }}" style="position:fixed;inset:0;background:rgba(4,28,53,0.45);z-index:60;"></div>
+          <aside style="position:fixed;top:0;right:0;bottom:0;width:min(560px,94vw);background:var(--surface,#FFFFFF);z-index:61;box-shadow:-18px 0 50px -20px rgba(4,44,83,0.4);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px;border-bottom:1px solid var(--border,#E6F1FB);">
+              <div style="min-width:0;"><p style="font-size:16px;font-weight:700;margin:0;color:var(--text,#042C53);word-break:break-all;">{{ edRoute }}</p><p style="font-size:12.5px;color:var(--muted,rgba(4,44,83,0.6));margin:4px 0 0;">{{ edWhen }} · {{ edOrg }}</p></div>
+              <button onClick="{{ closeErrDetail }}" style="flex:none;background:var(--surface-2,#F5F8FC);border:0;border-radius:9px;width:32px;height:32px;font-size:17px;line-height:1;cursor:pointer;color:var(--muted,rgba(4,44,83,0.6));">×</button>
+            </div>
+            <div style="padding:20px;overflow-y:auto;">
+              <p style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));margin:0 0 7px;">Mensaje</p>
+              <p style="font-size:13.5px;color:var(--text,#042C53);margin:0 0 20px;line-height:1.55;">{{ edMessage }}</p>
+              <p style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--faint,rgba(4,44,83,0.45));margin:0 0 7px;">Stack</p>
+              <pre style="font-size:11.5px;line-height:1.6;color:var(--muted,rgba(4,44,83,0.6));background:var(--surface-2,#F5F8FC);border-radius:10px;padding:14px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;margin:0;">{{ edStack }}</pre>
+            </div>
+          </aside>
+        </sc-if>
       </sc-if>
 
       <!-- ===== WHATSAPP AUTOMÁTICO (respuestas programadas de la plataforma) ===== -->
@@ -421,6 +611,9 @@ const DARK = {
 class Component extends DCLogic {
   state = { dark: false, view: 'dashboard', width: (typeof window !== 'undefined' ? window.innerWidth : 1200), sidebarOpen: false, tenantFilter: 'todos', impersonate: null, profileOpen: false, me: null,
     vertFilter: 'todos',
+    range: 30,                                  // rango del dashboard (7/30/90 días)
+    monDays: 7, monRoute: '', errDetail: null,  // Monitoreo: rango, filtro de ruta y error abierto
+    tSearch: '',                                // buscador de tenants
     tm: null,                                   // tenant abierto en drawer de módulos
     ntOpen: false, ntName: '', ntSlug: '', ntVertical: 'inventario_pesado', ntPlan: 'basico', ntSaving: false, ntError: '',
     // WhatsApp automático (respuestas programadas)
@@ -458,7 +651,8 @@ class Component extends DCLogic {
     if (cfg.demo) { console.info('[aplika] modo demo: usando datos embebidos del super-admin'); return; }
     const set = async (fn, assign) => { try { assign(await fn()); } catch (e) { console.warn('[aplika] carga parcial:', e.message); } };
     await Promise.all([
-      set(() => A.adminMetrics(), (r) => { this.kpis = r.kpis; }),
+      set(() => A.adminDashboard(this.state.range), (r) => { this.dash = r; }),
+      set(() => A.adminErrors(this.state.monDays), (r) => { this.errLog = r; }),
       set(() => A.adminTenants('todos'), (r) => { this.tenants = r.tenants; }),
       set(() => A.adminPlans(), (r) => { this.planes = r.planes; }),
       set(() => A.adminHealth(), (r) => { this.health = r.health; }),
@@ -470,6 +664,66 @@ class Component extends DCLogic {
   }
 
   usingApi() { return !!window.AplikaAPI && this._demo === false; }
+
+  // ==== Torre de control: rango del dashboard y bitácora de errores ====
+  dash = null;    // GET /api/admin/dashboard
+  errLog = null;  // GET /api/admin/errors
+
+  async setRange(days) {
+    this.setState({ range: days });
+    if (!this.usingApi()) return;
+    try { this.dash = await window.AplikaAPI.adminDashboard(days); this.forceUpdate(); }
+    catch (e) { console.warn('[aplika] dashboard:', e.message); }
+  }
+
+  async reloadErrors(patch) {
+    const st = Object.assign({ monDays: this.state.monDays, monRoute: this.state.monRoute }, patch || {});
+    this.setState(st);
+    if (!this.usingApi()) return;
+    try { this.errLog = await window.AplikaAPI.adminErrors(st.monDays, st.monRoute); this.forceUpdate(); }
+    catch (e) { console.warn('[aplika] errores:', e.message); }
+  }
+
+  async setTenantStatus(t, status) {
+    const verbo = status === 'suspendido' ? 'suspender' : 'reactivar';
+    if (!confirm('¿Seguro que quieres ' + verbo + ' a «' + t.name + '»?')) return;
+    if (!this.usingApi() || !t.id) { t.status = status; this.forceUpdate(); return; }
+    try {
+      await window.AplikaAPI.adminSetTenantStatus(t.id, status);
+      const r = await window.AplikaAPI.adminTenants('todos');
+      this.tenants = r.tenants;
+      this.forceUpdate();
+    } catch (e) { alert('No se pudo cambiar el estado: ' + e.message); }
+  }
+
+  // ==== Formato y geometría de gráficas (sin librerías) ====
+  fmtMoney(v) {
+    const n = Number(v) || 0;
+    if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1).replace('.0', '') + 'M';
+    return '$' + Math.round(n).toLocaleString('es-MX');
+  }
+  fmtNum(v) { return (Number(v) || 0).toLocaleString('es-MX'); }
+  fmtDay(ymd) {
+    if (!ymd) return '';
+    const d = new Date(ymd + 'T00:00:00');
+    return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }).replace('.', '');
+  }
+  fmtWhen(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+  // Puntos de la polilínea en el viewBox 600x170 (5px de aire arriba, base en 145).
+  chartPoints(series, key) {
+    const vals = series.map(d => Number(d[key]) || 0);
+    const max = Math.max.apply(null, vals.concat([1]));
+    const n = series.length;
+    const pts = vals.map((v, i) => {
+      const x = n > 1 ? (i * 600) / (n - 1) : 300;
+      const y = 145 - (v / max) * 140;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    });
+    return { line: pts.join(' '), area: pts.join(' ') + ' 600,145 0,145', max };
+  }
 
   // ==== Drawer de módulos por tenant ====
   async openTenantModules(t) {
@@ -701,6 +955,10 @@ class Component extends DCLogic {
       border: vf === x.key ? '#0C447C' : 'var(--border,#E6F1FB)'
     }));
 
+    // Buscador por nombre o plan (se combina con los filtros de estado/vertical).
+    const q = (this.state.tSearch || '').trim().toLowerCase();
+    if (q) tList = tList.filter(t => ((t.name || '') + ' ' + (t.plan || '')).toLowerCase().indexOf(q) >= 0);
+
     const tenantRows = tList.map(t => ({
       name: t.name, plan: t.plan, alta: t.alta, ini: t.ini, uso: t.uso + '%', usoColor: this.usoColor(t.uso),
       status: this.tStatusMeta[t.status].label, ...this.badge(this.tStatusMeta[t.status].kind),
@@ -708,7 +966,10 @@ class Component extends DCLogic {
       vertBg: t.vertical === 'servicios_agenda' ? 'var(--success-weak,#E4F6EC)' : 'var(--accent-weak,#E6F1FB)',
       vertFg: t.vertical === 'servicios_agenda' ? 'var(--success,#1FA85A)' : 'var(--accent,#378ADD)',
       onModules: () => this.openTenantModules(t),
-      onImpersonate: () => this.setState({ impersonate: t.name, impersonateId: t.id })
+      onImpersonate: () => this.setState({ impersonate: t.name, impersonateId: t.id }),
+      statusBtnLabel: t.status === 'suspendido' ? 'Reactivar' : 'Suspender',
+      statusBtnColor: t.status === 'suspendido' ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)',
+      onToggleStatus: () => this.setTenantStatus(t, t.status === 'suspendido' ? 'activo' : 'suspendido')
     }));
 
     // Drawer módulos del tenant
@@ -727,7 +988,13 @@ class Component extends DCLogic {
       ? ntV.defaultModules.map(k => { const m = this.modulesCat.find(x => x.key === k); return m ? m.name : k; }).join(' · ')
       : '—';
     const planes = this.planes.map(p => ({
-      name: p.name, price: p.price, period: p.period, productos: p.productos, pedidos: p.pedidos, usuarios: p.usuarios, tenants: p.tenants, highlight: p.highlight,
+      name: p.name, price: p.price, period: p.period, pedidos: p.pedidos, tenants: p.tenants, highlight: p.highlight,
+      productos: p.productos === 'Ilimitados' ? 'Productos ilimitados' : p.productos + ' productos',
+      usuarios: p.usuarios === 'Ilimitados' ? 'Usuarios ilimitados' : p.usuarios + ' usuarios',
+      tenantsLabel: p.tenants + ' tenants' + (p.activos !== undefined ? ' · ' + p.activos + ' activos' : ''),
+      mrr: p.mrr || '—',
+      subsLabel: p.suscripciones === undefined ? '' : (p.suscripciones === 1 ? '1 suscripción' : p.suscripciones + ' suscripciones'),
+      mrrBg: p.highlight ? 'rgba(255,255,255,0.16)' : 'var(--surface-2,#F5F8FC)',
       cardBg: p.highlight ? 'var(--accent,#378ADD)' : 'var(--surface,#FFFFFF)',
       cardBorder: p.highlight ? 'var(--accent,#378ADD)' : 'var(--border,#E6F1FB)',
       titleColor: p.highlight ? '#FFFFFF' : 'var(--text,#042C53)',
@@ -739,8 +1006,150 @@ class Component extends DCLogic {
     const incidents = this.incidents.map(i => ({ title: i.title, detail: i.detail, time: i.time, d: i.d, iconBg: sevMap[i.sev].bg, iconFg: sevMap[i.sev].fg }));
     const health = this.health.map(h => ({ label: h.label, value: h.value, note: h.note, dot: h.ok ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)', color: h.ok ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)' }));
 
+    // ==== Torre de control: agregados reales de /api/admin/dashboard ====
+    const D = this.dash;
+    const IC = {
+      tenants: 'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M5 21h14M9 7h2M9 11h2M15 21V11h4v10',
+      mrr: 'M4 19V5M4 19h16M8 15l3-4 3 2 4-6',
+      users: 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z',
+      gmv: 'M3 3h2l2.4 12.3a1 1 0 0 0 1 .7h9.2a1 1 0 0 0 1-.8L21 8H6',
+      bug: 'M12 8v5M12 16v.01M10.3 4.3 3 18a2 2 0 0 0 1.7 3h14.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z',
+      soporte: 'M8 10h8M8 14h5M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z'
+    };
+    const rangeDays = D ? D.range.days : this.state.range;
+    const rangeLabel = 'Últimos ' + rangeDays + ' días';
+
+    // KPIs: reales si hay API; si no, los embebidos (modo demo/diseño).
+    const dashKpis = D ? [
+      { label: 'Tenants activos', value: this.fmtNum(D.kpis.tenants.activos),
+        delta: this.fmtNum(D.kpis.tenants.total) + ' en total · ' + this.fmtNum(D.kpis.tenants.nuevosMes) + ' nuevos este mes',
+        tone: 'up', d: IC.tenants },
+      { label: 'MRR', value: this.fmtMoney(D.kpis.mrr), delta: 'suscripciones activas', tone: 'up', d: IC.mrr },
+      { label: 'Usuarios', value: this.fmtNum(D.kpis.usuarios.total),
+        delta: this.fmtNum(D.kpis.usuarios.activos7d) + ' activos últimos 7 días', tone: 'neutral', d: IC.users },
+      { label: 'Ventas de tenants (' + rangeDays + 'd)', value: this.fmtMoney(D.kpis.gmv.total),
+        delta: this.fmtNum(D.kpis.gmv.pedidos) + ' pedidos en la plataforma', tone: 'up', d: IC.gmv },
+      { label: 'Errores de app (24h)', value: this.fmtNum(D.kpis.errores24h),
+        delta: D.kpis.errores24h === 0 ? 'API sana' : 'revisa Monitoreo',
+        tone: D.kpis.errores24h === 0 ? 'up' : 'warn', d: IC.bug },
+      { label: 'Incidencias abiertas', value: this.fmtNum(D.kpis.incidenciasAbiertas),
+        delta: D.kpis.incidenciasAbiertas === 0 ? 'sin pendientes' : 'requieren atención',
+        tone: D.kpis.incidenciasAbiertas === 0 ? 'up' : 'warn', d: IC.soporte }
+    ] : this.kpis;
+
+    const healthChips = (D ? D.salud : this.health.map(h => ({ label: h.label, value: h.value, ok: h.ok }))).map(h => ({
+      text: h.label + ': ' + h.value,
+      dot: h.ok ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)',
+      color: h.ok ? 'var(--muted,rgba(4,44,83,0.6))' : 'var(--warn,#B9682B)',
+      border: h.ok ? 'var(--border,#E6F1FB)' : 'var(--warn,#B9682B)'
+    }));
+
+    // Serie de ventas de la plataforma (GMV) — polilínea + área en 600x170.
+    const trend = D ? D.gmvTrend : [];
+    const gmvGeo = trend.length ? this.chartPoints(trend, 'total') : { line: '', area: '', max: 0 };
+    const gmvTotal = D ? this.fmtMoney(D.kpis.gmv.total) : '—';
+    const gmvSub = D
+      ? rangeLabel + ' · ' + this.fmtNum(D.docsCount.pedidos) + ' pedidos, ' + this.fmtNum(D.docsCount.cotizaciones)
+        + ' cotizaciones, ' + this.fmtNum(D.docsCount.facturas) + ' facturas'
+      : rangeLabel;
+
+    const pct = (v, max) => Math.max(2, Math.round((v / (max || 1)) * 100)) + '%';
+    const tops = D ? D.topTenants : [];
+    const topMax = Math.max.apply(null, tops.map(t => t.total).concat([1]));
+    const topTenants = tops.map(t => ({
+      name: t.name, value: this.fmtMoney(t.total), pct: pct(t.total, topMax),
+      hint: this.fmtNum(t.orders) + (t.orders === 1 ? ' pedido' : ' pedidos') + (t.slug ? ' · ' + t.slug : '')
+    }));
+
+    const altasSrc = D ? D.altasPorMes : [];
+    const altasMax = Math.max.apply(null, altasSrc.map(a => a.count).concat([1]));
+    const altas = altasSrc.map(a => ({
+      month: a.month, count: a.count === 0 ? '—' : this.fmtNum(a.count),
+      h: a.count === 0 ? '3px' : Math.max(6, Math.round((a.count / altasMax) * 96)) + 'px'
+    }));
+
+    const vertSrc = D ? D.tenantsPorVertical : [];
+    const vertMax = Math.max.apply(null, vertSrc.map(x => x.count).concat([1]));
+    const porVertical = vertSrc.map(x => ({ label: x.label, count: this.fmtNum(x.count), pct: pct(x.count, vertMax) }));
+    const planSrc = D ? D.tenantsPorPlan : [];
+    const planMax = Math.max.apply(null, planSrc.map(x => x.count).concat([1]));
+    const porPlan = planSrc.map(x => ({ label: x.label, count: this.fmtNum(x.count), pct: pct(x.count, planMax) }));
+
+    const dashErrors = (D ? D.errores : []).slice(0, 6).map(e => ({
+      at: this.fmtWhen(e.at), route: e.method + ' ' + e.route,
+      org: e.orgName || '—', message: e.message
+    }));
+
+    // ==== Monitoreo: bitácora de errores 5xx ====
+    const L = this.errLog;
+    const errRows = (L ? L.errores : []).map(e => ({
+      at: this.fmtWhen(e.at), route: e.method + ' ' + e.route, status: String(e.status),
+      org: e.orgName || '—', message: e.message,
+      onOpen: () => this.setState({ errDetail: e })
+    }));
+    const brMax = Math.max.apply(null, (L ? L.byRoute : []).map(r => r.count).concat([1]));
+    const errByRoute = (L ? L.byRoute : []).map(r => ({
+      route: r.route, count: this.fmtNum(r.count), pct: pct(r.count, brMax),
+      active: this.state.monRoute === r.route,
+      bg: this.state.monRoute === r.route ? 'var(--accent-weak,#E6F1FB)' : 'transparent',
+      onClick: () => this.reloadErrors({ monRoute: this.state.monRoute === r.route ? '' : r.route })
+    }));
+    const monRangeBtns = [1, 7, 30].map(dd => ({
+      label: dd === 1 ? '24 h' : dd + ' días',
+      onClick: () => this.reloadErrors({ monDays: dd }),
+      bg: this.state.monDays === dd ? 'var(--accent,#378ADD)' : 'var(--surface,#FFFFFF)',
+      color: this.state.monDays === dd ? '#FFFFFF' : 'var(--muted,rgba(4,44,83,0.6))',
+      border: this.state.monDays === dd ? 'var(--accent,#378ADD)' : 'var(--border,#E6F1FB)'
+    }));
+    const ed = this.state.errDetail;
+
     return {
       setRoot: (el) => { this._root = el; if (el) this.applyTheme(); },
+
+      // ---- Tenants: buscador ----
+      tSearch: this.state.tSearch,
+      onTSearch: (e) => this.setState({ tSearch: e.target.value }),
+
+      // ---- Torre de control (Dashboard global) ----
+      dashSub: 'Vista global de la plataforma · ' + rangeLabel.toLowerCase(),
+      rangeLabel,
+      dashRange: [7, 30, 90].map(dd => ({
+        label: dd + ' días',
+        onClick: () => this.setRange(dd),
+        bg: rangeDays === dd ? 'var(--surface,#FFFFFF)' : 'transparent',
+        color: rangeDays === dd ? '#0C447C' : 'var(--muted,rgba(4,44,83,0.6))',
+        shadow: rangeDays === dd ? '0 1px 4px rgba(4,44,83,0.12)' : 'none'
+      })),
+      healthChips,
+      gmvLine: gmvGeo.line, gmvArea: gmvGeo.area,
+      gmvMax: gmvGeo.max ? this.fmtMoney(gmvGeo.max) : '',
+      gmvTotal, gmvSub,
+      gmvFrom: trend.length ? this.fmtDay(trend[0].date) : '',
+      gmvMid: trend.length ? this.fmtDay(trend[Math.floor(trend.length / 2)].date) : '',
+      gmvTo: trend.length ? this.fmtDay(trend[trend.length - 1].date) : '',
+      topTenants, hasTopTenants: topTenants.length > 0, noTopTenants: topTenants.length === 0,
+      altas, porVertical, porPlan,
+      totalTenantsLabel: (D ? this.fmtNum(D.kpis.tenants.total) : this.tenants.length) + ' organizaciones',
+      dashErrors, hasDashErrors: dashErrors.length > 0, noDashErrors: dashErrors.length === 0,
+      goMonitoreo: () => this.setState({ view: 'monitoreo' }),
+
+      // ---- Monitoreo ----
+      errRows, hasErrRows: errRows.length > 0, noErrRows: errRows.length === 0,
+      errByRoute, hasErrByRoute: errByRoute.length > 0,
+      monRangeBtns,
+      errWindow: (L ? this.fmtNum(L.total) : '0') + ' '
+        + ((L && L.total === 1) ? 'error' : 'errores') + ' en '
+        + (this.state.monDays === 1 ? 'las últimas 24 h' : 'los últimos ' + this.state.monDays + ' días'),
+      monRouteFilter: this.state.monRoute,
+      hasRouteFilter: !!this.state.monRoute,
+      clearRouteFilter: () => this.reloadErrors({ monRoute: '' }),
+      errDetailOpen: !!ed,
+      edRoute: ed ? ed.method + ' ' + ed.route : '',
+      edWhen: ed ? this.fmtWhen(ed.at) : '',
+      edOrg: ed ? (ed.orgName || 'Sin tenant') : '',
+      edMessage: ed ? ed.message : '',
+      edStack: ed ? (ed.stack || 'Sin stack registrado.') : '',
+      closeErrDetail: () => this.setState({ errDetail: null }),
 
       // Perfil (usuario de sesión; fallback demo super-admin)
       meIni: ((this.state.me || { name: 'Aplika.ai' }).name || '?').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase(),
@@ -816,7 +1225,7 @@ class Component extends DCLogic {
           wrTestBg: hit ? 'var(--success,#1FA85A)' : 'var(--warn,#B9682B)'
         };
       })(),
-      kpis: this.kpis.map(k => ({ label: k.label, value: k.value, delta: k.delta, d: k.d, ...this.iconTone(k.tone) })),
+      kpis: dashKpis.map(k => ({ label: k.label, value: k.value, delta: k.delta, d: k.d, ...this.iconTone(k.tone) })),
       tenantTabs, tenantRows, tenantCount: tList.length + ' de ' + this.tenants.length + ' tenants',
       vertTabs,
 

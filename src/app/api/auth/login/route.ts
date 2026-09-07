@@ -10,7 +10,7 @@ const Body = z.object({
 });
 
 const clientRedirect = '/panel'; // panel ERP nuevo (React); reemplaza al panel dc
-const adminRedirect = '/admin'; // Torre de control (React)
+const adminRedirect = '/dc/Panel Super-admin.dc.html';
 
 /**
  * POST /api/auth/login  { email, password }
