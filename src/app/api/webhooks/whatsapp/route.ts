@@ -79,12 +79,28 @@ export async function POST(req: Request) {
   const firstName = profileName ? profileName.split(/\s+/)[0] : '';
   const patientName = profileName || from || 'Paciente WhatsApp';
 
+  const orgId = process.env.APLIKA_WHATSAPP_ORG_ID || '';
+
   if (!body) {
-    return twiml('¡Hola! 👋 Para agendar tu cita dime el día y la hora, por ejemplo: «mañana a las 4 pm».');
+    return twiml(
+      '¡Hola! 👋 Puedo levantarte un *pedido* o una *cotización* (escribe la palabra para empezar), enseñarte el *catálogo*, o agendarte una cita («mañana a las 4 pm»).',
+    );
+  }
+
+  // --- Bot de ventas: cotizaciones y pedidos con sesión persistida ---
+  // Si el mensaje pertenece al flujo de ventas responde aquí; si no, cae a
+  // citas/auto-respuestas como siempre.
+  if (!isDemo() && orgId) {
+    try {
+      const { runSalesFlow } = await import('@/lib/whatsapp/sales-db');
+      const reply = await runSalesFlow({ orgId, phone: from, profileName, body });
+      if (reply) return twiml(reply);
+    } catch (e) {
+      console.error('[whatsapp] flujo de ventas falló:', e);
+    }
   }
 
   const parsed = parseBookingMessage(body);
-  const orgId = process.env.APLIKA_WHATSAPP_ORG_ID || '';
 
   // Con Supabase configurado + org destino + fecha detectada → agenda la cita.
   if (!isDemo() && orgId && parsed.startsAt) {
@@ -155,6 +171,8 @@ export async function POST(req: Request) {
   const auto = matchAutoResponse(body, rows);
   if (auto) return twiml(auto.response);
 
-  // No se detectó fecha/hora ni palabra clave: pide los datos.
-  return twiml('Con gusto te agendo 🙂 Dime el día y la hora, por ejemplo: «el viernes a las 11 am» o «mañana a las 4 pm». Escribe "ayuda" para ver opciones.');
+  // No se detectó fecha/hora ni palabra clave: guía al usuario.
+  return twiml(
+    'Puedo ayudarte con varias cosas 🙂 Escribe *pedido* o *cotización* para levantar tu compra, *catálogo* para ver productos, o dime día y hora para una cita («mañana a las 4 pm»).',
+  );
 }

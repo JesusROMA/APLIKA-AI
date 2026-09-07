@@ -175,4 +175,12 @@ supabase test db         # pgTAP: RLS + decremento de inventario + backorder
   (sin desactivar el bypass RLS de super_admin).
 - Notificación de leads por correo (stub `APLIKA_SMTP_URL`).
 - Integrar un PAC real implementando `PacProvider`.
-- Webhooks/captura de pedidos del Agente IA (entrada de mensajes).
+- ~~Webhooks/captura de pedidos del Agente IA (entrada de mensajes)~~ →
+  **Hecho**: bot de ventas por WhatsApp (Twilio). `POST /api/webhooks/whatsapp`
+  atiende «cotización» / «pedido» con un flujo conversacional con carrito
+  (busca productos, precios de la lista del cliente si el teléfono coincide,
+  totales con IVA) y crea la cotización o el pedido en el tenant
+  `APLIKA_WHATSAPP_ORG_ID` con folio por serie; «catálogo» lista productos y
+  los mensajes con fecha/hora siguen agendando cita. Sesiones en
+  `whatsapp_sales_sessions` (expiran a los 30 min). Lógica pura testeable en
+  `src/lib/whatsapp/sales.ts` (`tests/whatsapp-sales.test.ts`).
