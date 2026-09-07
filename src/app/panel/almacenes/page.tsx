@@ -61,7 +61,7 @@ export default function AlmacenesPage() {
         emptyTitle="Sin almacenes"
         emptyMessage="Aún no has registrado almacenes."
         toolbarActions={
-          can('maestros', 'crear') ? (
+          can('maestro_almacenes', 'crear') ? (
             <button type="button" className="pbtn pbtn--primary" onClick={() => setDraft('new')}>
               + Nuevo almacén
             </button>
@@ -74,7 +74,7 @@ export default function AlmacenesPage() {
       {draft !== null && (
         <WarehouseDrawer
           draft={draft}
-          canEdit={draft === 'new' ? can('maestros', 'crear') : can('maestros', 'editar')}
+          canEdit={draft === 'new' ? can('maestro_almacenes', 'crear') : can('maestro_almacenes', 'editar')}
           onClose={() => setDraft(null)}
           onSaved={() => {
             setDraft(null);

@@ -44,7 +44,8 @@ export async function buildPermissionMap(
 /**
  * 403 limpio (antes de pegarle a la BD) si la org no tiene el módulo activo.
  * También 403 si no hay tenant en contexto (super_admin sin impersonar). Los
- * módulos core/virtuales (dashboard/config/maestros) están siempre activos.
+ * módulos core (dashboard/config) están siempre activos; los maestros son
+ * módulos de catálogo asignables por tenant desde 0026.
  */
 export function requireModule(session: SessionInfo, moduleKey: ModuleKey): void {
   if (!session.organization) {

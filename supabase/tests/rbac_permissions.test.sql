@@ -16,7 +16,7 @@ insert into organizations (id, slug, name) values
 -- Módulos activos SOLO para la primera org (la segunda queda sin 'ordenes')
 insert into organization_modules (organization_id, module_id, enabled)
 select 'a1000000-0000-0000-0000-000000000001', id, true
-  from modules where key in ('ordenes','inventario')
+  from modules where key in ('ordenes','inventario','maestro_clientes','maestro_productos','maestro_almacenes','maestro_precios')
 on conflict do nothing;
 
 insert into auth.users (instance_id, id, aud, role, email) values

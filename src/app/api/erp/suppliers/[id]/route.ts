@@ -46,7 +46,7 @@ function toSupplierRow(s: {
 // GET /api/erp/suppliers/[id] — ficha (compras/ver)
 export const GET = handle(async (_req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'compras', 'ver');
+  requireAccess(session, 'maestro_proveedores', 'ver');
   const supabase = erpClientFor(session);
 
   const { data, error } = await supabase
@@ -74,7 +74,7 @@ const Patch = z.object({
 // PATCH /api/erp/suppliers/[id] — edición parcial (compras/editar)
 export const PATCH = handle(async (req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'compras', 'editar');
+  requireAccess(session, 'maestro_proveedores', 'editar');
   const supabase = erpClientFor(session);
   const b = Patch.parse(await req.json());
 

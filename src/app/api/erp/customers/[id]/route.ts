@@ -13,7 +13,7 @@ const RFC_RE = /^([A-ZÑ&]{3,4})[0-9]{6}[A-Z0-9]{3}$/i;
 // GET /api/erp/customers/[id] — ficha (maestros/ver)
 export const GET = handle(async (_req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_clientes', 'ver');
   const supabase = erpClientFor(session);
 
   const { data, error } = await supabase
@@ -50,7 +50,7 @@ const Patch = z.object({
 // PATCH /api/erp/customers/[id] — edición parcial (maestros/editar)
 export const PATCH = handle(async (req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'editar');
+  requireAccess(session, 'maestro_clientes', 'editar');
   const supabase = erpClientFor(session);
   const b = Patch.parse(await req.json());
 

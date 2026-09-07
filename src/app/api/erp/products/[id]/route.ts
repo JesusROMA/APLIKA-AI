@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/erp/products/[id] — producto con variantes + stock (maestros/ver)
 export const GET = handle(async (_req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_productos', 'ver');
   const supabase = erpClientFor(session);
 
   const { data, error } = await supabase
@@ -40,7 +40,7 @@ const Patch = z.object({
 // Las variantes se gestionan aparte (F1); aquí van claves SAT/iva/tipo.
 export const PATCH = handle(async (req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'editar');
+  requireAccess(session, 'maestro_productos', 'editar');
   const supabase = erpClientFor(session);
   const b = Patch.parse(await req.json());
 

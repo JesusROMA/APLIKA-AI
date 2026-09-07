@@ -1402,3 +1402,62 @@ a.f1-flow-node:hover {
   border-bottom: 1px solid var(--line);
   margin-bottom: 4px;
 }
+
+/* Configuración → Maestros (0026): tarjetas de entrada a los catálogos. */
+.maestros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--sp-2);
+}
+.maestro-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.maestro-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+}
+.maestro-card-icon {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-100);
+  color: var(--navy);
+  border-radius: var(--r-md);
+}
+.maestro-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.maestro-card-title {
+  font-size: var(--fs-body-sm);
+  font-weight: 700;
+  color: var(--ink);
+}
+.maestro-card-desc {
+  font-size: var(--fs-caption);
+  color: var(--ink-55);
+}
+.maestro-card-go {
+  margin-left: auto;
+  color: var(--ink-45);
+  transition: transform var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.maestro-card:hover .maestro-card-go {
+  transform: translateX(3px);
+  color: var(--blue);
+}

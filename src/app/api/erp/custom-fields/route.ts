@@ -20,7 +20,7 @@ function normalizeType(t: string): CustomFieldType {
  */
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'config', 'ver');
   const supabase = erpClientFor(session);
   const moduleKey = new URL(req.url).searchParams.get('moduleKey') ?? 'maestros';
 

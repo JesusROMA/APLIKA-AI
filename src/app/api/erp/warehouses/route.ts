@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/erp/warehouses — paginado (maestros/ver)
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_almacenes', 'ver');
   const supabase = erpClientFor(session);
 
   const { page, pageSize, search } = parseListParams(new URL(req.url));
@@ -43,7 +43,7 @@ const NewWarehouse = z.object({
 // POST /api/erp/warehouses — alta (maestros/crear)
 export const POST = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'crear');
+  requireAccess(session, 'maestro_almacenes', 'crear');
   const supabase = erpClientFor(session);
   const b = NewWarehouse.parse(await req.json());
 

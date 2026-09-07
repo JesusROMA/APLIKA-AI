@@ -60,7 +60,7 @@ function toRow(c: {
 // GET /api/erp/customers — listado paginado (maestros/ver)
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_clientes', 'ver');
   const supabase = erpClientFor(session);
 
   const { page, pageSize, search } = parseListParams(new URL(req.url));
@@ -101,7 +101,7 @@ const NewCustomer = z.object({
 // POST /api/erp/customers — alta (maestros/crear); valida RFC/CP/catálogos SAT
 export const POST = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'crear');
+  requireAccess(session, 'maestro_clientes', 'crear');
   const supabase = erpClientFor(session);
   const b = NewCustomer.parse(await req.json());
 

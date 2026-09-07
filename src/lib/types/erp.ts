@@ -6,7 +6,7 @@
 
 // ===== Módulos y permisos =====
 
-/** Keys reales de la tabla `modules` + el módulo virtual 'maestros' (RBAC). */
+/** Keys reales de la tabla `modules` (0026: maestros como módulos por tenant). */
 export type ModuleKey =
   | 'dashboard'
   | 'ordenes'
@@ -21,7 +21,11 @@ export type ModuleKey =
   | 'reservas_whatsapp'
   | 'ia_agente'
   | 'config'
-  | 'maestros';
+  | 'maestro_clientes' // 0026 Maestros asignables
+  | 'maestro_proveedores'
+  | 'maestro_productos'
+  | 'maestro_almacenes'
+  | 'maestro_precios';
 
 export type PermAction = 'ver' | 'crear' | 'editar' | 'cancelar' | 'configurar';
 

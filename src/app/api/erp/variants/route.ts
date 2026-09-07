@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
  */
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_productos', 'ver');
   const supabase = erpClientFor(session);
 
   const url = new URL(req.url);

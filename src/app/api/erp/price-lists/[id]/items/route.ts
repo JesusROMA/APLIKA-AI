@@ -34,7 +34,7 @@ async function ensurePriceList(
 // Devuelve un arreglo (el editor necesita el set completo, no paginado).
 export const GET = handle(async (_req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_precios', 'ver');
   const supabase = erpClientFor(session);
   await ensurePriceList(supabase, params.id);
 
@@ -73,7 +73,7 @@ const PutItems = z.object({
 // DEFINER con chequeo de permiso). "Lo que ves es lo que se guarda".
 export const PUT = handle(async (req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'editar');
+  requireAccess(session, 'maestro_precios', 'editar');
   const supabase = erpClientFor(session);
   await ensurePriceList(supabase, params.id);
   const b = PutItems.parse(await req.json());

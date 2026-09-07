@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/erp/price-lists — paginado, con conteo de items (maestros/ver)
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_precios', 'ver');
   const supabase = erpClientFor(session);
 
   const { page, pageSize, search } = parseListParams(new URL(req.url));
@@ -44,7 +44,7 @@ const NewPriceList = z.object({
 // POST /api/erp/price-lists — alta (maestros/crear)
 export const POST = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'crear');
+  requireAccess(session, 'maestro_precios', 'crear');
   const supabase = erpClientFor(session);
   const b = NewPriceList.parse(await req.json());
 

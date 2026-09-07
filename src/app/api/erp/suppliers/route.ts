@@ -47,7 +47,7 @@ function toSupplierRow(s: {
 // GET /api/erp/suppliers — listado paginado (compras/ver)
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'compras', 'ver');
+  requireAccess(session, 'maestro_proveedores', 'ver');
   const supabase = erpClientFor(session);
 
   const { page, pageSize, search, status } = parseListParams(new URL(req.url));
@@ -79,7 +79,7 @@ const NewSupplier = z.object({
 // POST /api/erp/suppliers — alta (compras/crear)
 export const POST = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'compras', 'crear');
+  requireAccess(session, 'maestro_proveedores', 'crear');
   const supabase = erpClientFor(session);
   const b = NewSupplier.parse(await req.json());
 

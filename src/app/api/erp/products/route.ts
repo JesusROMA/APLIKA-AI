@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/erp/products — paginado, con variantes + stock agregado (maestros/ver)
 export const GET = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'ver');
+  requireAccess(session, 'maestro_productos', 'ver');
   const supabase = erpClientFor(session);
 
   const { page, pageSize, search, status } = parseListParams(new URL(req.url));
@@ -60,7 +60,7 @@ const NewProduct = z.object({
 // POST /api/erp/products — crea producto + variante(s) (maestros/crear)
 export const POST = handle(async (req) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'crear');
+  requireAccess(session, 'maestro_productos', 'crear');
   const supabase = erpClientFor(session);
   const b = NewProduct.parse(await req.json());
   const orgId = session.organization!.id;

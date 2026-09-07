@@ -1,12 +1,12 @@
 'use client';
 
 /**
- * Nav lateral del panel, organizada por SECTORES (Maestros / Operación /
- * Finanzas / Administración) con grupos plegables (Ventas / Compras / Inventario).
+ * Nav lateral del panel, organizada por SECTORES (Operación / Finanzas /
+ * Administración) con grupos plegables (Ventas / Compras / Inventario).
  * Cada entrada se muestra según los módulos activos del tenant (session.modules)
- * y los permisos (perms.*.ver). Los módulos core (dashboard/maestros/config) se
- * dibujan como fijos. Entradas marcadas `soon` aún no tienen página (se activan
- * al construirse su módulo).
+ * y los permisos (perms.*.ver). Los módulos core (dashboard/config) se dibujan
+ * como fijos. Los maestros (0026) se abren desde Configuración → Maestros,
+ * cada uno gated por su módulo `maestro_*`.
  */
 
 import { useState } from 'react';
@@ -88,14 +88,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   };
 
   // ---- Composición de sectores según módulos activos ----
-  const maestros: Item[] = [
-    { href: '/panel/clientes', label: 'Clientes', d: IC.clientes },
-    ...(has('compras') ? [{ href: '/panel/compras/proveedores', label: 'Proveedores', d: IC.proveedores }] : []),
-    { href: '/panel/productos', label: 'Productos', d: IC.productos },
-    { href: '/panel/almacenes', label: 'Almacenes', d: IC.almacenes },
-    { href: '/panel/listas-precios', label: 'Listas de precios', d: IC.listas },
-  ];
-
+  // Los maestros (0026) ya no tienen sector propio: viven en Configuración →
+  // Maestros, cada uno gated por su módulo (maestro_*).
   const ventas: Item[] = [
     ...(has('cotizaciones') ? [{ href: '/panel/cotizaciones', label: 'Cotizaciones', d: IC.doc }] : []),
     ...(has('ordenes') ? [{ href: '/panel/pedidos', label: 'Pedidos', d: IC.ventas }] : []),
@@ -146,13 +140,6 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <Icon d={IC.inicio} />
         <span>Inicio</span>
       </Link>
-
-      {canVer('maestros') && (
-        <>
-          <div className="panel-nav-group-label">Maestros</div>
-          {maestros.map((it) => link(it))}
-        </>
-      )}
 
       {(ventas.length > 0 || compras.length > 0 || inventario.length > 0 || opDirect.length > 0) && (
         <div className="panel-nav-group-label">Operación</div>

@@ -23,7 +23,7 @@ select o.id, m.id, true
   from organizations o
  cross join modules m
  where o.id in ('aaaaaaaa-0000-0000-0000-000000000001','bbbbbbbb-0000-0000-0000-000000000002')
-   and m.key in ('ordenes','inventario')
+   and m.key in ('ordenes','inventario','maestro_productos','maestro_almacenes')
 on conflict do nothing;
 
 insert into auth.users (instance_id, id, aud, role, email)

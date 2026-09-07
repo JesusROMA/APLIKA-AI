@@ -41,7 +41,11 @@ const MODULE_LABEL: Record<string, string> = {
   reservas_whatsapp: 'Reservas WhatsApp',
   ia_agente: 'Agente IA',
   config: 'Configuración',
-  maestros: 'Maestros',
+  maestro_clientes: 'Maestro · Clientes',
+  maestro_proveedores: 'Maestro · Proveedores',
+  maestro_productos: 'Maestro · Productos',
+  maestro_almacenes: 'Maestro · Almacenes',
+  maestro_precios: 'Maestro · Listas de precios',
 };
 
 const cellKey = (role: string, moduleKey: string, action: string) =>

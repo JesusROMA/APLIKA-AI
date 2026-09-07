@@ -108,7 +108,7 @@ export default function ProductosPage() {
         emptyTitle="Sin productos"
         emptyMessage="Aún no has registrado productos."
         toolbarActions={
-          can('maestros', 'crear') ? (
+          can('maestro_productos', 'crear') ? (
             <button type="button" className="pbtn pbtn--primary" onClick={() => setDraft('new')}>
               + Nuevo producto
             </button>
@@ -122,7 +122,7 @@ export default function ProductosPage() {
         <ProductDrawer
           draft={draft}
           unidadOpts={unidadOpts}
-          canEdit={draft === 'new' ? can('maestros', 'crear') : can('maestros', 'editar')}
+          canEdit={draft === 'new' ? can('maestro_productos', 'crear') : can('maestro_productos', 'editar')}
           onClose={() => setDraft(null)}
           onSaved={() => {
             setDraft(null);

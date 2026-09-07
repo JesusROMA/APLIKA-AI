@@ -95,7 +95,7 @@ export default function ClientesPage() {
         emptyTitle="Sin clientes"
         emptyMessage="Aún no has registrado clientes."
         toolbarActions={
-          can('maestros', 'crear') ? (
+          can('maestro_clientes', 'crear') ? (
             <button type="button" className="pbtn pbtn--primary" onClick={() => setDraft('new')}>
               + Nuevo cliente
             </button>
@@ -112,7 +112,7 @@ export default function ClientesPage() {
           usoOpts={usoOpts}
           priceListOpts={priceListOpts}
           customFieldDefs={customFields.data ?? []}
-          canEdit={draft === 'new' ? can('maestros', 'crear') : can('maestros', 'editar')}
+          canEdit={draft === 'new' ? can('maestro_clientes', 'crear') : can('maestro_clientes', 'editar')}
           onClose={() => setDraft(null)}
           onSaved={() => {
             setDraft(null);

@@ -16,7 +16,7 @@ const Patch = z.object({
 // PATCH /api/erp/warehouses/[id] — edición (maestros/editar)
 export const PATCH = handle(async (req, { params }) => {
   const session = await getErpSession();
-  requireAccess(session, 'maestros', 'editar');
+  requireAccess(session, 'maestro_almacenes', 'editar');
   const supabase = erpClientFor(session);
   const b = Patch.parse(await req.json());
 

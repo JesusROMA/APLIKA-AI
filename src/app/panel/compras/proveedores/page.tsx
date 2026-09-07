@@ -87,7 +87,7 @@ export default function ProveedoresPage() {
         emptyTitle="Sin proveedores"
         emptyMessage="Aún no has registrado proveedores."
         toolbarActions={
-          can('compras', 'crear') ? (
+          can('maestro_proveedores', 'crear') ? (
             <button type="button" className="pbtn pbtn--primary" onClick={() => setDraft('new')}>
               + Nuevo proveedor
             </button>
@@ -100,7 +100,7 @@ export default function ProveedoresPage() {
       {draft !== null && (
         <SupplierDrawer
           draft={draft}
-          canEdit={draft === 'new' ? can('compras', 'crear') : can('compras', 'editar')}
+          canEdit={draft === 'new' ? can('maestro_proveedores', 'crear') : can('maestro_proveedores', 'editar')}
           onClose={() => setDraft(null)}
           onSaved={() => {
             setDraft(null);

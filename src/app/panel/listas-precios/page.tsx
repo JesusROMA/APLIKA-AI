@@ -69,7 +69,7 @@ export default function ListasPreciosPage() {
         emptyTitle="Sin listas de precios"
         emptyMessage="Crea una lista para asignar precios por cliente."
         toolbarActions={
-          can('maestros', 'crear') ? (
+          can('maestro_precios', 'crear') ? (
             <button type="button" className="pbtn pbtn--primary" onClick={() => setCreating(true)}>
               + Nueva lista
             </button>
@@ -92,7 +92,7 @@ export default function ListasPreciosPage() {
       {editing && (
         <ItemsDrawer
           list={editing}
-          canEdit={can('maestros', 'editar')}
+          canEdit={can('maestro_precios', 'editar')}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);
