@@ -1,38 +1,50 @@
 'use client';
 
-/** Tarjeta KPI para el dashboard. Formatea el número según la unidad. */
+/**
+ * Stat tile del dashboard: etiqueta + valor + sub-línea + delta contra un
+ * periodo nombrado (color según si subir es bueno) + sparkline opcional.
+ */
 
-import type { DashboardKpi } from '@/lib/types/erp';
+import type { StatDelta } from '@/lib/types/erp';
+import { Sparkline } from './charts';
 
-const MXN = new Intl.NumberFormat('es-MX', {
-  style: 'currency',
-  currency: 'MXN',
-  maximumFractionDigits: 0,
-});
 const NUM = new Intl.NumberFormat('es-MX');
 
-export function formatKpi(value: number, unit: DashboardKpi['unit']): string {
-  switch (unit) {
-    case 'mxn':
-      return MXN.format(value);
-    case 'pct':
-      return `${NUM.format(value)}%`;
-    case 'count':
-    default:
-      return NUM.format(value);
-  }
-}
-
-export function KpiCard({ kpi }: { kpi: DashboardKpi }) {
-  const trend = kpi.trend;
+export function StatTile({
+  label,
+  value,
+  sub,
+  delta,
+  goodWhen = 'up',
+  spark,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  delta?: StatDelta;
+  /** Para costos/cartera "subir" es malo: invierte el color del delta. */
+  goodWhen?: 'up' | 'down';
+  spark?: number[];
+}) {
+  const tone =
+    !delta || delta.direction === 'flat' || delta.pct === null
+      ? 'flat'
+      : delta.direction === goodWhen
+        ? 'up'
+        : 'down';
   return (
     <div className="kpi-card">
-      <span className="kpi-label">{kpi.label}</span>
-      <span className="kpi-value">{formatKpi(kpi.value, kpi.unit)}</span>
-      {trend && (
-        <span className={`kpi-trend kpi-trend--${trend.direction}`}>
-          {trend.direction === 'up' ? '▲' : trend.direction === 'down' ? '▼' : '■'}{' '}
-          {NUM.format(Math.abs(trend.pct))}%
+      <span className="kpi-label">{label}</span>
+      <div className="kpi-value-row">
+        <span className="kpi-value">{value}</span>
+        {spark && spark.length > 1 && <Sparkline points={spark} />}
+      </div>
+      {sub && <span className="kpi-sub">{sub}</span>}
+      {/* Sin base de comparación (÷0) el % no existe: se omite el chip. */}
+      {delta && delta.pct !== null && (
+        <span className={`kpi-trend kpi-trend--${tone}`} title={`vs ${delta.vs}`}>
+          {delta.direction === 'up' ? '▲' : delta.direction === 'down' ? '▼' : '■'}{' '}
+          {NUM.format(Math.abs(delta.pct))}%<span className="kpi-trend-vs">vs {delta.vs}</span>
         </span>
       )}
     </div>

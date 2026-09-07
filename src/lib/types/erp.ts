@@ -149,18 +149,60 @@ export interface SatCatalogEntry {
 
 // ===== Dashboard =====
 
-/** KPI limpio: la UI decide formato/estilo (sin strings pre-formateados). */
-export interface DashboardKpi {
-  key: string;
-  label: string;
-  value: number;
-  unit: 'mxn' | 'count' | 'pct';
-  trend?: { pct: number; direction: 'up' | 'down' | 'flat' };
+/** Cambio % contra un periodo de comparación nombrado (para el copy del tile). */
+export interface StatDelta {
+  /** % de cambio; null cuando la base es 0 (no hay contra qué comparar). */
+  pct: number | null;
+  direction: 'up' | 'down' | 'flat';
+  /** Ej. "ayer", "mes anterior (mismo corte)". */
+  vs: string;
 }
 
+export interface AgingBucket {
+  bucket: '0-30' | '31-60' | '61-90' | '90+';
+  monto: number;
+  facturas: number;
+}
+
+/**
+ * Payload del dashboard (GET /api/erp/dashboard?days=7|30|90). Números limpios;
+ * la UI decide formato y trazo. Cada sección viene sólo si el módulo que la
+ * alimenta está activo para el tenant. `salesTrend`, `flujo` y `topProducts`
+ * respetan el rango pedido; `hoy`/`mes` son fijos por definición.
+ */
 export interface DashboardData {
-  kpis: DashboardKpi[];
-  salesTrend?: { date: string; total: number }[]; // solo si módulo ordenes
+  range: { days: number; from: string; to: string };
+  /** Módulo ordenes. */
+  hoy?: { ventas: number; pedidos: number; delta: StatDelta };
+  mes?: {
+    ventas: number;
+    pedidos: number;
+    ticketPromedio: number;
+    delta: StatDelta;
+    /** Margen bruto del mes (ventas sin IVA - costo de lo vendido); null si no hay base. */
+    margenPct: number | null;
+    margenMonto: number | null;
+  };
+  /** Módulo facturacion: saldo abierto + antigüedad. */
+  cxc?: { total: number; facturas: number; vencido31: number; aging: AgingBucket[] };
+  /** Módulo compras: saldo por pagar. */
+  cxp?: { total: number; facturas: number; vencido31: number };
+  /** Módulo inventario. */
+  inventario?: { valor: number; skus: number; stockBajo: number };
+  /** Serie diaria de ventas del rango (módulo ordenes). */
+  salesTrend?: { date: string; total: number; orders: number }[];
+  /** Módulo pagos: cobros vs pagos del rango, en cubetas diarias o semanales. */
+  flujo?: {
+    cobros: number;
+    pagos: number;
+    neto: number;
+    bucket: 'dia' | 'semana';
+    series: { label: string; cobros: number; pagos: number }[];
+  };
+  /** Top productos vendidos del rango por importe (módulo ordenes). */
+  topProducts?: { sku: string; name: string; qty: number; amount: number }[];
+  /** Documentos abiertos que requieren acción, con liga a su pantalla. */
+  pendientes?: { key: string; label: string; count: number; amount: number | null; href: string }[];
   stockAlerts?: { sku: string; name: string; stock: number; minStock: number }[];
   todayAppointments?: { id: string; startsAt: string; patientName: string; status: string }[];
 }

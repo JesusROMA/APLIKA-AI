@@ -93,7 +93,8 @@ function query(params?: ListParams): string {
 // ===== Sesión / dashboard =====
 
 export const getMe = () => request<SessionInfo>('/me');
-export const getDashboard = () => request<DashboardData>('/dashboard');
+export const getDashboard = (days: 7 | 30 | 90 = 30) =>
+  request<DashboardData>(`/dashboard?days=${days}`);
 export const getCatalogs = () => request<CatalogsResponse>('/catalogs');
 
 // ===== Campos personalizados (F4) — defs activas para formularios =====

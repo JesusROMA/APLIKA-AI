@@ -1010,3 +1010,349 @@ a.f1-flow-node:hover {
   color: var(--ink-55);
   margin: 0;
 }
+
+/* ===================== Dashboard (resumen ejecutivo) ==================== */
+
+/* Filtro de rango: presets en una sola fila, arriba de todo lo que alcanza. */
+.dash-range {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+}
+.dash-range-btn {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--ink-55);
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.dash-range-btn:hover {
+  color: var(--ink);
+}
+.dash-range-btn.is-active {
+  background: var(--white);
+  color: var(--navy);
+  box-shadow: 0 1px 4px rgba(var(--dark), 0.12);
+}
+
+/* Refetch: se conserva el render anterior atenuado (sin saltos ni skeleton). */
+.dash-refetching {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.dash-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+@media (max-width: 1080px) {
+  .dash-grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Stat tiles: valor + sparkline + sub-línea. */
+.kpi-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-1);
+}
+.kpi-spark {
+  flex: 0 0 auto;
+}
+.kpi-sub {
+  font-size: var(--fs-caption);
+  color: var(--ink-55);
+}
+.kpi-trend-vs {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Tarjeta de gráfica. */
+.chart-card {
+  padding: var(--sp-3);
+}
+.chart-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.chart-card-title {
+  font-size: var(--fs-card-title);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  margin: 0;
+}
+.chart-card-sub {
+  font-size: var(--fs-caption);
+  color: var(--ink-55);
+  margin: 4px 0 0;
+}
+.chart-card-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+}
+.chart-legend {
+  display: flex;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--ink-66);
+  font-weight: 600;
+}
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chart-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.chart-viewbtn {
+  border: 1px solid var(--border);
+  background: var(--white);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--ink-66);
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.chart-viewbtn:hover {
+  border-color: var(--blue);
+  color: var(--navy);
+}
+
+/* Plano del SVG: relativo para posicionar el tooltip. */
+.chart-plot {
+  position: relative;
+}
+.chart-axis-text {
+  font-size: 11px;
+  fill: var(--ink-45);
+  font-variant-numeric: tabular-nums;
+}
+.chart-direct-label {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+.chart-tip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-1);
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+.chart-tip-title {
+  font-size: var(--fs-caption);
+  color: var(--ink-55);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.chart-tip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+}
+.chart-tip-key {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+}
+.chart-tip-value {
+  font-weight: 700;
+  color: var(--ink);
+}
+.chart-tip-label {
+  color: var(--ink-55);
+}
+
+/* Top productos: barras horizontales con valor en la punta. */
+.hbar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.hbar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.hbar-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.hbar-name {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hbar-sku {
+  font-size: 11px;
+  color: var(--ink-45);
+}
+.hbar-track {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.hbar-fill {
+  height: 14px;
+  background: var(--blue);
+  border-radius: 0 var(--r-xs) var(--r-xs) 0;
+  flex: 0 1 auto;
+  transition: width var(--dur-base) var(--ease);
+}
+.hbar-value {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Antigüedad de cartera: columnas con rampa ordinal y valor en el tope. */
+.aging-chart {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+  align-items: end;
+  padding-top: var(--sp-1);
+}
+.aging-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.aging-value {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.aging-track {
+  height: 120px;
+  width: 100%;
+  max-width: 56px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.aging-fill {
+  width: 24px;
+  border-radius: var(--r-xs) var(--r-xs) 0 0;
+  transition: height var(--dur-base) var(--ease);
+}
+.aging-bucket {
+  font-size: 11px;
+  color: var(--ink-45);
+}
+
+/* Lista "requiere tu atención". */
+.dash-list {
+  display: flex;
+  flex-direction: column;
+}
+.dash-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--r-sm);
+  transition: background var(--dur-fast) var(--ease);
+}
+.dash-list-row:last-child {
+  border-bottom: 0;
+}
+.dash-list-row:hover {
+  background: var(--surface);
+}
+.dash-list-count {
+  min-width: 34px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-100);
+  color: var(--navy);
+  font-size: var(--fs-caption);
+  font-weight: 800;
+  border-radius: var(--r-sm);
+  padding: 0 8px;
+}
+.dash-list-label {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+}
+.dash-list-amount {
+  font-size: var(--fs-caption);
+  color: var(--ink-55);
+  font-variant-numeric: tabular-nums;
+}
+.dash-list-go {
+  color: var(--ink-45);
+  transition: transform var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.dash-list-row:hover .dash-list-go {
+  transform: translateX(3px);
+  color: var(--blue);
+}
+.dash-allclear {
+  font-size: var(--fs-small);
+  color: var(--ink-55);
+  margin: 0;
+  padding: var(--sp-3) 0;
+  text-align: center;
+}
+.kpi-trend {
+  white-space: nowrap;
+}
+.kpi-trend-vs {
+  margin-left: 4px;
+}
+
+/* Tablas compactas del dashboard (2-4 columnas): caben en media tarjeta,
+   sin el min-width de las tablas de listado (que aquí clipea columnas). */
+.chart-table .panel-table {
+  min-width: 0;
+}
